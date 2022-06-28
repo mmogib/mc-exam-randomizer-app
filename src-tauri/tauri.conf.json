@@ -7,8 +7,8 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "mc-exam-randomizer-app",
-    "version": "0.1.0"
+    "productName": "MC Exam Randomizer",
+    "version": "0.1.1"
   },
   "tauri": {
     "allowlist": {
@@ -55,7 +55,7 @@
       "dialog": true,
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IERBN0IzMkEyQ0I1RTE1NjIKUldSaUZWN0xvako3Mm9odGdLTDhieEFHNFNmcFN0UmhQODRpdGNKUEQ2NHJRWExTaXlnWHlqZ0cK",
       "endpoints": [
-        "https://github.com/mmogib/mc-exam-randomizer-app/releases/tag/{{current_version}}"
+        "https://gist.githubusercontent.com/mmogib/6fa05140f74d9da35118308bf39e054c/raw/2283cc1f701fd46d6ca5f09a69579be46307fbb0/mc-exam-randomizer.json"
       ]
     },
     "windows": [
