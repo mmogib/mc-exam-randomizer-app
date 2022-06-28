@@ -29,7 +29,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "mc.exam.randomizer",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -54,7 +54,9 @@
       "active": true,
       "dialog": true,
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IERBN0IzMkEyQ0I1RTE1NjIKUldSaUZWN0xvako3Mm9odGdLTDhieEFHNFNmcFN0UmhQODRpdGNKUEQ2NHJRWExTaXlnWHlqZ0cK",
-      "endpoints": []
+      "endpoints": [
+        "https://github.com/mmogib/mc-exam-randomizer-app/releases/tag/{{current_version}}"
+      ]
     },
     "windows": [
       {
