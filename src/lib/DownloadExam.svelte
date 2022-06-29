@@ -1,6 +1,6 @@
 <script lang="ts">
   import { invoke } from "@tauri-apps/api";
-  import { save } from "@tauri-apps/api/dialog";
+  import { save, message as diagMesg } from "@tauri-apps/api/dialog";
   import { extname } from "@tauri-apps/api/path";
   import { onMount } from "svelte";
   import { writeTextFile } from "@tauri-apps/api/fs";
@@ -11,7 +11,7 @@
     wizard_state,
     setting,
   } from "../store";
-  import { FrontExam, WizardState } from "../types";
+  import { FrontExam, TemplateExt, WizardState } from "../types";
   import { parse_exam } from "../functions";
 
   let exam: string;
@@ -35,20 +35,29 @@
 
     let content: FrontExam;
 
-    if (ext === "tex") {
-      content = (await invoke("read_tex", {
-        filename: $questions_file_path,
-      })) as FrontExam;
-    } else {
-      content = (await invoke("read_csv", {
-        filename: $questions_file_path,
-      })) as FrontExam;
+    try {
+      if (ext === "tex") {
+        content = (await invoke("read_tex", {
+          filename: $questions_file_path,
+        })) as FrontExam;
+      } else {
+        content = (await invoke("read_csv", {
+          filename: $questions_file_path,
+        })) as FrontExam;
+      }
+      exam = await parse_exam(
+        content,
+        $questions_file_path,
+        $setting,
+        ext.toLocaleUpperCase() as TemplateExt
+      );
+      exam_string.set(exam);
+      await writeTextFile(save_path, exam);
+    } catch (error) {
+      await diagMesg(error, { title: "MC Shuffler Error", type: "error" });
+    } finally {
+      wizard_state.set(WizardState.NEW);
     }
-
-    exam = await parse_exam(content, $questions_file_path, $setting, ext);
-    exam_string.set(exam);
-    await writeTextFile(save_path, exam);
-    wizard_state.set(WizardState.NEW);
   };
 </script>
 

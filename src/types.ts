@@ -34,9 +34,10 @@ export interface Setting {
 
 export type QuestionsFilePath = string;
 
-export type TemplateExt = "TEX" | "CSV";
+export type TemplateExt = "TEX" | "CSV" | "TXT";
 
 export enum WizardState {
+  DOWNLOAD_TEMPLATE,
   NEW,
   FILL_SETTING,
   DOWNLOAD_EXAM,

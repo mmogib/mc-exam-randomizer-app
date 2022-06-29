@@ -16,8 +16,8 @@ export const getSettings = async () => {
 
 export const setting = writable<Setting>({
   university: "King Fahd University of Petroleum and Minerals",
-  department: "Mathematics",
-  term: 212,
+  department: "Department of Mathematics",
+  term: "",
   coursecode: "",
   examname: "",
   examdate: new Date(Date.now()),
@@ -30,4 +30,6 @@ export const questions_file_path = writable<QuestionsFilePath>("nothing");
 
 export const exam_string = writable<string>("");
 
-export const wizard_state = writable<WizardState>(WizardState.NEW);
+export const wizard_state = writable<WizardState>(
+  WizardState.DOWNLOAD_TEMPLATE
+);

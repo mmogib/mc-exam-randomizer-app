@@ -1,6 +1,6 @@
 <script lang="ts">
   import { saveSetting, setting, wizard_state } from "../store";
-
+  import { message as diagMesg } from "@tauri-apps/api/dialog";
   import { Setting, WizardState } from "../types";
 
   let exam_setting: Setting;
@@ -8,21 +8,56 @@
     exam_setting = v;
   });
 
+  const validateSetting = (): boolean => {
+    if (
+      exam_setting.university === "" ||
+      exam_setting.coursecode === "" ||
+      exam_setting.department === "" ||
+      !exam_setting.examdate ||
+      exam_setting.examname === "" ||
+      !Number.isInteger(exam_setting.numberofgroups) ||
+      exam_setting.numberofgroups <= 0 ||
+      !Number.isInteger(exam_setting.numberofvestions) ||
+      exam_setting.numberofvestions <= 0 ||
+      exam_setting.timeallowed === "" ||
+      exam_setting.term === ""
+    ) {
+      return false;
+    }
+    return true;
+  };
+  const errMsg = async () =>
+    diagMesg("Please fill all fields correctly ", {
+      title: "Validation Error",
+      type: "error",
+    });
   const saveMySetting = async () => {
-    await saveSetting(exam_setting);
-    setting.set(exam_setting);
+    if (validateSetting()) {
+      await saveSetting(exam_setting);
+      setting.set(exam_setting);
+    } else {
+      await errMsg();
+    }
   };
 
   const goNext = async () => {
-    await saveSetting(exam_setting);
-    setting.set(exam_setting);
-    wizard_state.set(WizardState.DOWNLOAD_EXAM);
+    if (validateSetting()) {
+      await saveSetting(exam_setting);
+      setting.set(exam_setting);
+      wizard_state.set(WizardState.DOWNLOAD_EXAM);
+    } else {
+      await errMsg();
+    }
   };
 
   const goPrevious = async () => {
-    await saveSetting(exam_setting);
-    setting.set(exam_setting);
-    wizard_state.set(WizardState.NEW);
+    if (validateSetting()) {
+      await saveSetting(exam_setting);
+      setting.set(exam_setting);
+      wizard_state.set(WizardState.NEW);
+    } else {
+      await errMsg();
+    }
   };
 </script>
 
@@ -144,11 +179,15 @@
     >Number of Groups</label
   >
   <input
+    disabled={true}
     type="number"
     id="groups"
     bind:value={exam_setting.numberofgroups}
     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
   />
+  <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+    <span class="font-medium">Not Implemented YET!</span>
+  </p>
 </div>
 
 <div

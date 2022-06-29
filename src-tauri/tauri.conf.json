@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "MC Exam Randomizer",
-    "version": "0.1.1"
+    "version": "0.1.3"
   },
   "tauri": {
     "allowlist": {
@@ -55,13 +55,13 @@
       "dialog": true,
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IERBN0IzMkEyQ0I1RTE1NjIKUldSaUZWN0xvako3Mm9odGdLTDhieEFHNFNmcFN0UmhQODRpdGNKUEQ2NHJRWExTaXlnWHlqZ0cK",
       "endpoints": [
-        "https://gist.githubusercontent.com/mmogib/6fa05140f74d9da35118308bf39e054c/raw/2283cc1f701fd46d6ca5f09a69579be46307fbb0/mc-exam-randomizer.json"
+        "https://mc-exam-randomizer-updater.herokuapp.com/api/{{target}}/{{current_version}}"
       ]
     },
     "windows": [
       {
         "fullscreen": false,
-        "height": 960,
+        "height": 600,
         "resizable": true,
         "title": "MC Exams Randomizer",
         "width": 800

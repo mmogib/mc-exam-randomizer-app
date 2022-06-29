@@ -23,7 +23,10 @@ export const parse_exam = async (
 ): Promise<string> => {
   const qs_master = parse_questions(exam.questions);
   const q_temp_master = questions_template.replace(`%{QUESTIONS}`, qs_master);
-  const command = `get_random_version_${extension.toLowerCase()}`;
+  const command =
+    extension === "TXT"
+      ? `get_random_version_csv`
+      : `get_random_version_${extension.toLowerCase()}`;
   const master_code = code_template
     .replace(`%{CODE_COVER_PAGE}`, MASTER_COVER_PAGE)
     .replace(`%{QUESTIONS_TEMPLATE}`, q_temp_master);

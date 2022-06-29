@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { fade, slide } from "svelte/transition";
+  import { slide } from "svelte/transition";
 
+  import DownloadTemplate from "./lib/DownloadTemplate.svelte";
   import FileUpload from "./lib/FileUpload.svelte";
   import ExamSettings from "./lib/ExamSettings.svelte";
   import DownloadExam from "./lib/DownloadExam.svelte";
@@ -16,11 +17,12 @@
     const s = await getSettings();
     setting.update((v) => ({ ...v, ...s }));
   });
+  const goToStep = (w: WizardState) => () => {
+    wizard_state.set(w);
+  };
 </script>
 
-<main
-  class="relative container mx-auto p-6 my-5 border border-light-300 border"
->
+<main class="relative container mx-auto p-6 my-5 ">
   <h1 class="text-2xl text-center font-bold">Multiple Choice Exam Only</h1>
   <div
     class="flex  justify-between 
@@ -28,11 +30,20 @@
   "
   >
     <div
-      class="text-gray-500 p-4 rounded"
+      class="text-gray-500 ml-10 p-4 rounded hover:text-blue-900"
+      class:text-red-600={w_state === WizardState.DOWNLOAD_TEMPLATE}
+      class:bg-blue-100={w_state === WizardState.DOWNLOAD_TEMPLATE}
+    >
+      <button on:click={goToStep(WizardState.DOWNLOAD_TEMPLATE)}>
+        Step 0
+      </button>
+    </div>
+    <div
+      class="text-gray-500 p-4 rounded hover:text-blue-900"
       class:text-red-600={w_state === WizardState.NEW}
       class:bg-blue-100={w_state === WizardState.NEW}
     >
-      Step 1
+      <button on:click={goToStep(WizardState.NEW)}> Step 1 </button>
     </div>
     <div
       class="text-gray-500 p-4 rounded"
@@ -42,7 +53,7 @@
       Step 2
     </div>
     <div
-      class="text-gray-500 p-4 rounded"
+      class="text-gray-500 mr-10 p-4 rounded"
       class:text-red-600={w_state === WizardState.DOWNLOAD_EXAM}
       class:bg-blue-100={w_state === WizardState.DOWNLOAD_EXAM}
     >
@@ -50,6 +61,12 @@
     </div>
   </div>
   <div class="grid grid-cols-2  gap-2 mt-5">
+    {#if w_state === WizardState.DOWNLOAD_TEMPLATE}
+      <div class="col-span-2" transition:slide>
+        <DownloadTemplate />
+      </div>
+    {/if}
+
     {#if w_state === WizardState.NEW}
       <div class="col-span-2" transition:slide>
         <FileUpload />

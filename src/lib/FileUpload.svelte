@@ -1,65 +1,23 @@
 <script lang="ts">
-  import { open, save } from "@tauri-apps/api/dialog";
-  import { writeTextFile } from "@tauri-apps/api/fs";
-  import { TemplateExt, WizardState } from "../types";
+  import { open } from "@tauri-apps/api/dialog";
 
-  import { tex_template, csv_template } from "../constants";
+  import { WizardState } from "../types";
+
   import { questions_file_path, wizard_state } from "../store";
 
   const uploadQuestionsFromFile = async () => {
     const source_filename: string = (await open({
       filters: [
         {
-          name: "Tex/CSV",
-          extensions: ["tex", "csv"],
+          name: "Tex/CSV/TEXT",
+          extensions: ["tex", "csv", "txt"],
         },
       ],
     })) as string;
     questions_file_path.set(source_filename);
     wizard_state.set(WizardState.FILL_SETTING);
   };
-
-  const downloadTemplate = (extenstion: TemplateExt) => async () => {
-    if (extenstion === "TEX") {
-      const save_path = await save({
-        title: "Save Template",
-        filters: [
-          {
-            name: "Latex",
-            extensions: ["tex"],
-          },
-        ],
-      });
-      await writeTextFile(save_path, tex_template);
-    } else {
-      const save_path = await save({
-        title: "Save Template",
-        filters: [
-          {
-            name: "CSV",
-            extensions: ["csv"],
-          },
-        ],
-      });
-      await writeTextFile(save_path, csv_template);
-    }
-    return;
-  };
 </script>
-
-<div class="col-span-2 flex justify-center ">
-  <button
-    on:click={downloadTemplate("TEX")}
-    class=" text-center underline underline-light-600 mx-10"
-    >Download Latex Template
-  </button>
-  <button
-    on:click={downloadTemplate("CSV")}
-    class=" text-center underline underline-light-600 mx-10"
-  >
-    Download CSV Template
-  </button>
-</div>
 
 <div
   class="mt-5 

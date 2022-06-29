@@ -23,56 +23,32 @@ fn main() {
 }
 
 #[tauri::command]
-fn read_tex(filename: &str) -> Exam {
+fn read_tex(filename: &str) -> Result<Exam, String> {
     match Exam::from_tex(filename, "master") {
-        Ok(ex) => ex,
-        Err(err) => Exam {
-            name: err.to_string(),
-            questions: None,
-            ordering: None,
-        },
+        Ok(ex) => Ok(ex),
+        Err(err) => Err(err.to_string()),
     }
 }
 
 #[tauri::command]
-fn read_csv(filename: &str) -> Exam {
+fn read_csv(filename: &str) -> Result<Exam, String> {
     match Exam::from_csv(filename, "master") {
-        Ok(ex) => ex,
-        Err(err) => Exam {
-            name: err.to_string(),
-            questions: None,
-            ordering: None,
-        },
+        Ok(ex) => Ok(ex),
+        Err(err) => Err(err.to_string()),
     }
 }
 #[tauri::command]
-fn get_random_version_tex(filename: &str, name: &str) -> Exam {
+fn get_random_version_tex(filename: &str, name: &str) -> Result<Exam, String> {
     match Exam::from_tex(filename, "master") {
-        Ok(ex) => {
-            let version_1 = shuffle_exam(&ex, Some(name));
-
-            version_1
-        }
-        Err(err) => Exam {
-            name: err.to_string(),
-            questions: None,
-            ordering: None,
-        },
+        Ok(ex) => Ok(shuffle_exam(&ex, Some(name))),
+        Err(err) => Err(err.to_string()),
     }
 }
 
 #[tauri::command]
-fn get_random_version_csv(filename: &str, name: &str) -> Exam {
+fn get_random_version_csv(filename: &str, name: &str) -> Result<Exam, String> {
     match Exam::from_csv(filename, "master") {
-        Ok(ex) => {
-            let version_1 = shuffle_exam(&ex, Some(name));
-
-            version_1
-        }
-        Err(err) => Exam {
-            name: err.to_string(),
-            questions: None,
-            ordering: None,
-        },
+        Ok(ex) => Ok(shuffle_exam(&ex, Some(name))),
+        Err(err) => Err(err.to_string()),
     }
 }
