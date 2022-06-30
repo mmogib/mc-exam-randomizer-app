@@ -53,7 +53,7 @@
     "updater": {
       "active": true,
       "dialog": false,
-      "pubkey": "~/.tauri/mc-exam-randomizer.key.pub",
+      "pubkey": "C:\\Users\\mmogi\\.tauri\\mymcapp.key.pub",
       "endpoints": [
         "https://mc-exam-randomizer-updater.herokuapp.com/api/{{target}}/{{current_version}}"
       ]
