@@ -1,9 +1,13 @@
 <script lang="ts">
   import { open } from "@tauri-apps/api/dialog";
 
-  import { WizardState } from "../types";
+  import { Processing, WizardState } from "../types";
 
-  import { questions_file_path, wizard_state } from "../store";
+  import {
+    questions_file_path,
+    store_processing,
+    wizard_state,
+  } from "../store";
 
   const uploadQuestionsFromFile = async () => {
     const source_filename: string = (await open({
@@ -15,6 +19,7 @@
       ],
     })) as string;
     questions_file_path.set(source_filename);
+    store_processing.set(Processing.NEW);
     wizard_state.set(WizardState.FILL_SETTING);
   };
 </script>

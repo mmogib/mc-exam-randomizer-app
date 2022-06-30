@@ -1,12 +1,14 @@
 export interface FrontExam {
   name: string;
-  questions: [Question];
+  preamble?: string;
+  questions?: [Question];
   ordering: [number];
 }
 
 export interface Question {
   text: string;
   order: number;
+  group: number;
   choices: Choices;
 }
 
@@ -30,6 +32,7 @@ export interface Setting {
   timeallowed: string;
   numberofvestions: number;
   numberofgroups: number;
+  exam?: FrontExam;
 }
 
 export type QuestionsFilePath = string;
@@ -41,4 +44,9 @@ export enum WizardState {
   NEW,
   FILL_SETTING,
   DOWNLOAD_EXAM,
+}
+
+export enum Processing {
+  NEW,
+  OLD,
 }

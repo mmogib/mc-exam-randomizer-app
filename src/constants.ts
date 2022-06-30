@@ -1,7 +1,9 @@
 export const tex_template: string = `\\documentclass{article}
+%{#preamble}
 \\usepackage{amsfonts}
 \\usepackage{amsmath}
 \\usepackage{amssymb}
+%{/preamble}
 
 \\begin{document}
 
@@ -63,7 +65,7 @@ This is the body of question 2
 
 %{#q}
 This is the body of question 3
-%{//q}
+%{/q}
 \\begin{enumerate}
     \\item
     %{#o}
@@ -119,5 +121,20 @@ This is the body of question 4
 \\end{document}
 `;
 
-export const csv_template = `Question 1 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5
-Question 2 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5`;
+export const txt_template = `1	Question 1 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5
+2	Question 2 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5
+2	Question 3 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5
+4	Question 4 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5
+3	Question 5 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5
+3	Question 6 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5
+4	Question 7 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5
+3	Question 8 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5`;
+
+export const csv_template = `1,"Question 1 $\\int_0^1 x = \\frac{x^2}{2}+C$ text goes here",Answer 1,Answer 2,Answer 3,Answer 4,Answer 5
+2,"Question, 2 text goes here",Answer 1,Answer 2,Answer 3,Answer 4,Answer 5
+3,"Question, 3 text goes here",Answer 1,Answer 2,Answer 3,Answer 4,Answer 5
+3,"Question, 4 text goes here",Answer 1,Answer 2,Answer 3,Answer 4,Answer 5
+4,"Question, 5 text goes here",Answer 1,Answer 2,Answer 3,Answer 4,Answer 5
+2,"Question, 6 text goes here",Answer 1,Answer 2,Answer 3,Answer 4,Answer 5
+3,"Question, 7 text goes here",Answer 1,Answer 2,Answer 3,Answer 4,Answer 5
+4,"Question, 8 text goes here",Answer 1,Answer 2,Answer 3,Answer 4,Answer 5`;

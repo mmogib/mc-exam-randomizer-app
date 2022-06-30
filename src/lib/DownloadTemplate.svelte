@@ -1,11 +1,22 @@
 <script lang="ts">
-  import { save } from "@tauri-apps/api/dialog";
-  import { writeTextFile } from "@tauri-apps/api/fs";
-  import { TemplateExt, WizardState } from "../types";
+  import { save, open, message as diagMesg } from "@tauri-apps/api/dialog";
+  import { writeTextFile, readTextFile } from "@tauri-apps/api/fs";
+  import { Processing, TemplateExt, WizardState } from "../types";
 
-  import { tex_template, csv_template } from "../constants";
-  import { wizard_state } from "../store";
-  let q = `\\begin{document}  
+  import { tex_template, csv_template, txt_template } from "../constants";
+  import {
+    wizard_state,
+    setting,
+    store_exam,
+    store_processing,
+  } from "../store";
+  let q = `\\documentclass{article}
+%{#preamble}
+\\usepackage{amsfonts}
+\\usepackage{amsmath}
+\\usepackage{amssymb}
+%{/preamble}
+  \\begin{document}  
 %{#q}
 What is 1 + 1?
 %{/q}
@@ -39,6 +50,27 @@ What is 1 + 1?
     qE: `%{#q}`,
     oS: `%{#o}`,
     oE: `%{#o}`,
+    pS: `%{#preamble}`,
+    pE: `%{/preamble}`,
+  };
+  const openSavedSetting = async () => {
+    try {
+      const saved_file_path = await open({
+        title: "Open Saved exam",
+        filters: [
+          {
+            name: "Config",
+            extensions: ["conf"],
+          },
+        ],
+      });
+      const s_setting = await readTextFile(saved_file_path as string);
+      setting.set(JSON.parse(s_setting));
+      store_processing.set(Processing.OLD);
+      wizard_state.set(WizardState.DOWNLOAD_EXAM);
+    } catch (error) {
+      await diagMesg(error, { title: "Error Opening", type: "error" });
+    }
   };
   const downloadTemplate = (extenstion: TemplateExt) => async () => {
     if (extenstion === "TEX") {
@@ -52,13 +84,24 @@ What is 1 + 1?
         ],
       });
       await writeTextFile(save_path, tex_template);
-    } else {
+    } else if (extenstion === "TXT") {
       const save_path = await save({
         title: "Save Template",
         filters: [
           {
             name: "TEXT",
             extensions: ["txt"],
+          },
+        ],
+      });
+      await writeTextFile(save_path, txt_template);
+    } else {
+      const save_path = await save({
+        title: "Save Template",
+        filters: [
+          {
+            name: "CSV",
+            extensions: ["csv"],
           },
         ],
       });
@@ -71,19 +114,34 @@ What is 1 + 1?
 </script>
 
 <div class="col-span-2 flex flex-col justify-center ">
-  <div class="col-span-2 text-center">
+  <div class="col-span-1 flex flex-row text-center justify-center">
     <button
       on:click={() => {
+        store_processing.set(Processing.NEW);
         wizard_state.set(WizardState.NEW);
       }}
       class="text-center 
-          w-1/2 
+          w-1/4 
           bg-green-900
           rounded-lg
           p-2
           my-1
+          mx-4
           text-lg
            text-white">Start</button
+    >
+
+    <button
+      on:click={openSavedSetting}
+      class="text-center 
+          w-1/4 
+          bg-green-900
+          rounded-lg
+          p-2
+          my-1
+          mx-4
+          text-lg
+           text-white">Open Old Exam</button
     >
   </div>
   <div class="mb-10">
@@ -122,9 +180,15 @@ What is 1 + 1?
         body. Also each answer is between the tags
         <span class="font-bold">{qTags.oS}</span>
         and <span class="font-bold">{qTags.oE}</span>.
-        <p class="font-bold text-red-800">
-          Note that each tag is on a separate line. Further the correct answer
-          is always the first one.
+        <p class="font-bold text-red-800 mt-2">
+          Each tag is on a separate line. Further the correct answer is always
+          the first one.
+        </p>
+        <p class="font-bold mt-2 text-red-800">
+          You can add your own packaged between the tags <span class="font-bold"
+            >{qTags.pS}</span
+          >
+          and <span class="font-bold">{qTags.pE}</span>
         </p>
       </li>
       <li>
@@ -133,8 +197,8 @@ What is 1 + 1?
           This option is simpler. You can use Excel sheet without header. The
           first column contains the question body. Each subsequent column
           contains an answer. The first is always the correct answer. Then save
-          your file as `tab-delimited` text file. The resulting file should be
-          similar to the file template below.
+          your file as `tab-delimited` text file or a `comma-separated` csv
+          file. The resulting file should be similar to the file template below.
         </p>
       </li>
     </ul>
@@ -149,7 +213,13 @@ What is 1 + 1?
       on:click={downloadTemplate("CSV")}
       class=" text-center underline underline-light-600 mx-10"
     >
-      Download TEXT Template
+      Download CSV Template (Comma-Separated)
+    </button>
+    <button
+      on:click={downloadTemplate("TXT")}
+      class=" text-center underline underline-light-600 mx-10"
+    >
+      Download TXT Template (Tab-Separated)
     </button>
   </div>
 </div>

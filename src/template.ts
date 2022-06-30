@@ -1,5 +1,5 @@
 export const exam_template = `%{DOC_PREAMBLE}
-
+%{USER_PREAMBLE}
 \\begin{document}
 
 %{COVER_PAGE}
@@ -177,8 +177,7 @@ export const KEY_ANSWER = `
 
 \\begin{center}
 
-  \\begin{tabular}{|c||c|c|c|c|c| 
-}
+  \\begin{tabular}{|c||c | {AKEY_TABS}|}
   \\hline
   {HEADER} \\\\ \\hline 
   {KEY_BODY}

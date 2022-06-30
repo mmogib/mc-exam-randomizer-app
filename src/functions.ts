@@ -18,15 +18,11 @@ import type { FrontExam, Question, Setting, TemplateExt } from "./types";
 export const parse_exam = async (
   exam: FrontExam,
   filename: string,
-  stored_setting: Setting,
-  extension: TemplateExt = "TEX"
+  stored_setting: Setting
 ): Promise<string> => {
   const qs_master = parse_questions(exam.questions);
   const q_temp_master = questions_template.replace(`%{QUESTIONS}`, qs_master);
-  const command =
-    extension === "TXT"
-      ? `get_random_version_csv`
-      : `get_random_version_${extension.toLowerCase()}`;
+  const command = `get_random_version`;
   const master_code = code_template
     .replace(`%{CODE_COVER_PAGE}`, MASTER_COVER_PAGE)
     .replace(`%{QUESTIONS_TEMPLATE}`, q_temp_master);
@@ -39,7 +35,7 @@ export const parse_exam = async (
           const code_number = `${i + 101}`.slice(1, 3);
           const code_name = `CODE${code_number}`;
           const ex = (await invoke(command, {
-            filename,
+            exam: exam,
             name: code_name,
           })) as FrontExam;
           exam_codes.push(ex);
@@ -61,6 +57,7 @@ ${codes}
 
   const exam_doc = exam_template
     .replace(`%{DOC_PREAMBLE}`, DOC_PREAMBLE)
+    .replace("%{USER_PREAMBLE}", exam.preamble || "")
     .replace("%{COVER_PAGE}", COVER_PAGE)
     .replace("%{VERSIONS}", versions)
     .replace(`%{KEY_ANSWER}`, parse_answer_key(exam, exam_codes as [FrontExam]))
@@ -93,7 +90,12 @@ const parse_questions = (
 ): string => {
   const odd_q = odd_question;
   const even_q = even_question;
-  const qs = ordering ? ordering.map((indx) => questions[indx]) : questions;
+  const qs = ordering
+    ? ordering
+        .map((indx) => questions[indx])
+        .sort((a, b) => (a.group > b.group ? 1 : -1))
+    : questions;
+
   return qs
     .map((q, i) => {
       const correctIndex = q.choices[1];
@@ -105,7 +107,9 @@ const parse_questions = (
             .map(
               (o, i) =>
                 `\\item ${o.text}${
-                  correctIndex === i ? "\\hrulefill {\\small (correct)}" : ""
+                  correctIndex === i
+                    ? "\\;\\;\\hrulefill {\\small (correct)}"
+                    : ""
                 }\n`
             )
             .join("");
@@ -129,7 +133,7 @@ const alphabets = ["A", "B", "C", "D", "E"];
 const parse_answer_key = (master: FrontExam, codes: [FrontExam]): string => {
   const num_questions = master.questions.length;
   const answer_template = KEY_ANSWER;
-
+  const tabs = codes.map((_) => "c").join("|");
   const header = [`Q`, `MASTER`, ...codes.map((c) => c.name)].join("&");
   const body = Array(num_questions)
     .fill(0)
@@ -142,6 +146,7 @@ const parse_answer_key = (master: FrontExam, codes: [FrontExam]): string => {
     })
     .join(`\\\\ \\hline`);
   return answer_template
+    .replace(`{AKEY_TABS}`, tabs)
     .replace(`{HEADER}`, header)
     .replace(`{KEY_BODY}`, body);
 };

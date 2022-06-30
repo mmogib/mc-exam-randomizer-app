@@ -1,5 +1,11 @@
 import { writable } from "svelte/store";
-import { QuestionsFilePath, Setting, WizardState } from "./types";
+import {
+  FrontExam,
+  Processing,
+  QuestionsFilePath,
+  Setting,
+  WizardState,
+} from "./types";
 import { Store } from "tauri-plugin-store-api";
 const store = new Store(".settings.dat");
 
@@ -33,3 +39,12 @@ export const exam_string = writable<string>("");
 export const wizard_state = writable<WizardState>(
   WizardState.DOWNLOAD_TEMPLATE
 );
+
+export const store_exam = writable<FrontExam>({
+  name: "",
+  ordering: null,
+  questions: null,
+  preamble: null,
+});
+
+export const store_processing = writable<Processing>(Processing.NEW);

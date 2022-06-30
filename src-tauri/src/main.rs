@@ -3,6 +3,7 @@
     windows_subsystem = "windows"
 )]
 
+use app::app_store::Setting;
 use mc_exam_randomizer::shuffler::{shuffle_exam, Exam};
 use tauri_plugin_store::PluginBuilder;
 
@@ -13,9 +14,14 @@ fn main() {
         .setup(|_app| Ok(()))
         .invoke_handler(tauri::generate_handler![
             read_tex,
+            read_csv,
+            read_txt,
             get_random_version_tex,
             get_random_version_csv,
-            read_csv
+            get_random_version_txt,
+            save_config_file,
+            get_config_from_file,
+            get_random_version
         ])
         .plugin(PluginBuilder::default().build())
         .run(context)
@@ -38,6 +44,13 @@ fn read_csv(filename: &str) -> Result<Exam, String> {
     }
 }
 #[tauri::command]
+fn read_txt(filename: &str) -> Result<Exam, String> {
+    match Exam::from_txt(filename, "master") {
+        Ok(ex) => Ok(ex),
+        Err(err) => Err(err.to_string()),
+    }
+}
+#[tauri::command]
 fn get_random_version_tex(filename: &str, name: &str) -> Result<Exam, String> {
     match Exam::from_tex(filename, "master") {
         Ok(ex) => Ok(shuffle_exam(&ex, Some(name))),
@@ -51,4 +64,31 @@ fn get_random_version_csv(filename: &str, name: &str) -> Result<Exam, String> {
         Ok(ex) => Ok(shuffle_exam(&ex, Some(name))),
         Err(err) => Err(err.to_string()),
     }
+}
+
+#[tauri::command]
+fn get_random_version_txt(filename: &str, name: &str) -> Result<Exam, String> {
+    match Exam::from_txt(filename, "master") {
+        Ok(ex) => Ok(shuffle_exam(&ex, Some(name))),
+        Err(err) => Err(err.to_string()),
+    }
+}
+
+#[tauri::command]
+fn get_random_version(exam: Exam, name: &str) -> Exam {
+    shuffle_exam(&exam, Some(name))
+}
+
+#[tauri::command]
+fn save_config_file(setting: Setting) -> Result<String, String> {
+    match toml::to_string(&setting) {
+        Ok(result) => Ok(result),
+        Err(err) => Err(err.to_string()),
+    }
+}
+
+#[tauri::command]
+fn get_config_from_file(rawstr: &str) -> Result<String, String> {
+    let config: Setting = toml::from_str(rawstr).unwrap();
+    Ok(format!("{:#?}", config))
 }

@@ -1,6 +1,6 @@
 [package]
 name = "app"
-version = "0.1.3"
+version = "0.1.4"
 description = "An App to randomize MC Exam questions and produce a latex file"
 authors = ["Mohammed Alshahrani"]
 license = ""
@@ -18,9 +18,9 @@ tauri-build = { version = "1.0.0", features = [] }
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "1.0.0", features = ["api-all", "updater"] }
-mc-exam-randomizer = "0.2.1"
+mc-exam-randomizer = "0.3.2"
 tauri-plugin-store = {git = "https://github.com/tauri-apps/tauri-plugin-store", branch = "dev"}
-rusqlite = {version = "0.27.0", features = ["bundled"] }
+toml = "0.5.9"
 
 
 
