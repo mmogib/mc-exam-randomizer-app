@@ -17,7 +17,6 @@ import type { FrontExam, Question, Setting, TemplateExt } from "./types";
 
 export const parse_exam = async (
   exam: FrontExam,
-  filename: string,
   stored_setting: Setting
 ): Promise<string> => {
   const qs_master = parse_questions(exam.questions);

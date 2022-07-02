@@ -1,15 +1,10 @@
 <script lang="ts">
   import { save, open, message as diagMesg } from "@tauri-apps/api/dialog";
   import { writeTextFile, readTextFile } from "@tauri-apps/api/fs";
-  import { Processing, TemplateExt, WizardState } from "../types";
+  import { ExamSettings, Setting, TemplateExt, WizardState } from "../types";
 
   import { tex_template, csv_template, txt_template } from "../constants";
-  import {
-    wizard_state,
-    setting,
-    store_exam,
-    store_processing,
-  } from "../store";
+  import { wizard_state, setting, store_exam } from "../store";
   let q = `\\documentclass{article}
 %{#preamble}
 \\usepackage{amsfonts}
@@ -56,7 +51,7 @@ What is 1 + 1?
   const openSavedSetting = async () => {
     try {
       const saved_file_path = await open({
-        title: "Open Saved exam",
+        title: "Open Saved Exam",
         filters: [
           {
             name: "Config",
@@ -64,10 +59,18 @@ What is 1 + 1?
           },
         ],
       });
-      const s_setting = await readTextFile(saved_file_path as string);
-      setting.set(JSON.parse(s_setting));
-      store_processing.set(Processing.OLD);
-      wizard_state.set(WizardState.DOWNLOAD_EXAM);
+      if (saved_file_path) {
+        const exam_setting_string: string = await readTextFile(
+          saved_file_path as string
+        );
+        const exam_setting: ExamSettings = JSON.parse(
+          exam_setting_string
+        ) as ExamSettings;
+        setting.set(exam_setting.setting);
+        store_exam.set(exam_setting.exam);
+
+        wizard_state.set(WizardState.FILL_SETTING);
+      }
     } catch (error) {
       await diagMesg(error, { title: "Error Opening", type: "error" });
     }
@@ -117,7 +120,12 @@ What is 1 + 1?
   <div class="col-span-1 flex flex-row text-center justify-center">
     <button
       on:click={() => {
-        store_processing.set(Processing.NEW);
+        store_exam.set({
+          name: "",
+          ordering: null,
+          questions: null,
+          preamble: null,
+        });
         wizard_state.set(WizardState.NEW);
       }}
       class="text-center 

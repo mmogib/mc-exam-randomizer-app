@@ -1,16 +1,19 @@
 <script lang="ts">
-  import { open } from "@tauri-apps/api/dialog";
+  import { open, message as diagMesg } from "@tauri-apps/api/dialog";
 
-  import { Processing, WizardState } from "../types";
+  import { FrontExam, WizardState } from "../types";
 
   import {
     questions_file_path,
-    store_processing,
     wizard_state,
+    store_exam,
+    setting,
   } from "../store";
+  import { extname } from "@tauri-apps/api/path";
+  import { invoke } from "@tauri-apps/api";
 
   const uploadQuestionsFromFile = async () => {
-    const source_filename: string = (await open({
+    const source_filename = (await open({
       filters: [
         {
           name: "Tex/CSV/TEXT",
@@ -18,15 +21,42 @@
         },
       ],
     })) as string;
-    questions_file_path.set(source_filename);
-    store_processing.set(Processing.NEW);
-    wizard_state.set(WizardState.FILL_SETTING);
+    if (source_filename) {
+      try {
+        const ext = await extname(source_filename);
+
+        let content: FrontExam;
+        if (ext === "tex") {
+          content = (await invoke("read_tex", {
+            filename: source_filename,
+          })) as FrontExam;
+        } else if (ext === "txt") {
+          content = (await invoke("read_txt", {
+            filename: source_filename,
+          })) as FrontExam;
+        } else {
+          content = (await invoke("read_csv", {
+            filename: source_filename,
+          })) as FrontExam;
+        }
+
+        questions_file_path.set(source_filename);
+        store_exam.set(content);
+
+        wizard_state.set(WizardState.FILL_SETTING);
+      } catch (error) {
+        diagMesg(error, {
+          title: "Error",
+          type: "error",
+        });
+      }
+    }
   };
 </script>
 
 <div
   class="mt-5 
-    border border-blue-900
+   
     p-5
     col-span-2 flex  flex-col text-center w-auto justify-center "
 >

@@ -1,36 +1,39 @@
 <script lang="ts">
   import Home from "./lib/Home.svelte";
-  import { checkUpdate, installUpdate } from "@tauri-apps/api/updater";
-  import { relaunch } from "@tauri-apps/api/process";
-  import { message as diaMsg, confirm } from "@tauri-apps/api/dialog";
+  import { app } from "@tauri-apps/api";
+  import { open as openShell } from "@tauri-apps/api/shell";
+  import { checkUpdate } from "@tauri-apps/api/updater";
+
   import { onMount } from "svelte";
+  const update_url =
+    "https://github.com/mmogib/mc-exam-randomizer-app/releases/download/v{VERSION}/MC.Exam.Randomizer_{VERSION}_x64_en-US.msi";
+  let app_version = "";
+  let new_version: string | null = null;
+  let new_version_url: string = "";
   onMount(async () => {
-    try {
-      const { shouldUpdate, manifest } = await checkUpdate();
-      if (shouldUpdate) {
-        const ok = await confirm(
-          `A new version (${manifest.version}) is available. Do you want to update now?`,
-          {
-            title: "Update",
-            type: "warning",
-          }
-        );
-        if (ok) {
-          await installUpdate();
-          await diaMsg("Update complete, your app will relaunce now.");
-          await relaunch();
-        }
-        // install complete, restart app
-      }
-    } catch (error) {
-      await diaMsg(`Problem updaing ${error}`, {
-        title: "Updater",
-        type: "error",
-      });
+    app_version = await app.getVersion();
+    const { shouldUpdate, manifest } = await checkUpdate();
+    if (shouldUpdate) {
+      new_version = manifest.version;
+      new_version_url = update_url.replaceAll("{VERSION}", manifest.version);
     }
   });
+
+  const downloadNewVersion = async () => {
+    await openShell(new_version_url);
+  };
 </script>
 
+<div class="absolute top-0 left-0 ">
+  version {app_version}
+  {#if new_version}
+    click
+    <button
+      class="underline underline-red-600 text-red-500"
+      on:click={downloadNewVersion}>here</button
+    > to install
+  {/if}
+</div>
 <main class="relative container mx-auto p-4 my-5 ">
   <Home />
 </main>

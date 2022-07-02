@@ -31,8 +31,7 @@ export interface Setting {
   examdate: Date;
   timeallowed: string;
   numberofvestions: number;
-  numberofgroups: number;
-  exam?: FrontExam;
+  groups: string;
 }
 
 export type QuestionsFilePath = string;
@@ -46,7 +45,7 @@ export enum WizardState {
   DOWNLOAD_EXAM,
 }
 
-export enum Processing {
-  NEW,
-  OLD,
+export interface ExamSettings {
+  setting: Setting;
+  exam: FrontExam;
 }

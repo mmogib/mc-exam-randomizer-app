@@ -1,62 +1,123 @@
 <script lang="ts">
-  import { saveSetting, setting, wizard_state } from "../store";
+  import { saveSetting, setting, wizard_state, store_exam } from "../store";
   import { message as diagMesg } from "@tauri-apps/api/dialog";
-  import { Setting, WizardState } from "../types";
+  import { FrontExam, Question, Setting, WizardState } from "../types";
 
   let exam_setting: Setting;
+  let current_exam: FrontExam;
+  store_exam.subscribe((v) => {
+    current_exam = v;
+  });
   setting.subscribe((v) => {
     exam_setting = v;
   });
 
-  const validateSetting = (): boolean => {
+  interface ValidationError {
+    valid: "valid" | "invalid";
+    message: string;
+  }
+  const validateSetting = (): ValidationError => {
     if (
       exam_setting.university === "" ||
       exam_setting.coursecode === "" ||
       exam_setting.department === "" ||
       !exam_setting.examdate ||
       exam_setting.examname === "" ||
-      !Number.isInteger(exam_setting.numberofgroups) ||
-      exam_setting.numberofgroups <= 0 ||
+      exam_setting.groups === "" ||
       !Number.isInteger(exam_setting.numberofvestions) ||
       exam_setting.numberofvestions <= 0 ||
       exam_setting.timeallowed === "" ||
       exam_setting.term === ""
     ) {
-      return false;
+      return {
+        message: "Please fill in all the fields correctly",
+        valid: "invalid",
+      };
     }
-    return true;
+
+    const num_of_questions = current_exam.questions.length;
+    const groups = exam_setting.groups.split(",");
+    if (groups.length < 1) {
+      return { message: "Please check the groups field", valid: "invalid" };
+    }
+    let group_numbers = groups
+      .map((v) => parseInt(v))
+      .filter((v) => Number.isInteger(v));
+    if (groups.length === 1 && group_numbers[0] === 1) {
+      group_numbers = [num_of_questions];
+    }
+
+    const number_of_questions_in_groups = group_numbers.reduce(
+      (acc, v) => acc + v,
+      0
+    );
+    if (num_of_questions !== number_of_questions_in_groups) {
+      return {
+        message: `Number of questions ${num_of_questions} whereas your groups includes ${number_of_questions_in_groups} questions`,
+        valid: "invalid",
+      };
+    }
+
+    const groups_running_total = group_numbers.map((v, i) => {
+      if (i === 0) {
+        return v;
+      }
+      return v + group_numbers.slice(0, i).reduce((acc, v) => acc + v, 0);
+    });
+
+    const qs = current_exam.questions.slice(0).map((v, i) => {
+      const group = groups_running_total
+        .map((v2, i2) => {
+          if (i < v2) {
+            return i2 + 1;
+          } else {
+            return 0;
+          }
+        })
+        .filter((v2) => v2 !== 0)[0];
+      return { ...v, group };
+    });
+    current_exam = { ...current_exam, questions: qs as [Question] };
+
+    return { valid: "valid", message: "" };
   };
-  const errMsg = async () =>
-    diagMesg("Please fill all fields correctly ", {
+  const errMsg = async (message: string) =>
+    diagMesg(message, {
       title: "Validation Error",
       type: "error",
     });
   const saveMySetting = async () => {
-    if (validateSetting()) {
+    const { message, valid } = validateSetting();
+    if (valid === "valid") {
       await saveSetting(exam_setting);
       setting.set(exam_setting);
+      store_exam.set(current_exam);
     } else {
-      await errMsg();
+      await errMsg(message);
     }
   };
 
   const goNext = async () => {
-    if (validateSetting()) {
+    const { message, valid } = validateSetting();
+    if (valid === "valid") {
       await saveSetting(exam_setting);
       setting.set(exam_setting);
+      store_exam.set(current_exam);
       wizard_state.set(WizardState.DOWNLOAD_EXAM);
     } else {
-      await errMsg();
+      await errMsg(message);
     }
   };
 
   const goPrevious = async () => {
-    if (validateSetting()) {
+    const { message, valid } = validateSetting();
+    if (valid === "valid") {
       await saveSetting(exam_setting);
       setting.set(exam_setting);
+      store_exam.set(current_exam);
       wizard_state.set(WizardState.NEW);
     } else {
-      await errMsg();
+      await errMsg(message);
     }
   };
 </script>
@@ -176,17 +237,16 @@
   <label
     for="groups"
     class="block mb-2 text-lg font-medium text-gray-900 dark:text-gray-300"
-    >Number of Groups</label
+    >Grouping</label
   >
   <input
-    disabled={true}
-    type="number"
+    type="text"
     id="groups"
-    bind:value={exam_setting.numberofgroups}
+    bind:value={exam_setting.groups}
     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
   />
-  <p class="mt-2 text-sm text-red-600 dark:text-red-500">
-    <span class="font-medium">Not Implemented YET!</span>
+  <p class="mt-2 text-sm text-gray-600 dark:text-gray-500">
+    <span class="font-medium">comma sparated numbers, like: 5,5,6</span>
   </p>
 </div>
 
