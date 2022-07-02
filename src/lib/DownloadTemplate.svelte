@@ -116,116 +116,57 @@ What is 1 + 1?
   };
 </script>
 
+<div class="col-span-1 flex flex-row text-center justify-center">
+  <button
+    on:click={() => {
+      store_exam.set({
+        name: "",
+        ordering: null,
+        questions: null,
+        preamble: null,
+      });
+      wizard_state.set(WizardState.NEW);
+    }}
+    class="text-center 
+        w-1/4 
+        bg-green-900
+        rounded-lg
+        p-2
+        my-1
+        mx-4
+        text-lg
+         text-white">Start</button
+  >
+
+  <button
+    on:click={openSavedSetting}
+    class="text-center
+        w-1/4
+        bg-green-900
+        rounded-lg
+        p-2
+        my-1
+        mx-4
+        text-lg
+         text-white">Open Old Exam</button
+  >
+</div>
 <div class="col-span-2 flex flex-col justify-center ">
-  <div class="col-span-1 flex flex-row text-center justify-center">
-    <button
-      on:click={() => {
-        store_exam.set({
-          name: "",
-          ordering: null,
-          questions: null,
-          preamble: null,
-        });
-        wizard_state.set(WizardState.NEW);
-      }}
-      class="text-center 
-          w-1/4 
-          bg-green-900
-          rounded-lg
-          p-2
-          my-1
-          mx-4
-          text-lg
-           text-white">Start</button
-    >
-
-    <button
-      on:click={openSavedSetting}
-      class="text-center 
-          w-1/4 
-          bg-green-900
-          rounded-lg
-          p-2
-          my-1
-          mx-4
-          text-lg
-           text-white">Open Old Exam</button
-    >
-  </div>
-  <div class="mb-10">
-    This app is designed to produce multiple choice exam with randomized
-    questions and randomized choices. Each question needs to have a body and
-    choices (answers). For example
-    <blockquote class="ml-4  p-4 bg-gray-100">
-      What is 1 + 1?
-
-      <ul>
-        <li>2</li>
-        <li>1</li>
-        <li>3</li>
-        <li>4</li>
-        <li>5</li>
-      </ul>
-    </blockquote>
-    The body of the question is<span class="bg-gray-100 ml-1">
-      What is 1 + 1?</span
-    >
-    and the options are
-    <span class="bg-gray-100">2,1,3,4,5</span>. In order to use this, you need
-    upload your questions in a specific format. The formats supported so far are
-    <ul class="p-5 list-disc">
-      <li>
-        <span class="font-extrabold">LaTeX</span>
-        <p>
-          You need to format your question according to the follwoing convention
-          (see the file below). For example you may write the above example as
-        </p>
-        <pre class="mt-4 p-4 bg-gray-100 rounded-md">{q}</pre>
-        Note the question body has to between the tags<span class="font-bold"
-          >{qTags.qS}</span
-        >
-        before the body and <span class="font-bold">{qTags.qE}</span> after the
-        body. Also each answer is between the tags
-        <span class="font-bold">{qTags.oS}</span>
-        and <span class="font-bold">{qTags.oE}</span>.
-        <p class="font-bold text-red-800 mt-2">
-          Each tag is on a separate line. Further the correct answer is always
-          the first one.
-        </p>
-        <p class="font-bold mt-2 text-red-800">
-          You can add your own packaged between the tags <span class="font-bold"
-            >{qTags.pS}</span
-          >
-          and <span class="font-bold">{qTags.pE}</span>
-        </p>
-      </li>
-      <li>
-        <span class="font-extrabold">CSV/TEXT</span>
-        <p>
-          This option is simpler. You can use Excel sheet without header. The
-          first column contains the question body. Each subsequent column
-          contains an answer. The first is always the correct answer. Then save
-          your file as `tab-delimited` text file or a `comma-separated` csv
-          file. The resulting file should be similar to the file template below.
-        </p>
-      </li>
-    </ul>
-  </div>
-  <div class="col-span-2 flex justify-center ">
+  <div class="col-span-2 flex flex-col justify-center ">
     <button
       on:click={downloadTemplate("TEX")}
-      class=" text-center underline underline-light-600 mx-10"
+      class=" text-center underline underline-light-600 mx-10 my-5"
       >Download Latex Template
     </button>
     <button
       on:click={downloadTemplate("CSV")}
-      class=" text-center underline underline-light-600 mx-10"
+      class=" text-center underline underline-light-600 mx-10 mb-5"
     >
       Download CSV Template (Comma-Separated)
     </button>
     <button
       on:click={downloadTemplate("TXT")}
-      class=" text-center underline underline-light-600 mx-10"
+      class=" text-center underline underline-light-600 mx-10 mb-5"
     >
       Download TXT Template (Tab-Separated)
     </button>
