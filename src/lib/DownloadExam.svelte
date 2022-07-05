@@ -8,10 +8,12 @@
   import { parse_exam, parse_master_only } from "../functions";
 
   let content: FrontExam;
+  let exam: string;
 
   onMount(() => {
-    store_exam.subscribe((v) => {
+    store_exam.subscribe(async (v) => {
       content = v;
+      exam = await parse_exam(content, $setting);
     });
   });
 
@@ -78,7 +80,6 @@
     });
 
     try {
-      const exam = await parse_exam(content, $setting);
       await writeTextFile(save_path, exam);
     } catch (error) {
       await diagMesg(error, { title: "MC Shuffler Error", type: "error" });
@@ -93,7 +94,7 @@
 
 <div class="flex flex-col h-72   mx-auto mb-6 col-span-2 text-center">
   <h1 class="text-lg first-letter:text-xl ">Your exam is ready.</h1>
-  <div class=" flex flex-1 justify-center text-center items-start mt-8">
+  <div class=" flex flex-1 justify-evenly text-center items-start mt-8">
     <button
       on:click={downloadExam}
       type="button"
@@ -136,6 +137,23 @@ dark:bg-green-600 dark:hover:bg-green-700
     >
       Save Setting</button
     >
+    <form action="https://www.overleaf.com/docs" method="post" target="_blank">
+      <textarea hidden={true} rows="8" cols="60" name="snip">{exam}</textarea>
+      <input
+        class="text-white
+        bg-green-800 
+      hover:bg-white hover:text-green-800 
+      focus:ring-4 focus:ring-green-300   text-lg  rounded-lg
+      hover:ring-4 hover:ring-green-800 
+      font-semibold
+      px-5 py-2.5 mr-2 mb-2 
+     
+  dark:bg-green-600 dark:hover:bg-green-700 
+      focus:outline-none dark:focus:ring-green-800"
+        type="submit"
+        value="Open in Overleaf"
+      />
+    </form>
   </div>
   <div class=" first:w-full float-right text-right">
     <button

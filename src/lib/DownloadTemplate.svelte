@@ -128,13 +128,15 @@ What is 1 + 1?
     }}
     class="text-center 
         w-1/3 
-        bg-green-900
+        hover:bg-amber-600
         rounded-lg
+        bg-white
+        text-amber-600
         p-2
         my-1
         mx-4
         text-2xl
-         text-white">New</button
+        hover:text-white">Create New Exam</button
   >
 
   <button

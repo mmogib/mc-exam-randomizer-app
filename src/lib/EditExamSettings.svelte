@@ -122,6 +122,54 @@
   };
 </script>
 
+<div
+  class="mt-1 
+   w-full
+    col-span-2 flex   text-center w-auto justify-between"
+>
+  <button
+    on:click={goPrevious}
+    type="button"
+    class="text-purple-900 font-semibold 
+    hover:bg-purple-800 hover:text-white 
+    hover:ring-2 focus:ring-purple-300  
+     text-lg  rounded-lg 
+    px-4
+     py-2.5 mr-2  
+    dark:bg-green-600 dark:hover:bg-green-700 
+    focus:outline-none dark:focus:ring-green-800"
+  >
+    Previous</button
+  >
+  <button
+    on:click={saveMySetting}
+    type="button"
+    class="text-purple-900 font-semibold 
+    hover:bg-purple-800 hover:text-white 
+    hover:ring-2 focus:ring-purple-300  
+     text-lg  rounded-lg 
+    px-4
+     py-2.5 mr-2  
+    dark:bg-green-600 dark:hover:bg-green-700 
+    focus:outline-none dark:focus:ring-green-800"
+  >
+    Save</button
+  >
+  <button
+    on:click={goNext}
+    type="button"
+    class="text-purple-900 font-semibold 
+    hover:bg-purple-800 hover:text-white 
+    hover:ring-2 focus:ring-purple-300  
+     text-lg  rounded-lg 
+    px-4
+     py-2.5 mr-2  
+    dark:bg-green-600 dark:hover:bg-green-700 
+    focus:outline-none dark:focus:ring-green-800"
+  >
+    Next</button
+  >
+</div>
 <div class="mb-6">
   <label
     for="university"
@@ -255,69 +303,4 @@
   <p class="mt-2 text-sm text-gray-600 dark:text-gray-500">
     <span class="font-medium">comma sparated numbers, like: 5,5,6</span>
   </p>
-</div>
-
-<div
-  class="mt-5 
-    border border-blue-900
-    p-5
-    col-span-2 flex   text-center w-auto justify-center "
->
-  <button
-    on:click={goPrevious}
-    type="button"
-    class="text-blue 
-  
-  hover:bg-blue-800 hover:text-white
-  focus:ring-4 
-  focus:ring-blue-300 
-  
-  text-lg 
-  rounded-lg 
-  
-  px-5 py-2.5 mr-2 mb-2 
-  underline underline-light-600
-  dark:bg-blue-600 dark:hover:bg-blue-700 
-  focus:outline-none dark:focus:ring-blue-800"
-  >
-    Previous</button
-  >
-  <button
-    on:click={saveMySetting}
-    type="button"
-    class="text-blue 
-  
-  hover:bg-blue-800 hover:text-white
-  focus:ring-4 
-  focus:ring-blue-300 
-  
-  text-lg 
-  rounded-lg 
-  
-  px-5 py-2.5 mr-2 mb-2 
-  underline underline-light-600
-  dark:bg-blue-600 dark:hover:bg-blue-700 
-  focus:outline-none dark:focus:ring-blue-800"
-  >
-    Save</button
-  >
-  <button
-    on:click={goNext}
-    type="button"
-    class="text-blue 
-  
-  hover:bg-blue-800 hover:text-white
-  focus:ring-4 
-  focus:ring-blue-300 
-  
-  text-lg 
-  rounded-lg 
-  
-  px-5 py-2.5 mr-2 mb-2 
-  underline underline-light-600
-  dark:bg-blue-600 dark:hover:bg-blue-700 
-  focus:outline-none dark:focus:ring-blue-800"
-  >
-    Next</button
-  >
 </div>

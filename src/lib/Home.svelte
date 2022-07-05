@@ -22,9 +22,9 @@
   };
 </script>
 
-<main class="relative container mx-auto p-6 my-5 ">
-  <h1 class="text-2xl text-center font-bold">Multiple Choice Exam Only</h1>
-  <div class="text-center text-lg m-4 text-red-600">
+<main class="relative container mx-auto p-6 my-2 ">
+  <div class="text-center text-lg m-2 font-semibold">
+    Last Exam:
     {$setting.coursecode}
     {$setting.examname ? `(${$setting.examname})` : ""}
     {$setting.examdate ? `(${new Date($setting.examdate).toDateString()})` : ""}

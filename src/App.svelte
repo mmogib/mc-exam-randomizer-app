@@ -24,23 +24,28 @@
   };
 </script>
 
-<div class="absolute top-0 left-0 ">
-  version {app_version}
-  {#if new_version}
-    click
-    <button
-      class="underline underline-red-600 text-red-500"
-      on:click={downloadNewVersion}>here</button
-    > to install
-  {/if}
-</div>
-<div class="absolute top-0 right-0 ">
-  <button
-    class="bg-green-900 text-white rounded-lg px-2 pb-1 mr-2"
-    on:click={() => {
-      openShell(`https://mc-exam-randomizer-docs.mshahrani.website/`);
-    }}>Documentaion</button
-  >
+<div class="absolute top-0 left-0 w-full  ">
+  <div class="flex  justify-between items-center">
+    <div>
+      version {app_version}
+      {#if new_version}
+        click
+        <button
+          class="underline underline-red-600 text-red-500"
+          on:click={downloadNewVersion}>here</button
+        > to install
+      {/if}
+    </div>
+    <h1 class="text-2xl text-center font-bold">Multiple Choice Exam Only</h1>
+    <div>
+      <button
+        class="text-amber-500 rounded-lg px-2 pb-1 mr-2"
+        on:click={() => {
+          openShell(`https://mc-exam-randomizer-docs.mshahrani.website/`);
+        }}>Documentaion</button
+      >
+    </div>
+  </div>
 </div>
 <main class="relative container mx-auto p-4 my-5 ">
   <Home />

@@ -4,6 +4,7 @@ export default defineConfig({
   /**
    * Type is `DefaultThemeConfig`
    */
+  title: "Docs",
   themeConfig: {
     navbar: true,
     sidebar: "auto",
