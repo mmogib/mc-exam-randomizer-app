@@ -34,6 +34,14 @@
     > to install
   {/if}
 </div>
+<div class="absolute top-0 right-0 ">
+  <button
+    class="bg-green-900 text-white rounded-lg px-2 pb-1 mr-2"
+    on:click={() => {
+      openShell(`https://mc-exam-randomizer-docs.mshahrani.website/`);
+    }}>Documentaion</button
+  >
+</div>
 <main class="relative container mx-auto p-4 my-5 ">
   <Home />
 </main>

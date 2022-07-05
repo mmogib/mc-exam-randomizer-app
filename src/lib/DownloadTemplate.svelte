@@ -1,8 +1,7 @@
 <script lang="ts">
   import { save, open, message as diagMesg } from "@tauri-apps/api/dialog";
   import { writeTextFile, readTextFile } from "@tauri-apps/api/fs";
-  import { ExamSettings, Setting, TemplateExt, WizardState } from "../types";
-
+  import { ExamSettings, TemplateExt, WizardState } from "../types";
   import { tex_template, csv_template, txt_template } from "../constants";
   import { wizard_state, setting, store_exam } from "../store";
   let q = `\\documentclass{article}
@@ -128,27 +127,28 @@ What is 1 + 1?
       wizard_state.set(WizardState.NEW);
     }}
     class="text-center 
-        w-1/4 
+        w-1/3 
         bg-green-900
         rounded-lg
         p-2
         my-1
         mx-4
-        text-lg
-         text-white">Start</button
+        text-2xl
+         text-white">New</button
   >
 
   <button
     on:click={openSavedSetting}
     class="text-center
-        w-1/4
-        bg-green-900
+        w-1/3
+       hover:bg-purple-900 hover:text-white
+       font-semibold
         rounded-lg
         p-2
         my-1
         mx-4
-        text-lg
-         text-white">Open Old Exam</button
+        text-xl
+         text-purple-900">Open Old Exam</button
   >
 </div>
 <div class="col-span-2 flex flex-col justify-center ">
@@ -172,3 +172,4 @@ What is 1 + 1?
     </button>
   </div>
 </div>
+<div />

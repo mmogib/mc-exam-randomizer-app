@@ -1,9 +1,18 @@
 export const tex_template: string = `\\documentclass{article}
 %{#preamble}
-\\usepackage{amsfonts}
-\\usepackage{amsmath}
-\\usepackage{amssymb}
+
+%%  put your preamble here
+%% You can also redefine the following commans
+%% \\bodyoptionseparator, \\questionseparator, \\newcodecover
+%% by typing
+%% \\renewcommand{\\bodyoptionseparator}{\\vspace {0.3in}}
+%% \\renewcommand{\\questionseparator}{\\vspace {3.5cm}}
+%% \\renewcommand{\\newcodecover}[1]{ }
+
+
 %{/preamble}
+
+
 
 \\begin{document}
 

@@ -8,9 +8,11 @@
     wizard_state,
     store_exam,
     setting,
+    exam_string,
   } from "../store";
   import { extname } from "@tauri-apps/api/path";
   import { invoke } from "@tauri-apps/api";
+  import { parse_exam } from "../functions";
 
   const uploadQuestionsFromFile = async () => {
     const source_filename = (await open({
@@ -42,6 +44,8 @@
 
         questions_file_path.set(source_filename);
         store_exam.set(content);
+        const exam = await parse_exam(content, $setting);
+        exam_string.set(exam);
 
         wizard_state.set(WizardState.FILL_SETTING);
       } catch (error) {

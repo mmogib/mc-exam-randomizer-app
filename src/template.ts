@@ -1,4 +1,5 @@
 export const exam_template = `%{DOC_PREAMBLE}
+%{COMMANDS_DEFINITIONS}
 %{USER_PREAMBLE}
 \\begin{document}
 
@@ -15,23 +16,8 @@ export const exam_template = `%{DOC_PREAMBLE}
 \\end{document}
 `;
 
-export const DOC_PREAMBLE = `\\documentclass[amsfonts,bezier,leqno,fleqn,12pt,a4paper]{article}
-\\usepackage{graphicx}
-\\usepackage[overlay]{textpos}
-\\setlength{\\TPHorizModule}{1mm}
-\\setlength{\\TPVertModule}{1mm}
-\\topmargin=-.75in
-\\textheight=26.5cm
-\\footskip=.3in
-\\oddsidemargin=-.1cm
-\\textwidth=16.95cm
-\\arraycolsep=.15in
-\\labelsep=.75cm
-\\renewcommand{\\theequation}{\\alph{equation}}
-\\thicklines
-\\pagestyle{myheadings}
-\\newcommand{\\bodyoptionseparator}{\\vspace {0.3in}}
-\\newcommand{\\questionseparator}{\\vspace {3.5cm}}
+export const COMMANDS_DEFINITIONS = `
+
 \\newcommand{\\newcodecover}[1]{%
     %
 \\newpage
@@ -83,6 +69,24 @@ export const DOC_PREAMBLE = `\\documentclass[amsfonts,bezier,leqno,fleqn,12pt,a4
 
 \\newpage
 }
+`;
+export const DOC_PREAMBLE = `\\documentclass[amsfonts,bezier,leqno,fleqn,12pt,a4paper]{article}
+\\usepackage{graphicx}
+\\usepackage[overlay]{textpos}
+\\setlength{\\TPHorizModule}{1mm}
+\\setlength{\\TPVertModule}{1mm}
+\\topmargin=-.75in
+\\textheight=26.5cm
+\\footskip=.3in
+\\oddsidemargin=-.1cm
+\\textwidth=16.95cm
+\\arraycolsep=.15in
+\\labelsep=.75cm
+\\renewcommand{\\theequation}{\\alph{equation}}
+\\thicklines
+\\pagestyle{myheadings}
+\\newcommand{\\bodyoptionseparator}{\\vspace {0.3in}}
+\\newcommand{\\questionseparator}{\\vspace {3.5cm}}
 `;
 
 export const COVER_PAGE = `

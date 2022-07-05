@@ -103,7 +103,7 @@
       await saveSetting(exam_setting);
       setting.set(exam_setting);
       store_exam.set(current_exam);
-      wizard_state.set(WizardState.DOWNLOAD_EXAM);
+      wizard_state.set(WizardState.ORDER_OPTIONS);
     } else {
       await errMsg(message);
     }
@@ -234,11 +234,18 @@
 </div>
 
 <div class="mb-6">
-  <label
-    for="groups"
-    class="block mb-2 text-lg font-medium text-gray-900 dark:text-gray-300"
-    >Grouping</label
-  >
+  <div class="flex justify-between">
+    <label
+      for="groups"
+      class="block mb-2 text-lg font-medium text-gray-900 dark:text-gray-300"
+      >Grouping</label
+    >
+    <p class="mt-2 text-sm text-gray-600 dark:text-gray-500">
+      <span class="font-medium"
+        >number of questions {current_exam.questions.length || ""}
+      </span>
+    </p>
+  </div>
   <input
     type="text"
     id="groups"

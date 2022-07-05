@@ -2,11 +2,12 @@
   import { onMount } from "svelte";
   import { slide } from "svelte/transition";
   import DownloadTemplate from "./DownloadTemplate.svelte";
-  import FileUpload from "./FileUpload.svelte";
-  import ExamSettings from "./ExamSettings.svelte";
+  import FileUpload from "./UploadQuestions.svelte";
+  import ExamSettings from "./EditExamSettings.svelte";
   import DownloadExam from "./DownloadExam.svelte";
   import { getSettings, setting, wizard_state } from "../store";
   import { WizardState } from "../types";
+  import OrderOptions from "./OrderOptions.svelte";
 
   let w_state: WizardState = WizardState.NEW;
 
@@ -59,11 +60,18 @@
         Step 2
       </div>
       <div
+        class="text-gray-500  p-4 rounded"
+        class:text-red-600={w_state === WizardState.ORDER_OPTIONS}
+        class:bg-blue-100={w_state === WizardState.ORDER_OPTIONS}
+      >
+        Step 3
+      </div>
+      <div
         class="text-gray-500 mr-10 p-4 rounded"
         class:text-red-600={w_state === WizardState.DOWNLOAD_EXAM}
         class:bg-blue-100={w_state === WizardState.DOWNLOAD_EXAM}
       >
-        Step 3
+        Step 4
       </div>
     </div>
     <div class="grid grid-cols-2  gap-2 mt-5">
@@ -86,6 +94,11 @@
       {#if w_state === WizardState.DOWNLOAD_EXAM}
         <div class="col-span-2" transition:slide>
           <DownloadExam />
+        </div>
+      {/if}
+      {#if w_state === WizardState.ORDER_OPTIONS}
+        <div class="col-span-2" transition:slide>
+          <OrderOptions />
         </div>
       {/if}
     </div>
