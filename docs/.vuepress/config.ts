@@ -4,7 +4,7 @@ export default defineConfig({
   /**
    * Type is `DefaultThemeConfig`
    */
-  title: "Docs",
+  title: "MCER Docs",
   themeConfig: {
     navbar: true,
     sidebar: "auto",

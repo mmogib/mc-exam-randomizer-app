@@ -12,7 +12,11 @@
   } from "../store";
   import { extname } from "@tauri-apps/api/path";
   import { invoke } from "@tauri-apps/api";
-  import { parse_exam } from "../functions";
+  import {
+    get_question_groups,
+    order_questions_by_groups,
+    parse_exam,
+  } from "../functions";
 
   const uploadQuestionsFromFile = async () => {
     const source_filename = (await open({
@@ -41,10 +45,13 @@
             filename: source_filename,
           })) as FrontExam;
         }
-
+        content = order_questions_by_groups(content);
         questions_file_path.set(source_filename);
+        const groups = get_question_groups(content);
+        setting.update((v) => ({ ...v, groups }));
         store_exam.set(content);
         const exam = await parse_exam(content, $setting);
+
         exam_string.set(exam);
 
         wizard_state.set(WizardState.FILL_SETTING);

@@ -16,6 +16,8 @@ export const tex_template: string = `\\documentclass{article}
 
 \\begin{document}
 
+\\begin{enumerate}
+\\item
 %{#q}
 This is the body of question 1
 %{/q}
@@ -44,7 +46,7 @@ This is the body of question 1
 
 
 
-
+\\item
 %{#q}
 This is the body of question 2
 %{/q}
@@ -71,7 +73,7 @@ This is the body of question 2
     %{/o}
 \\end{enumerate}
 
-
+\\item
 %{#q}
 This is the body of question 3
 %{/q}
@@ -99,7 +101,7 @@ This is the body of question 3
 \\end{enumerate}
 
 
-
+\\item
 %{#q}
 This is the body of question 4
 %{/q}
@@ -126,6 +128,7 @@ This is the body of question 4
     %{/o}
 \\end{enumerate}
 
+\\end{enumerate} % end of questions items
 
 \\end{document}
 `;

@@ -265,3 +265,27 @@ const parse_answer_count = (codes: [FrontExam]): string => {
     .replace(`{ANSWER_COUNT_HEADER}`, header)
     .replace(`{ANSWER_COUNT_BODY}`, body);
 };
+
+export const get_question_groups = (exam: FrontExam): string => {
+  const num_of_questions = exam.questions.length;
+  const groups = new Set(exam.questions.map((q) => q.group));
+  if (groups.size === 1) {
+    return `${num_of_questions}`;
+  }
+  return [...groups]
+    .sort((a, b) => a - b)
+    .map((g) => {
+      return exam.questions.filter((q) => q.group === g).length;
+    })
+    .join(",");
+};
+
+export const order_questions_by_groups = (exam: FrontExam): FrontExam => {
+  const qs = exam.questions
+    .sort((a, b) => b.order - a.order)
+    .sort((a, b) => (a.group > b.group ? 1 : -1))
+    .map((q, i) => {
+      return { ...q, order: i + 1 };
+    }) as [Question];
+  return { ...exam, questions: qs };
+};
