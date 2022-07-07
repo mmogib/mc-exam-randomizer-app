@@ -3,7 +3,6 @@
     windows_subsystem = "windows"
 )]
 
-use app::app_store::Setting;
 use mc_exam_randomizer::shuffler::{shuffle_exam, Exam};
 use tauri_plugin_store::PluginBuilder;
 
@@ -19,11 +18,10 @@ fn main() {
             get_random_version_tex,
             get_random_version_csv,
             get_random_version_txt,
-            save_config_file,
-            get_config_from_file,
             get_random_version
         ])
         .plugin(PluginBuilder::default().build())
+        .plugin(tauri_plugin_window_state::Builder::default().build())
         .run(context)
         .expect("error while running tauri application");
 }
@@ -79,16 +77,16 @@ fn get_random_version(exam: Exam, name: &str) -> Exam {
     shuffle_exam(&exam, Some(name))
 }
 
-#[tauri::command]
-fn save_config_file(setting: Setting) -> Result<String, String> {
-    match toml::to_string(&setting) {
-        Ok(result) => Ok(result),
-        Err(err) => Err(err.to_string()),
-    }
-}
+// #[tauri::command]
+// fn save_config_file(setting: Setting) -> Result<String, String> {
+//     match toml::to_string(&setting) {
+//         Ok(result) => Ok(result),
+//         Err(err) => Err(err.to_string()),
+//     }
+// }
 
-#[tauri::command]
-fn get_config_from_file(rawstr: &str) -> Result<String, String> {
-    let config: Setting = toml::from_str(rawstr).unwrap();
-    Ok(format!("{:#?}", config))
-}
+// #[tauri::command]
+// fn get_config_from_file(rawstr: &str) -> Result<String, String> {
+//     let config: Setting = toml::from_str(rawstr).unwrap();
+//     Ok(format!("{:#?}", config))
+// }

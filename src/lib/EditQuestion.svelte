@@ -1,11 +1,14 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
   import { store_exam } from "../store";
 
-  import type { Choices, FrontExam, Question } from "../types";
+  import { Choices, FrontExam, OrderDirection, Question } from "../types";
 
   export let q: Question;
   let qs: [Question];
   let isFixed: boolean = false;
+  const dispatch = createEventDispatcher();
+
   $: isFixed = q.choices[2] ? true : false;
   store_exam.subscribe((v) => {
     if (v.questions) {
@@ -104,7 +107,7 @@
         <label for="correct_{q.order}" class="flex items-center cursor-pointer">
           <div>
             {#if q.choices[1] === i}
-              <span class="text-purple-800 mx-4"> correct answer </span>
+              <span class="text-purple-800 mx-4"> correct </span>
             {/if}
           </div>
           <input

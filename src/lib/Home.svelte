@@ -24,7 +24,6 @@
 
 <main class="relative container mx-auto p-6 my-2 ">
   <div class="text-center text-lg m-2 font-semibold">
-    Last Exam:
     {$setting.coursecode}
     {$setting.examname ? `(${$setting.examname})` : ""}
     {$setting.examdate ? `(${new Date($setting.examdate).toDateString()})` : ""}
