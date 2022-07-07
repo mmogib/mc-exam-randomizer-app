@@ -8,7 +8,7 @@
 - [x] how to fix order of a question. (add to docs)
 - [x] how to fix order of options
 - [ ] ~~dragable ordering of options~~
-- [ ] styling and dark/light modes
+- [x] styling and dark/light modes
 - [x] saving last config
 
 # How to update!
@@ -28,5 +28,15 @@
 7. ```bash
    npm run tauri build
    ```
-8. create a new release in github with tag `v.x.x.x`
-9. update aitable base `MC-EXAM-RANDOMIZER-DB`
+8. create a new release in [github](https://github.com/mmogib/mc-exam-randomizer-app/releases/new) with tag `vx.x.x`
+9. Upload files from `src-tauri\target\release\bundle\msi\`.
+10. update `airable` base `MC-EXAM-RANDOMIZER-DB`
+
+# Check for updates to packages
+
+- ```bash
+  cargo tauri info
+  ```
+- ```bash
+  npx npm-check-updates
+  ```

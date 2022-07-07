@@ -42,8 +42,8 @@ export enum WizardState {
   DOWNLOAD_TEMPLATE,
   NEW,
   FILL_SETTING,
-  DOWNLOAD_EXAM,
   ORDER_OPTIONS,
+  DOWNLOAD_EXAM,
 }
 
 export interface ExamSettings {

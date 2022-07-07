@@ -13,23 +13,24 @@
     "docs:build": "vuepress build docs"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^1.0.0-next.30",
+    "@sveltejs/vite-plugin-svelte": "^1.0.0-next.49",
     "@tailwindcss/forms": "^0.5.2",
-    "@tauri-apps/cli": "^1.0.0",
-    "@tsconfig/svelte": "^2.0.1",
+    "@tauri-apps/cli": "^1.0.3",
+    "@tsconfig/svelte": "^3.0.0",
     "autoprefixer": "^10.4.7",
     "postcss": "^8.4.14",
-    "svelte": "^3.44.0",
-    "svelte-check": "^2.2.7",
-    "svelte-preprocess": "^4.9.8",
+    "svelte": "^3.48.0",
+    "svelte-check": "^2.8.0",
+    "svelte-preprocess": "^4.10.7",
+    "svelte-steps": "^2.3.5",
     "tailwindcss": "^3.1.4",
-    "tslib": "^2.3.1",
-    "typescript": "^4.5.4",
-    "vite": "^2.9.9",
+    "tslib": "^2.4.0",
+    "typescript": "^4.7.4",
+    "vite": "^2.9.13",
     "vuepress": "^1.9.7"
   },
   "dependencies": {
-    "@tauri-apps/api": "^1.0.1",
+    "@tauri-apps/api": "^1.0.2",
     "tauri-plugin-store-api": "github:tauri-apps/tauri-plugin-store#dev"
   }
 }

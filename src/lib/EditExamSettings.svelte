@@ -1,7 +1,12 @@
 <script lang="ts">
   import { saveSetting, setting, wizard_state, store_exam } from "../store";
   import { message as diagMesg } from "@tauri-apps/api/dialog";
-  import { FrontExam, Question, Setting, WizardState } from "../types";
+  import {
+    type FrontExam,
+    type Question,
+    type Setting,
+    WizardState,
+  } from "../types";
 
   let exam_setting: Setting;
   let current_exam: FrontExam;
@@ -125,69 +130,31 @@
 <div
   class="mt-1 
    w-full
-    col-span-2 flex   text-center w-auto justify-between"
+    col-span-2 flex   text-center  justify-between"
 >
-  <button
-    on:click={goPrevious}
-    type="button"
-    class="text-purple-900 font-semibold 
-    hover:bg-purple-800 hover:text-white 
-    hover:ring-2 focus:ring-purple-300  
-     text-lg  rounded-lg 
-    px-4
-     py-2.5 mr-2  
-    dark:bg-green-600 dark:hover:bg-green-700 
-    focus:outline-none dark:focus:ring-green-800"
-  >
-    Previous</button
-  >
-  <button
-    on:click={saveMySetting}
-    type="button"
-    class="text-purple-900 font-semibold 
-    hover:bg-purple-800 hover:text-white 
-    hover:ring-2 focus:ring-purple-300  
-     text-lg  rounded-lg 
-    px-4
-     py-2.5 mr-2  
-    dark:bg-green-600 dark:hover:bg-green-700 
-    focus:outline-none dark:focus:ring-green-800"
-  >
-    Save</button
-  >
-  <button
-    on:click={goNext}
-    type="button"
-    class="text-purple-900 font-semibold 
-    hover:bg-purple-800 hover:text-white 
-    hover:ring-2 focus:ring-purple-300  
-     text-lg  rounded-lg 
-    px-4
-     py-2.5 mr-2  
-    dark:bg-green-600 dark:hover:bg-green-700 
-    focus:outline-none dark:focus:ring-green-800"
-  >
-    Next</button
-  >
+  <button on:click={goPrevious} type="button" class="btn"> Previous</button>
+  <button on:click={saveMySetting} type="button" class="btn"> Save</button>
+  <button on:click={goNext} type="button" class="btn"> Next</button>
 </div>
-<div class="mb-6">
+<div class="my-6">
   <label
     for="university"
-    class="block mb-2 text-lg font-medium text-gray-900 dark:text-gray-300"
-    >University</label
+    class="block mb-2 text-lg font-medium 
+    ">University</label
   >
   <input
     type="text"
     id="university"
     bind:value={exam_setting.university}
-    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+    class="bg-gray-50 border border-gray-300 
+    text-gray-900 text-sm rounded-lg 
+    focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 
+    dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
   />
 </div>
 
 <div class="mb-6">
-  <label
-    for="department"
-    class="block mb-2 text-lg font-medium text-gray-900 dark:text-gray-300"
+  <label for="department" class="block mb-2 text-lg font-medium "
     >Department</label
   >
   <input
@@ -199,11 +166,7 @@
 </div>
 
 <div class="mb-6">
-  <label
-    for="exam-term"
-    class="block mb-2 text-lg font-medium text-gray-900 dark:text-gray-300"
-    >Term</label
-  >
+  <label for="exam-term" class="block mb-2 text-lg font-medium ">Term</label>
   <input
     type="text"
     bind:value={exam_setting.term}
@@ -213,9 +176,7 @@
 </div>
 
 <div class="mb-6">
-  <label
-    for="coursecode"
-    class="block mb-2 text-lg font-medium text-gray-900 dark:text-gray-300"
+  <label for="coursecode" class="block mb-2 text-lg font-medium "
     >Course Code</label
   >
   <input
@@ -226,9 +187,7 @@
   />
 </div>
 <div class="mb-6">
-  <label
-    for="exam-name"
-    class="block mb-2 text-lg font-medium text-gray-900 dark:text-gray-300"
+  <label for="exam-name" class="block mb-2 text-lg font-medium "
     >Exam Name</label
   >
   <input
@@ -240,9 +199,7 @@
 </div>
 
 <div class="mb-6">
-  <label
-    for="exam-date"
-    class="block mb-2 text-lg font-medium text-gray-900 dark:text-gray-300"
+  <label for="exam-date" class="block mb-2 text-lg font-medium "
     >Exam Date</label
   >
   <input
@@ -253,10 +210,8 @@
   />
 </div>
 
-<div>
-  <label
-    for="time-allowed"
-    class="block mb-2 text-lg font-medium text-gray-900 dark:text-gray-300"
+<div class="mb-6">
+  <label for="time-allowed" class="block mb-2 text-lg font-medium "
     >Time Allowed</label
   >
   <input
@@ -268,9 +223,7 @@
 </div>
 
 <div class="mb-6">
-  <label
-    for="versions"
-    class="block mb-2 text-lg font-medium text-gray-900 dark:text-gray-300"
+  <label for="versions" class="block mb-2 text-lg font-medium "
     >Number of Versions</label
   >
   <input
@@ -283,11 +236,7 @@
 
 <div class="mb-6">
   <div class="flex justify-between">
-    <label
-      for="groups"
-      class="block mb-2 text-lg font-medium text-gray-900 dark:text-gray-300"
-      >Grouping</label
-    >
+    <label for="groups" class="block mb-2 text-lg font-medium ">Grouping</label>
     <p class="mt-2 text-sm text-gray-600 dark:text-gray-500">
       <span class="font-medium"
         >number of questions {current_exam.questions.length || ""}

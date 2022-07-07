@@ -4,7 +4,7 @@
   import { writeTextFile } from "@tauri-apps/api/fs";
 
   import { store_exam, wizard_state, setting } from "../store";
-  import { FrontExam, WizardState } from "../types";
+  import { type FrontExam, WizardState } from "../types";
   import { parse_exam, parse_master_only } from "../functions";
 
   let content: FrontExam;
@@ -93,66 +93,22 @@
 </script>
 
 <div class="flex flex-col h-72   mx-auto mb-6 col-span-2 text-center">
-  <h1 class="text-lg first-letter:text-xl ">Your exam is ready.</h1>
+  <div class="my-4 text-xl">
+    <span>Your exam is ready.</span>
+  </div>
   <div class=" flex flex-1 justify-evenly text-center items-start mt-8">
-    <button
-      on:click={downloadExam}
-      type="button"
-      class="text-green 
-      hover:bg-green-800 hover:text-white 
-      focus:ring-4 focus:ring-green-300   text-lg  rounded-lg 
-      px-5 py-2.5 mr-2 mb-2 
-      underline underline-light-600
-  dark:bg-green-600 dark:hover:bg-green-700 
-      focus:outline-none dark:focus:ring-green-800
-      "
-    >
+    <button on:click={downloadExam} type="button" class="btn w-1/4">
       Download</button
     >
-    <button
-      on:click={downloadAsTemplate}
-      type="button"
-      class="text-green 
-    hover:bg-green-800 hover:text-white 
-    focus:ring-4 focus:ring-green-300   text-lg  rounded-lg 
-    px-5 py-2.5 mr-2 mb-2 
-    underline underline-light-600
-dark:bg-green-600 dark:hover:bg-green-700 
-    focus:outline-none dark:focus:ring-green-800
-    "
-    >
+    <button on:click={downloadAsTemplate} type="button" class="btn w-1/4">
       Download As Template</button
     >
-    <button
-      on:click={saveExamSetting}
-      type="button"
-      class="text-green 
-      hover:bg-green-800 hover:text-white 
-      focus:ring-4 focus:ring-green-300   text-lg  rounded-lg 
-      px-5 py-2.5 mr-2 mb-2 
-      underline underline-light-600
-  dark:bg-green-600 dark:hover:bg-green-700 
-      focus:outline-none dark:focus:ring-green-800
-      "
-    >
+    <button on:click={saveExamSetting} type="button" class="btn w-1/4">
       Save Setting</button
     >
     <form action="https://www.overleaf.com/docs" method="post" target="_blank">
       <textarea hidden={true} rows="8" cols="60" name="snip">{exam}</textarea>
-      <input
-        class="text-white
-        bg-green-800 
-      hover:bg-white hover:text-green-800 
-      focus:ring-4 focus:ring-green-300   text-lg  rounded-lg
-      hover:ring-4 hover:ring-green-800 
-      font-semibold
-      px-5 py-2.5 mr-2 mb-2 
-     
-  dark:bg-green-600 dark:hover:bg-green-700 
-      focus:outline-none dark:focus:ring-green-800"
-        type="submit"
-        value="Open in Overleaf"
-      />
+      <input class="btn " type="submit" value="Open in Overleaf" />
     </form>
   </div>
   <div class=" first:w-full float-right text-right">
@@ -161,14 +117,7 @@ dark:bg-green-600 dark:hover:bg-green-700
         wizard_state.set(WizardState.ORDER_OPTIONS);
       }}
       type="button"
-      class=" text-purple-900 font-semibold 
-hover:bg-purple-800 hover:text-white 
-hover:ring-2 focus:ring-purple-300  
- text-lg  rounded-lg 
-px-5 py-2.5 mr-2 mb-2 
-dark:bg-green-600 dark:hover:bg-green-700 
-focus:outline-none dark:focus:ring-green-800
-"
+      class="btn w-1/4"
     >
       Go back</button
     >
@@ -177,14 +126,7 @@ focus:outline-none dark:focus:ring-green-800
         wizard_state.set(WizardState.DOWNLOAD_TEMPLATE);
       }}
       type="button"
-      class=" text-purple-900 font-semibold 
-    hover:bg-purple-800 hover:text-white 
-    hover:ring-2 focus:ring-purple-300  
-     text-lg  rounded-lg 
-    px-5 py-2.5 mr-2 mb-2 
-    dark:bg-green-600 dark:hover:bg-green-700 
-    focus:outline-none dark:focus:ring-green-800
-    "
+      class="btn w-1/4"
     >
       Start over</button
     >

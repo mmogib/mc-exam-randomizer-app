@@ -2,7 +2,7 @@
   import { createEventDispatcher } from "svelte";
   import { store_exam } from "../store";
 
-  import { Choices, FrontExam, OrderDirection, Question } from "../types";
+  import type { Choices, FrontExam, Question } from "../types";
 
   export let q: Question;
   let qs: [Question];
@@ -57,6 +57,7 @@
     border border-blue-900
     p-5
     hover:bg-gray-100
+    dark:hover:bg-gray-800
     col-span-2 flex  flex-col w-auto  
     {isFixed ? 'bg-purple-200' : ''}
     "
@@ -87,7 +88,7 @@
           after:border after:rounded-full after:h-5 after:w-5 after:transition-all 
           dark:border-gray-600 peer-checked:bg-purple-600"
         />
-        <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300"
+        <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-800"
           >{isFixed ? `Unfix options order` : "Fix options order"}</span
         >
       </label>

@@ -70,7 +70,8 @@ export const COMMANDS_DEFINITIONS = `
 \\newpage
 }
 `;
-export const DOC_PREAMBLE = `\\documentclass[amsfonts,bezier,leqno,fleqn,12pt,a4paper]{article}
+export const DOC_PREAMBLE = `\\documentclass[leqno,fleqn,12pt,a4paper]{article}
+\\usepackage{amsfonts}
 \\usepackage{graphicx}
 \\usepackage[overlay]{textpos}
 \\setlength{\\TPHorizModule}{1mm}

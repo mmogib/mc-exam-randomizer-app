@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { fly } from "svelte/transition";
   import Home from "./lib/Home.svelte";
   import { app } from "@tauri-apps/api";
   import { open as openShell } from "@tauri-apps/api/shell";
@@ -24,29 +25,33 @@
   };
 </script>
 
-<div class="absolute top-0 left-0 w-full  ">
-  <div class="flex  justify-between items-center">
-    <div>
-      version {app_version}
-      {#if new_version}
-        click
+<div class="relative  ">
+  <div class="top-0  left-0 w-full">
+    <div class="flex -mt-1 justify-between  items-start">
+      <div>
+        version {app_version}
+        {#if new_version}
+          <div in:fly={{ y: -20 }}>
+            click
+            <button
+              class="underline underline-red-600 text-red-500"
+              on:click={downloadNewVersion}>here</button
+            > to install
+          </div>
+        {/if}
+      </div>
+      <h1 class="text-2xl text-center font-bold">Multiple Choice Exam Only</h1>
+      <div>
         <button
-          class="underline underline-red-600 text-red-500"
-          on:click={downloadNewVersion}>here</button
-        > to install
-      {/if}
-    </div>
-    <h1 class="text-2xl text-center font-bold">Multiple Choice Exam Only</h1>
-    <div>
-      <button
-        class="text-amber-500 rounded-lg px-2 pb-1 mr-2"
-        on:click={() => {
-          openShell(`https://mc-exam-randomizer-docs.mshahrani.website/`);
-        }}>Documentaion</button
-      >
+          class="rounded-lg px-2 pb-1 mr-2"
+          on:click={() => {
+            openShell(`https://mc-exam-randomizer-docs.mshahrani.website/`);
+          }}>Documentaion</button
+        >
+      </div>
     </div>
   </div>
+  <main class="container mx-auto">
+    <Home />
+  </main>
 </div>
-<main class="relative container mx-auto p-4 my-5 ">
-  <Home />
-</main>

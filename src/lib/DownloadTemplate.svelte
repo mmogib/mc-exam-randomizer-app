@@ -1,52 +1,10 @@
 <script lang="ts">
   import { save, open, message as diagMesg } from "@tauri-apps/api/dialog";
   import { writeTextFile, readTextFile } from "@tauri-apps/api/fs";
-  import { ExamSettings, TemplateExt, WizardState } from "../types";
+  import { WizardState, type ExamSettings, type TemplateExt } from "../types";
   import { tex_template, csv_template, txt_template } from "../constants";
   import { wizard_state, setting, store_exam } from "../store";
-  let q = `\\documentclass{article}
-%{#preamble}
-\\usepackage{amsfonts}
-\\usepackage{amsmath}
-\\usepackage{amssymb}
-%{/preamble}
-  \\begin{document}  
-%{#q}
-What is 1 + 1?
-%{/q}
-\\begin{enumerate}
-    \\item
-    %{#o}
-    2
-    %{/o}
-    \\item
-    %{#o}
-    1
-    %{/o}
-    \\item
-    %{#o}
-    3
-    %{/o}
-    \\item
-    %{#o}
-    4
-    %{/o}
-    \\item
-    %{#o}
-    5
-    %{/o}
-\\end{enumerate}
 
-\\end{document}
-`;
-  let qTags = {
-    qS: `%{#q}`,
-    qE: `%{#q}`,
-    oS: `%{#o}`,
-    oE: `%{#o}`,
-    pS: `%{#preamble}`,
-    pE: `%{/preamble}`,
-  };
   const openSavedSetting = async () => {
     try {
       const saved_file_path = await open({
@@ -85,7 +43,11 @@ What is 1 + 1?
           },
         ],
       });
-      await writeTextFile(save_path, tex_template);
+      if (save_path) {
+        await writeTextFile(save_path, tex_template);
+      } else {
+        return;
+      }
     } else if (extenstion === "TXT") {
       const save_path = await save({
         title: "Save Template",
@@ -96,7 +58,11 @@ What is 1 + 1?
           },
         ],
       });
-      await writeTextFile(save_path, txt_template);
+      if (save_path) {
+        await writeTextFile(save_path, txt_template);
+      } else {
+        return;
+      }
     } else {
       const save_path = await save({
         title: "Save Template",
@@ -107,7 +73,11 @@ What is 1 + 1?
           },
         ],
       });
-      await writeTextFile(save_path, csv_template);
+      if (save_path) {
+        await writeTextFile(save_path, csv_template);
+      } else {
+        return;
+      }
     }
     wizard_state.set(WizardState.NEW);
 
@@ -115,7 +85,7 @@ What is 1 + 1?
   };
 </script>
 
-<div class="col-span-1 flex flex-row text-center justify-center">
+<div class="col-span-1 flex flex-row text-center justify-between">
   <button
     on:click={() => {
       store_exam.set({
@@ -126,32 +96,12 @@ What is 1 + 1?
       });
       wizard_state.set(WizardState.NEW);
     }}
-    class="text-center 
+    class="btn
         w-1/3 
-        hover:bg-amber-600
-        rounded-lg
-        bg-white
-        text-amber-600
-        p-2
-        my-1
-        mx-4
-        text-2xl
-        hover:text-white">Create New Exam</button
+        ">New Exam</button
   >
 
-  <button
-    on:click={openSavedSetting}
-    class="text-center
-        w-1/3
-       hover:bg-purple-900 hover:text-white
-       font-semibold
-        rounded-lg
-        p-2
-        my-1
-        mx-4
-        text-xl
-         text-purple-900">Open Old Exam</button
-  >
+  <button on:click={openSavedSetting} class="btn w-1/3">Open Old Exam</button>
 </div>
 <div class="col-span-2 flex flex-col justify-center ">
   <div class="col-span-2 flex flex-col justify-center ">

@@ -1,5 +1,6 @@
 import { writable } from "svelte/store";
-import { FrontExam, QuestionsFilePath, Setting, WizardState } from "./types";
+import type { FrontExam, QuestionsFilePath, Setting } from "./types";
+import { WizardState } from "./types";
 import { Store } from "tauri-plugin-store-api";
 const store = new Store(".settings.dat");
 

@@ -1,6 +1,6 @@
 ---
 home: true
-heroText: Multiple Choice (MC) Exam Randomizer 
+heroText: Multiple Choice Exam Randomizer (MCER) 
 tagline: Make it easy to generate mc exams with randomized oredr of questions and options
 actionText: Get Started →
 actionLink: /getstarted/

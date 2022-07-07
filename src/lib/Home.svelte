@@ -1,6 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { slide } from "svelte/transition";
+  import { Steps } from "svelte-steps";
+
   import DownloadTemplate from "./DownloadTemplate.svelte";
   import FileUpload from "./UploadQuestions.svelte";
   import ExamSettings from "./EditExamSettings.svelte";
@@ -10,19 +12,50 @@
   import OrderOptions from "./OrderOptions.svelte";
 
   let w_state: WizardState = WizardState.NEW;
+  let steps = [
+    { text: "new/open" },
+    { text: "upload questions" },
+    { text: "exam setting" },
+    { text: "questions/options" },
+    { text: "download/save  " },
+  ];
+  let current: number = 0;
 
   $: w_state = $wizard_state;
+
+  $: current = $wizard_state;
 
   onMount(async () => {
     const s = await getSettings();
     setting.update((v) => ({ ...v, ...s }));
   });
-  const goToStep = (w: WizardState) => () => {
+  const goToStep = (e) => {
+    const current_step = e.detail.current;
+
+    let w: WizardState;
+    switch (current_step) {
+      case 0:
+        w = WizardState.DOWNLOAD_TEMPLATE;
+        break;
+      case 1:
+        w = WizardState.NEW;
+        break;
+      case 2:
+        w = WizardState.FILL_SETTING;
+        break;
+      case 3:
+        w = WizardState.ORDER_OPTIONS;
+        break;
+      case 4:
+        w = WizardState.DOWNLOAD_EXAM;
+        break;
+    }
+
     wizard_state.set(w);
   };
 </script>
 
-<main class="relative container mx-auto p-6 my-2 ">
+<div class=" p-6 my-2 w-full">
   <div class="text-center text-lg m-2 font-semibold">
     {$setting.coursecode}
     {$setting.examname ? `(${$setting.examname})` : ""}
@@ -30,12 +63,11 @@
   </div>
 
   <div>
-    <div
-      class="flex  justify-between 
-    border border-transparent border-b-orange-700
-    "
-    >
-      <div
+    <div class="flex  flex-col justify-between">
+      <div>
+        <Steps {steps} {current} on:click={goToStep} clickable={false} />
+      </div>
+      <!-- <div
         class="text-gray-500 ml-10 p-4 rounded hover:text-blue-900"
         class:text-red-600={w_state === WizardState.DOWNLOAD_TEMPLATE}
         class:bg-blue-100={w_state === WizardState.DOWNLOAD_TEMPLATE}
@@ -72,34 +104,35 @@
       >
         Step 4
       </div>
-    </div>
-    <div class="grid grid-cols-2  gap-2 mt-5">
-      {#if w_state === WizardState.DOWNLOAD_TEMPLATE}
-        <div class="col-span-2" transition:slide>
-          <DownloadTemplate />
-        </div>
-      {/if}
+    </div> -->
+      <div class="grid grid-cols-2  gap-2 mt-5">
+        {#if w_state === WizardState.DOWNLOAD_TEMPLATE}
+          <div class="col-span-2" transition:slide>
+            <DownloadTemplate />
+          </div>
+        {/if}
 
-      {#if w_state === WizardState.NEW}
-        <div class="col-span-2" transition:slide>
-          <FileUpload />
-        </div>
-      {/if}
-      {#if w_state === WizardState.FILL_SETTING}
-        <div class="col-span-2" transition:slide>
-          <ExamSettings />
-        </div>
-      {/if}
-      {#if w_state === WizardState.DOWNLOAD_EXAM}
-        <div class="col-span-2" transition:slide>
-          <DownloadExam />
-        </div>
-      {/if}
-      {#if w_state === WizardState.ORDER_OPTIONS}
-        <div class="col-span-2" transition:slide>
-          <OrderOptions />
-        </div>
-      {/if}
+        {#if w_state === WizardState.NEW}
+          <div class="col-span-2" transition:slide>
+            <FileUpload />
+          </div>
+        {/if}
+        {#if w_state === WizardState.FILL_SETTING}
+          <div class="col-span-2" transition:slide>
+            <ExamSettings />
+          </div>
+        {/if}
+        {#if w_state === WizardState.DOWNLOAD_EXAM}
+          <div class="col-span-2" transition:slide>
+            <DownloadExam />
+          </div>
+        {/if}
+        {#if w_state === WizardState.ORDER_OPTIONS}
+          <div class="col-span-2" transition:slide>
+            <OrderOptions />
+          </div>
+        {/if}
+      </div>
     </div>
   </div>
-</main>
+</div>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Question, WizardState } from "../types";
+  import { type Question, WizardState } from "../types";
   import { store_exam, wizard_state } from "../store";
   import EditQuestion from "./EditQuestion.svelte";
   let questions: [Question] | null;

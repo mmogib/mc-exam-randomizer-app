@@ -1,7 +1,7 @@
 <script lang="ts">
   import { open, message as diagMesg } from "@tauri-apps/api/dialog";
 
-  import { FrontExam, WizardState } from "../types";
+  import { type FrontExam, WizardState } from "../types";
 
   import {
     questions_file_path,
@@ -31,7 +31,7 @@
       try {
         const ext = await extname(source_filename);
 
-        let content: FrontExam;
+        let content: FrontExam | null = null;
         if (ext === "tex") {
           content = (await invoke("read_tex", {
             filename: source_filename,
@@ -44,6 +44,13 @@
           content = (await invoke("read_csv", {
             filename: source_filename,
           })) as FrontExam;
+        }
+        if (!content) {
+          await diagMesg("Error parsing file", {
+            title: "Error Parsing",
+            type: "error",
+          });
+          return;
         }
         content = order_questions_by_groups(content);
         questions_file_path.set(source_filename);
@@ -71,22 +78,21 @@
     p-5
     col-span-2 flex  flex-col text-center w-auto justify-center "
 >
-  <p>Write your questions according to the template and upload</p>
-  <button
-    on:click={uploadQuestionsFromFile}
-    type="button"
-    class="text-center 
-    w-full
-    hover:bg-amber-600
-    rounded-lg
-    bg-white
-    text-amber-600
-    p-2
-    my-1
-    mx-4
-    text-2xl
-    hover:text-white"
-  >
-    Upload Questions</button
-  >
+  <p class="text-xl mb-10">
+    Write your questions according to the template and upload
+  </p>
+  <div class="flex justify-between">
+    <button on:click={uploadQuestionsFromFile} type="button" class="btn w-1/2">
+      Upload Questions</button
+    >
+    <button
+      on:click={() => {
+        wizard_state.set(WizardState.DOWNLOAD_TEMPLATE);
+      }}
+      type="button"
+      class="btn w-1/2"
+    >
+      Start over</button
+    >
+  </div>
 </div>

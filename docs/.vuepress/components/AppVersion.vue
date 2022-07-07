@@ -1,7 +1,7 @@
 <template>
   <div>
     Download and install the latest version of the app from
-    <a :href="version_link" target="_blank" rel="noopener noreferrer">here</a>
+    <a :href="version_link" target="_blank" rel="noopener noreferrer">here</a>.
   </div>
 </template>
 <script>

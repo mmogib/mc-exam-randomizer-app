@@ -30,7 +30,7 @@ fn main() {
 fn read_tex(filename: &str) -> Result<Exam, String> {
     match Exam::from_tex(filename, "master") {
         Ok(ex) => Ok(ex),
-        Err(err) => Err(err.to_string()),
+        Err(_err) => Err(format!("Error parsing your file {}", filename)),
     }
 }
 
@@ -38,14 +38,14 @@ fn read_tex(filename: &str) -> Result<Exam, String> {
 fn read_csv(filename: &str) -> Result<Exam, String> {
     match Exam::from_csv(filename, "master") {
         Ok(ex) => Ok(ex),
-        Err(err) => Err(err.to_string()),
+        Err(_err) => Err(format!("Error parsing your file {}", filename)),
     }
 }
 #[tauri::command]
 fn read_txt(filename: &str) -> Result<Exam, String> {
     match Exam::from_txt(filename, "master") {
         Ok(ex) => Ok(ex),
-        Err(err) => Err(err.to_string()),
+        Err(_err) => Err(format!("Error parsing your file {}", filename)),
     }
 }
 #[tauri::command]
