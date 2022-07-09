@@ -31,10 +31,10 @@
 <div class="flex flex-col ">
   <div class="flex items-center justify-between">
     <div class="w-1/2">
-      <h1 class="text-lg font-bold">Order Question</h1>
+      <h1 class="text-lg font-bold">Order Questions</h1>
       <p>
-        Take a minute to revise the order of the question and the correct option
-        for each question and then click NEXT.
+        Take a minute to revise the order of the questions and the correct
+        option for each question and then click NEXT.
       </p>
       <div class="font-semibold">You can re-order by dragging and dropping</div>
     </div>
@@ -69,8 +69,5 @@
     <SortableList list={questions} key="order" on:sort={sortQuestions} let:item>
       <EditQuestion q={item} on:updateQuestion={updateQuestion} />
     </SortableList>
-    <!-- {#each questions as q (q.order)}
-      <EditQuestion {q} />
-    {/each} -->
   {/if}
 </div>

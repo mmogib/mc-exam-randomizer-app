@@ -2,16 +2,18 @@
   import { createEventDispatcher } from "svelte";
   import { store_exam } from "../store";
 
-  import type { Choices, FrontExam, Question } from "../types";
+  import type { Choices, Question } from "../types";
+  import OrderOptions from "./OrderOptions.svelte";
 
   export let q: Question;
-  let qs: [Question];
+
   let isFixed: boolean = false;
   const dispatch = createEventDispatcher();
 
   $: isFixed = q.choices[2] ? true : false;
 
-  const markOptionAsCorrect = (order: number) => () => {
+  const markOptionAsCorrect = (e) => {
+    const order = e.detail;
     const options = [q.choices[0], order, q.choices[2]];
     q = { ...q, choices: options as Choices };
     dispatch("updateQuestion", q);
@@ -22,6 +24,14 @@
     isFixed = !isFixed;
     const options = [q.choices[0], q.choices[1], orderOpts];
     q = { ...q, choices: options as Choices };
+    dispatch("updateQuestion", q);
+  };
+
+  const updateOptions = (e) => {
+    const { options, correct } = e.detail;
+
+    const new_options = [options, correct, q.choices[2]];
+    q = { ...q, choices: new_options as Choices };
     dispatch("updateQuestion", q);
   };
 </script>
@@ -68,32 +78,13 @@
       </label>
     </div>
   </div>
-  <pre class="my-4">
-    {q.text}
-  </pre>
+  <pre contenteditable="true" bind:textContent={q.text} class="my-4" />
   <div>
-    {#each q.choices[0] as o, i (i)}
-      <div class="flex items-center justify-between ">
-        <div>
-          <pre>
-            {o.text}
-          </pre>
-        </div>
-        <label for="correct_{q.order}" class="flex items-center cursor-pointer">
-          <div>
-            {#if q.choices[1] === i}
-              <span class="text-purple-800 mx-4"> correct </span>
-            {/if}
-          </div>
-          <input
-            type="radio"
-            name="correct_{q.order}"
-            id="correct_{q.order}"
-            checked={q.choices[1] === i}
-            on:change={markOptionAsCorrect(i)}
-          />
-        </label>
-      </div>
-    {/each}
+    <OrderOptions
+      choices={q.choices}
+      q_order={q.order}
+      on:markOptionAsCorrect={markOptionAsCorrect}
+      on:updateOptions={updateOptions}
+    />
   </div>
 </div>
