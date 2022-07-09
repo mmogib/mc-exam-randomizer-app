@@ -7,9 +7,15 @@
 - [x] redefine coverpage
 - [x] how to fix order of a question. (add to docs)
 - [x] how to fix order of options
-- [ ] ~~dragable ordering of options~~
+- [x] ~~dragable ordering of options~~
 - [x] styling and dark/light modes
 - [x] saving last config
+- [x] Order and Groups (Questions first)
+  - [x] Remove order and grouping functions when uploading the questions.
+  - [x] Remove the group from the `edit exam setting`
+  - [x] Make sure the order is ok in 'OrderQuestionsAndOptions'
+  - [x] add a grouping step
+- [ ] Oredr of Options
 
 # How to update!
 

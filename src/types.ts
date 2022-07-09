@@ -43,10 +43,21 @@ export enum WizardState {
   NEW,
   FILL_SETTING,
   ORDER_OPTIONS,
+  GROUP_QUESTIONS,
   DOWNLOAD_EXAM,
 }
 
 export interface ExamSettings {
   setting: Setting;
   exam: FrontExam;
+}
+
+export enum OrderDirection {
+  UP,
+  DOWN,
+}
+
+export interface ValidationError {
+  valid: "valid" | "invalid";
+  message: string;
 }

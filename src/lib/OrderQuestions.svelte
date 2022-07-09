@@ -1,25 +1,42 @@
 <script lang="ts">
+  import SortableList from "svelte-sortable-list";
   import { type Question, WizardState } from "../types";
   import { store_exam, wizard_state } from "../store";
   import EditQuestion from "./EditQuestion.svelte";
-  let questions: [Question] | null;
-  store_exam.subscribe((v) => {
-    questions = v.questions ? [...v.questions] : null;
-  });
+  let questions: [Question] | null = $store_exam.questions;
 
+  const sortQuestions = (ev) => {
+    questions = ev.detail;
+  };
   const goNext = async () => {
-    wizard_state.set(WizardState.DOWNLOAD_EXAM);
+    store_exam.update((v) => ({
+      ...v,
+      questions: questions.map((q, i) => ({ ...q, order: i + 1 })) as [
+        Question
+      ],
+    }));
+    wizard_state.set(WizardState.GROUP_QUESTIONS);
+  };
+  const updateQuestion = (e) => {
+    const q = e.detail as Question;
+    questions = questions.map((v) => {
+      if (v.order === q.order) {
+        return q;
+      }
+      return v;
+    }) as [Question];
   };
 </script>
 
 <div class="flex flex-col ">
   <div class="flex items-center justify-between">
     <div class="w-1/2">
-      <h1 class="text-lg font-bold">Order Options</h1>
+      <h1 class="text-lg font-bold">Order Question</h1>
       <p>
-        Take a minute to revise the order and the correct option for each
-        question and then click NEXT.
+        Take a minute to revise the order of the question and the correct option
+        for each question and then click NEXT.
       </p>
+      <div class="font-semibold">You can re-order by dragging and dropping</div>
     </div>
     <div>
       <div class="flex ">
@@ -49,8 +66,11 @@
     </div>
   </div>
   {#if questions}
-    {#each questions as q (q.order)}
+    <SortableList list={questions} key="order" on:sort={sortQuestions} let:item>
+      <EditQuestion q={item} on:updateQuestion={updateQuestion} />
+    </SortableList>
+    <!-- {#each questions as q (q.order)}
       <EditQuestion {q} />
-    {/each}
+    {/each} -->
   {/if}
 </div>

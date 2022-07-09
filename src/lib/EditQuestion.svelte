@@ -10,45 +10,19 @@
   const dispatch = createEventDispatcher();
 
   $: isFixed = q.choices[2] ? true : false;
-  store_exam.subscribe((v) => {
-    if (v.questions) {
-      qs = [...v.questions];
-    }
-  });
 
-  const saveQuestion = (q_no: number, order: number) => async () => {
+  const markOptionAsCorrect = (order: number) => () => {
     const options = [q.choices[0], order, q.choices[2]];
     q = { ...q, choices: options as Choices };
-    const nqs = qs.map((v) => {
-      if (v.order === q_no) {
-        return q;
-      }
-      return v;
-    });
-    const new_exam: FrontExam = {
-      ...$store_exam,
-      questions: nqs as [Question],
-    };
-    store_exam.set(new_exam);
+    dispatch("updateQuestion", q);
   };
 
   const fixOrder = () => {
     const orderOpts = isFixed ? null : [0, 1, 2, 3, 4];
     isFixed = !isFixed;
-    const nqs = qs.map((v) => {
-      if (v.order === q.order) {
-        return {
-          ...v,
-          choices: [v.choices[0], q.choices[1], orderOpts],
-        };
-      }
-      return v;
-    });
-    const new_exam: FrontExam = {
-      ...$store_exam,
-      questions: nqs as [Question],
-    };
-    store_exam.set(new_exam);
+    const options = [q.choices[0], q.choices[1], orderOpts];
+    q = { ...q, choices: options as Choices };
+    dispatch("updateQuestion", q);
   };
 </script>
 
@@ -116,7 +90,7 @@
             name="correct_{q.order}"
             id="correct_{q.order}"
             checked={q.choices[1] === i}
-            on:change={saveQuestion(q.order, i)}
+            on:change={markOptionAsCorrect(i)}
           />
         </label>
       </div>

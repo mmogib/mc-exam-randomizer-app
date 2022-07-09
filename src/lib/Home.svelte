@@ -9,7 +9,8 @@
   import DownloadExam from "./DownloadExam.svelte";
   import { getSettings, setting, wizard_state } from "../store";
   import { WizardState } from "../types";
-  import OrderOptions from "./OrderOptions.svelte";
+  import OrderQuestions from "./OrderQuestions.svelte";
+  import GroupQuestions from "./GroupQuestions.svelte";
 
   let w_state: WizardState = WizardState.NEW;
   let steps = [
@@ -122,14 +123,22 @@
             <ExamSettings />
           </div>
         {/if}
+
+        {#if w_state === WizardState.ORDER_OPTIONS}
+          <div class="col-span-2" transition:slide>
+            <OrderQuestions />
+          </div>
+        {/if}
+
+        {#if w_state === WizardState.GROUP_QUESTIONS}
+          <div class="col-span-2" transition:slide>
+            <GroupQuestions />
+          </div>
+        {/if}
+
         {#if w_state === WizardState.DOWNLOAD_EXAM}
           <div class="col-span-2" transition:slide>
             <DownloadExam />
-          </div>
-        {/if}
-        {#if w_state === WizardState.ORDER_OPTIONS}
-          <div class="col-span-2" transition:slide>
-            <OrderOptions />
           </div>
         {/if}
       </div>

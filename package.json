@@ -1,7 +1,7 @@
 {
   "name": "mc-exam-randomizer-app",
   "private": true,
-  "version": "0.2.5",
+  "version": "0.3.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -22,6 +22,7 @@
     "svelte": "^3.48.0",
     "svelte-check": "^2.8.0",
     "svelte-preprocess": "^4.10.7",
+    "svelte-sortable-list": "^1.1.0",
     "svelte-steps": "^2.3.5",
     "tailwindcss": "^3.1.4",
     "tslib": "^2.4.0",

@@ -94,7 +94,25 @@
 
 <div class="flex flex-col h-72   mx-auto mb-6 col-span-2 text-center">
   <div class="my-4 text-xl">
-    <span>Your exam is ready.</span>
+    <div
+      class="flex items-center p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
+      role="alert"
+    >
+      <svg
+        class="inline flex-shrink-0 mr-2 w-8 h-8 text-lg"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+        ><path
+          fill-rule="evenodd"
+          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+          clip-rule="evenodd"
+        /></svg
+      >
+      <div class="text-lg">
+        <span class="font-medium">Congadurations!</span> Your exam is ready.
+      </div>
+    </div>
   </div>
   <div class=" flex flex-1 justify-evenly text-center items-start mt-8">
     <button on:click={downloadExam} type="button" class="btn w-1/4">
