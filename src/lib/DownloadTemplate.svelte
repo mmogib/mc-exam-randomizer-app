@@ -88,12 +88,6 @@
 <div class="col-span-1 flex flex-row text-center justify-between">
   <button
     on:click={() => {
-      store_exam.set({
-        name: "",
-        ordering: null,
-        questions: null,
-        preamble: null,
-      });
       wizard_state.set(WizardState.NEW);
     }}
     class="btn

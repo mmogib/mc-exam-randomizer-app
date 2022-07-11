@@ -7,6 +7,7 @@
     WizardState,
     type ValidationError,
   } from "../types";
+  import NavigationButton from "../components/NavigationButton.svelte";
 
   let exam_setting: Setting;
   let current_exam: FrontExam;
@@ -81,11 +82,11 @@
 <div
   class="mt-1 
    w-full
-    col-span-2 flex   text-center  justify-between"
+    col-span-2 flex   text-center  justify-end"
 >
-  <button on:click={goPrevious} type="button" class="btn"> Previous</button>
-  <button on:click={saveMySetting} type="button" class="btn"> Save</button>
-  <button on:click={goNext} type="button" class="btn"> Next</button>
+  <NavigationButton text="Go Back" action={goPrevious} />
+  <NavigationButton text="Save" action={saveMySetting} />
+  <NavigationButton text="Next" action={goNext} />
 </div>
 <div class="my-6">
   <label

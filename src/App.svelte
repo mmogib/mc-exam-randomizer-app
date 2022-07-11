@@ -32,7 +32,7 @@
         version {app_version}
         {#if new_version}
           <div in:fly={{ y: -20 }}>
-            click
+            new version ({new_version}) is available,click
             <button
               class="underline underline-red-600 text-red-500"
               on:click={downloadNewVersion}>here</button
