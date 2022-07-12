@@ -18,6 +18,7 @@
     { text: "upload questions" },
     { text: "exam setting" },
     { text: "questions/options" },
+    { text: "grouping" },
     { text: "download/save  " },
   ];
   let current: number = 0;
@@ -48,6 +49,9 @@
         w = WizardState.ORDER_OPTIONS;
         break;
       case 4:
+        w = WizardState.GROUP_QUESTIONS;
+        break;
+      case 5:
         w = WizardState.DOWNLOAD_EXAM;
         break;
     }
