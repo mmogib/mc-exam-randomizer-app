@@ -20,7 +20,13 @@ export const parse_master_only = async (
   exam: FrontExam,
   stored_setting: Setting
 ): Promise<string> => {
-  const qs_master = parse_questions(exam.questions, null, true, true);
+  const qs_master = parse_questions(
+    exam.questions,
+    null,
+    true,
+    true,
+    exam.ketp_in_one_page
+  );
   const q_temp_master = questions_template.replace(`%{QUESTIONS}`, qs_master);
   const master_code = code_template
     .replace(`%{CODE_COVER_PAGE}`, MASTER_COVER_PAGE)
@@ -60,7 +66,13 @@ export const parse_exam = async (
   exam: FrontExam,
   stored_setting: Setting
 ): Promise<string> => {
-  const qs_master = parse_questions(exam.questions, null, false, true);
+  const qs_master = parse_questions(
+    exam.questions,
+    null,
+    false,
+    true,
+    exam.ketp_in_one_page
+  );
   const q_temp_master = questions_template.replace(`%{QUESTIONS}`, qs_master);
   const command = `get_random_version`;
   const master_code = code_template
@@ -90,7 +102,10 @@ export const parse_exam = async (
           });
           const questions = parse_questions(
             ex_quuestions as [Question],
-            ex.ordering
+            ex.ordering,
+            false,
+            false,
+            exam.ketp_in_one_page
           );
           const q_template = questions_template.replace(
             `%{QUESTIONS}`,
@@ -141,7 +156,8 @@ const parse_questions = (
   questions: [Question],
   ordering: [number] | null = null,
   isForTemplete: boolean = false,
-  master: boolean = false
+  master: boolean = false,
+  qs_in_pne_page: number[] = []
 ): string => {
   const odd_q = odd_question;
   const even_q = even_question;
@@ -150,7 +166,7 @@ const parse_questions = (
         .map((indx) => questions[indx])
         .sort((a, b) => (a.group > b.group ? 1 : -1))
     : questions;
-
+  let counter = 0;
   return qs
     .map((q, i) => {
       const correctIndex = q.choices[1];
@@ -185,8 +201,8 @@ const parse_questions = (
             .join("");
 
       let q_str = "";
-      if ((i + 1) % 2 === 1) {
-        q_str += odd_q
+      if (qs_in_pne_page.includes(q.order)) {
+        q_str = `\\newpage\n ${even_q}`
           .replace(
             `#{QUESTION_TEXT}`,
             `${isForTemplete ? "\n%{#q}\n" : ""}${q.text}${
@@ -194,15 +210,28 @@ const parse_questions = (
             }`
           )
           .replace("#{QUESTION_OPTION}", opts);
+        counter = 0;
       } else {
-        q_str += even_q
-          .replace(
-            `#{QUESTION_TEXT}`,
-            `${isForTemplete ? "\n%{#q}\n" : ""}${q.text}${
-              isForTemplete ? "\n%{/q}\n" : ""
-            }`
-          )
-          .replace("#{QUESTION_OPTION}", opts);
+        if ((counter + 1) % 2 === 1) {
+          q_str += odd_q
+            .replace(
+              `#{QUESTION_TEXT}`,
+              `${isForTemplete ? "\n%{#q}\n" : ""}${q.text}${
+                isForTemplete ? "\n%{/q}\n" : ""
+              }`
+            )
+            .replace("#{QUESTION_OPTION}", opts);
+        } else {
+          q_str += even_q
+            .replace(
+              `#{QUESTION_TEXT}`,
+              `${isForTemplete ? "\n%{#q}\n" : ""}${q.text}${
+                isForTemplete ? "\n%{/q}\n" : ""
+              }`
+            )
+            .replace("#{QUESTION_OPTION}", opts);
+        }
+        counter++;
       }
       return q_str;
     })

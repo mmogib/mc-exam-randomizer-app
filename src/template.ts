@@ -76,17 +76,17 @@ export const DOC_PREAMBLE = `\\documentclass[leqno,fleqn,12pt,a4paper]{article}
 \\usepackage[overlay]{textpos}
 \\setlength{\\TPHorizModule}{1mm}
 \\setlength{\\TPVertModule}{1mm}
-\\topmargin=-.75in
+\\topmargin=-1.9cm
 \\textheight=26.5cm
-\\footskip=.3in
+\\footskip=.8cm
 \\oddsidemargin=-.1cm
 \\textwidth=16.95cm
-\\arraycolsep=.15in
+\\arraycolsep=.4cm
 \\labelsep=.75cm
 \\renewcommand{\\theequation}{\\alph{equation}}
 \\thicklines
 \\pagestyle{myheadings}
-\\newcommand{\\bodyoptionseparator}{\\vspace {0.3in}}
+\\newcommand{\\bodyoptionseparator}{\\vspace {0.8cm}}
 \\newcommand{\\questionseparator}{\\vspace {3.5cm}}
 `;
 

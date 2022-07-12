@@ -5,9 +5,13 @@
   import EditQuestion from "./EditQuestion.svelte";
   import NavigationButton from "../components/NavigationButton.svelte";
   let questions: [Question] | null = $store_exam.questions;
+  let ketp_in_one_page: number[] = $store_exam.ketp_in_one_page
+    ? $store_exam.ketp_in_one_page
+    : [];
 
   const sortQuestions = (ev) => {
     questions = ev.detail;
+    ketp_in_one_page = [];
   };
   const goNext = async () => {
     store_exam.update((v) => ({
@@ -15,6 +19,7 @@
       questions: questions.map((q, i) => ({ ...q, order: i + 1 })) as [
         Question
       ],
+      ketp_in_one_page,
     }));
     wizard_state.set(WizardState.GROUP_QUESTIONS);
   };
@@ -26,6 +31,16 @@
       }
       return v;
     }) as [Question];
+  };
+
+  const keepInOnePage = (e) => {
+    const q = e.detail as Question;
+
+    if (ketp_in_one_page && ketp_in_one_page.includes(q.order)) {
+      ketp_in_one_page = ketp_in_one_page.filter((v) => v !== q.order);
+    } else {
+      ketp_in_one_page = [...ketp_in_one_page, q.order];
+    }
   };
 </script>
 
@@ -52,7 +67,12 @@
   </div>
   {#if questions}
     <SortableList list={questions} key="order" on:sort={sortQuestions} let:item>
-      <EditQuestion q={item} on:updateQuestion={updateQuestion} />
+      <EditQuestion
+        q={item}
+        on:updateQuestion={updateQuestion}
+        on:keepInOnePage={keepInOnePage}
+        keepInOnePage={ketp_in_one_page.includes(item.order)}
+      />
     </SortableList>
   {/if}
 </div>

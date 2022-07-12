@@ -40,4 +40,5 @@ export const store_exam = writable<FrontExam>({
   ordering: null,
   questions: null,
   preamble: null,
+  ketp_in_one_page: [],
 });

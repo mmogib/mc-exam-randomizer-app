@@ -3,6 +3,7 @@ export interface FrontExam {
   preamble?: string;
   questions?: [Question];
   ordering: [number];
+  ketp_in_one_page?: number[];
 }
 
 export interface Question {
