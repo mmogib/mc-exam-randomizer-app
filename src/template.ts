@@ -73,6 +73,7 @@ export const COMMANDS_DEFINITIONS = `
 export const DOC_PREAMBLE = `\\documentclass[leqno,fleqn,12pt,a4paper]{article}
 \\usepackage{amsfonts}
 \\usepackage{graphicx}
+\\usepackage[final]{qrcode}
 \\usepackage[overlay]{textpos}
 \\setlength{\\TPHorizModule}{1mm}
 \\setlength{\\TPVertModule}{1mm}
@@ -113,8 +114,15 @@ export const COVER_PAGE = `
 
     \\vfill
 
-    \\tiny{This exam was prepared using EXAM SHUFFLER}
+    \\begin{minipage}[b][3ex][b]{0.6\\textwidth}
+    \\tiny{This exam was prepared using MC Exam Randomizer.}\\\\
     \\tiny{For questions send an email to Dr. Mohammed Alshahrani (mshahrani@kfupm.edu.sa) }
+    \\tiny{You can download it by scanning the code}
+    \\end{minipage}
+    \\begin{minipage}{0.3\\textwidth}
+    \\hfill \\tiny{\\qrcode{https://github.com/mmogib/mc-exam-randomizer-app/releases}}\\\\
+    \\end{minipage}
+    
 \\end{center}
 
 \\newpage`;
@@ -138,7 +146,7 @@ export const MASTER_COVER_PAGE = `
 \\newpage
 
 
-\\renewcommand{\\thepage}{\\noindent Term {TERM}, {COURSE_CODE}, {EXAM_NAME} \\hfill Page {\\bf \\arabic{page} of {NUM_PAGES} } \\hfill {\\bf \\fbox{ MASTER }}}
+\\renewcommand{\\thepage}{\\noindent {TERM}, {COURSE_CODE}, {EXAM_NAME} \\hfill Page {\\bf \\arabic{page} of {NUM_PAGES} } \\hfill {\\bf \\fbox{ MASTER }}}
 \\setcounter{page}{1}
 `;
 
@@ -174,7 +182,7 @@ export const CODE_COVER_PAGE = `
 
 \\newcodecover{{CODE_NAME}}
 
-\\renewcommand{\\thepage}{\\noindent Term {TERM}, {COURSE_CODE}, {EXAM_NAME} \\hfill Page {\\bf \\arabic{page} of {NUM_PAGES} } \\hfill {\\bf \\fbox{ {CODE_NAME} }}}
+\\renewcommand{\\thepage}{\\noindent {TERM}, {COURSE_CODE}, {EXAM_NAME} \\hfill Page {\\bf \\arabic{page} of {NUM_PAGES} } \\hfill {\\bf \\fbox{ {CODE_NAME} }}}
 \\setcounter{page}{1}`;
 
 export const KEY_ANSWER = `

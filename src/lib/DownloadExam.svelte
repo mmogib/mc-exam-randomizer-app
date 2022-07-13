@@ -112,7 +112,7 @@
     <NavigationButton
       text="Go Back"
       action={() => {
-        wizard_state.set(WizardState.ORDER_OPTIONS);
+        wizard_state.set(WizardState.GROUP_QUESTIONS);
       }}
     />
     <NavigationButton

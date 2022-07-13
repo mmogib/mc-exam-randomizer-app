@@ -1,23 +1,78 @@
 <script lang="ts">
-  import { saveSetting, setting, wizard_state, store_exam } from "../store";
+  import { saveSetting, setting, wizard_state } from "../store";
   import { message as diagMesg } from "@tauri-apps/api/dialog";
-  import {
-    type FrontExam,
-    type Setting,
-    WizardState,
-    type ValidationError,
-  } from "../types";
+  import { type Setting, WizardState, type ValidationError } from "../types";
   import NavigationButton from "../components/NavigationButton.svelte";
+  import { tick } from "svelte";
 
-  let exam_setting: Setting;
-  let current_exam: FrontExam;
-  store_exam.subscribe((v) => {
-    current_exam = v;
-  });
-  setting.subscribe((v) => {
-    exam_setting = v;
-  });
+  let exam_setting: Setting = $setting;
 
+  enum FormField {
+    university = "university",
+    department = "department",
+    term = "term",
+    coursecode = "coursecode",
+    examname = "examname",
+    examdate = "examdate",
+    timeallowed = "timeallowed",
+    numberofvestions = "numberofvestions",
+  }
+
+  interface SettingFormError {
+    field: FormField;
+    message: string;
+    valid: boolean;
+  }
+
+  let form_errors: SettingFormError[] = Object.keys($setting).map((field) => ({
+    field: field as FormField,
+    message: "",
+    valid: true,
+  }));
+
+  const isValid = (field: FormField) => (e) => {
+    const value = e.target.value;
+    let message = "";
+    let valid = true;
+    switch (field) {
+      case FormField.university:
+      case FormField.department:
+      case FormField.term:
+      case FormField.coursecode:
+      case FormField.examname:
+      case FormField.examdate:
+      case FormField.timeallowed:
+        if (value === "") {
+          message = `${field} is required`;
+          valid = false;
+        }
+        break;
+      case FormField.numberofvestions:
+        if (value === "") {
+          message = `${field} is required`;
+          valid = false;
+        }
+        const numValue = Number(parseInt(value));
+
+        if (isNaN(numValue)) {
+          message = message === "" ? `` : `${message},`;
+          message += `this field must be a number`;
+          valid = false;
+        }
+        if (numValue !== parseFloat(value) || Number(parseInt(value)) <= 0) {
+          message = message === "" ? `` : `${message},`;
+          message += `this field must be a positive integer`;
+          valid = false;
+        }
+        break;
+    }
+    form_errors = form_errors.map((error) => {
+      if (error.field === field) {
+        return { ...error, message, valid };
+      }
+      return error;
+    });
+  };
   const validateSetting = (): ValidationError => {
     if (
       exam_setting.university === "" ||
@@ -48,7 +103,6 @@
     if (valid === "valid") {
       await saveSetting(exam_setting);
       setting.set(exam_setting);
-      store_exam.set(current_exam);
     } else {
       await errMsg(message);
     }
@@ -59,7 +113,6 @@
     if (valid === "valid") {
       await saveSetting(exam_setting);
       setting.set(exam_setting);
-      store_exam.set(current_exam);
       wizard_state.set(WizardState.ORDER_OPTIONS);
     } else {
       await errMsg(message);
@@ -71,7 +124,6 @@
     if (valid === "valid") {
       await saveSetting(exam_setting);
       setting.set(exam_setting);
-      store_exam.set(current_exam);
       wizard_state.set(WizardState.NEW);
     } else {
       await errMsg(message);
@@ -95,6 +147,8 @@
     ">University</label
   >
   <input
+    on:blur={isValid(FormField.university)}
+    placeholder="Name of University"
     type="text"
     id="university"
     bind:value={exam_setting.university}
@@ -103,6 +157,9 @@
     focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 
     dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
   />
+  <p class=" text-red-600 dark:text-red-300">
+    {form_errors.find((v) => v.field === FormField.university).message}
+  </p>
 </div>
 
 <div class="mb-6">
@@ -110,21 +167,29 @@
     >Department</label
   >
   <input
+    on:blur={isValid(FormField.department)}
     type="text"
     id="department"
     bind:value={exam_setting.department}
     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
   />
+  <p class=" text-red-600 dark:text-red-300">
+    {form_errors.find((v) => v.field === FormField.department).message}
+  </p>
 </div>
 
 <div class="mb-6">
   <label for="exam-term" class="block mb-2 text-lg font-medium ">Term</label>
   <input
+    on:blur={isValid(FormField.term)}
     type="text"
     bind:value={exam_setting.term}
     id="exam-term"
     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
   />
+  <p class=" text-red-600 dark:text-red-300">
+    {form_errors.find((v) => v.field === FormField.term).message}
+  </p>
 </div>
 
 <div class="mb-6">
@@ -132,22 +197,30 @@
     >Course Code</label
   >
   <input
+    on:blur={isValid(FormField.coursecode)}
     type="text"
     id="coursecode"
     bind:value={exam_setting.coursecode}
     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
   />
+  <p class=" text-red-600 dark:text-red-300">
+    {form_errors.find((v) => v.field === FormField.coursecode).message}
+  </p>
 </div>
 <div class="mb-6">
   <label for="exam-name" class="block mb-2 text-lg font-medium "
     >Exam Name</label
   >
   <input
+    on:blur={isValid(FormField.examname)}
     type="text"
     id="exam-name"
     bind:value={exam_setting.examname}
     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
   />
+  <p class=" text-red-600 dark:text-red-300">
+    {form_errors.find((v) => v.field === FormField.examname).message}
+  </p>
 </div>
 
 <div class="mb-6">
@@ -155,11 +228,15 @@
     >Exam Date</label
   >
   <input
+    on:blur={isValid(FormField.examdate)}
     type="date"
     id="exam-date"
     bind:value={exam_setting.examdate}
     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
   />
+  <p class=" text-red-600 dark:text-red-300">
+    {form_errors.find((v) => v.field === FormField.examdate).message}
+  </p>
 </div>
 
 <div class="mb-6">
@@ -167,11 +244,15 @@
     >Time Allowed</label
   >
   <input
+    on:blur={isValid(FormField.timeallowed)}
     type="text"
     bind:value={exam_setting.timeallowed}
     id="time-allowed"
     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
   />
+  <p class=" text-red-600 dark:text-red-300">
+    {form_errors.find((v) => v.field === FormField.timeallowed).message}
+  </p>
 </div>
 
 <div class="mb-6">
@@ -179,9 +260,13 @@
     >Number of Versions</label
   >
   <input
+    on:blur={isValid(FormField.numberofvestions)}
     type="number"
     id="versions"
     bind:value={exam_setting.numberofvestions}
     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
   />
+  <p class=" text-red-600 dark:text-red-300">
+    {form_errors.find((v) => v.field === FormField.numberofvestions).message}
+  </p>
 </div>
