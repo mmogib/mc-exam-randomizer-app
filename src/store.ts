@@ -1,5 +1,10 @@
 import { writable } from "svelte/store";
-import type { FrontExam, QuestionsFilePath, Setting } from "./types";
+import type {
+  FrontExam,
+  FrozenOptions,
+  QuestionsFilePath,
+  Setting,
+} from "./types";
 import { WizardState } from "./types";
 import { Store } from "tauri-plugin-store-api";
 const store = new Store(".settings.dat");
@@ -40,5 +45,7 @@ export const store_exam = writable<FrontExam>({
   ordering: null,
   questions: null,
   preamble: null,
-  ketp_in_one_page: [],
+  kept_in_one_page: [],
 });
+
+export const store_frozen_options = writable<FrozenOptions>({});

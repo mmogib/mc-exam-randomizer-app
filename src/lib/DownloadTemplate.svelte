@@ -3,7 +3,12 @@
   import { writeTextFile, readTextFile } from "@tauri-apps/api/fs";
   import { WizardState, type ExamSettings, type TemplateExt } from "../types";
   import { tex_template, csv_template, txt_template } from "../constants";
-  import { wizard_state, setting, store_exam } from "../store";
+  import {
+    wizard_state,
+    setting,
+    store_exam,
+    store_frozen_options,
+  } from "../store";
 
   const openSavedSetting = async () => {
     try {
@@ -25,6 +30,7 @@
         ) as ExamSettings;
         setting.set(exam_setting.setting);
         store_exam.set(exam_setting.exam);
+        store_frozen_options.set(exam_setting.options_order || {});
 
         wizard_state.set(WizardState.FILL_SETTING);
       }
@@ -88,6 +94,7 @@
 <div class="col-span-1 flex flex-row text-center justify-between">
   <button
     on:click={() => {
+      store_frozen_options.set({});
       wizard_state.set(WizardState.NEW);
     }}
     class="btn

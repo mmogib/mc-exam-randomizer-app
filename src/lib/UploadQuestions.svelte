@@ -9,6 +9,7 @@
     store_exam,
     setting,
     exam_string,
+    store_frozen_options,
   } from "../store";
   import { extname } from "@tauri-apps/api/path";
   import { invoke } from "@tauri-apps/api";
@@ -57,6 +58,7 @@
         const groups = get_question_groups(content);
         setting.update((v) => ({ ...v, groups }));
         store_exam.set(content);
+        store_frozen_options.set({});
         const exam = await parse_exam(content, $setting);
 
         exam_string.set(exam);

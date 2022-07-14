@@ -1,4 +1,7 @@
 import { invoke } from "@tauri-apps/api";
+import { store_frozen_options } from "./store";
+let foptions;
+store_frozen_options.subscribe((options) => (foptions = options));
 
 import {
   ANSWER_COUNT,
@@ -14,7 +17,7 @@ import {
   odd_question,
   questions_template,
 } from "./template";
-import type { FrontExam, Question, Setting, TemplateExt } from "./types";
+import type { FrontExam, Question, Setting } from "./types";
 
 export const parse_master_only = async (
   exam: FrontExam,
@@ -25,7 +28,7 @@ export const parse_master_only = async (
     null,
     true,
     true,
-    exam.ketp_in_one_page
+    exam.kept_in_one_page
   );
   const q_temp_master = questions_template.replace(`%{QUESTIONS}`, qs_master);
   const master_code = code_template
@@ -71,7 +74,7 @@ export const parse_exam = async (
     null,
     false,
     true,
-    exam.ketp_in_one_page
+    exam.kept_in_one_page
   );
   const q_temp_master = questions_template.replace(`%{QUESTIONS}`, qs_master);
   const command = `get_random_version`;
@@ -90,22 +93,14 @@ export const parse_exam = async (
             exam: exam,
             name: code_name,
           })) as FrontExam;
-          exam_codes.push(ex);
-          const ex_quuestions = ex.questions.map((q) => {
-            const exam_q = exam.questions.find((vv) => vv.order === q.order);
-            const correct_answer = exam_q.choices[2]
-              ? exam_q.choices[1]
-              : q.choices[1];
-            const ops = exam_q.choices[2] ? exam_q.choices[2] : q.choices[2];
-
-            return { ...q, choices: [q.choices[0], correct_answer, ops] };
-          });
+          const ex_quuestions = process_questions_options(ex.questions, exam);
+          exam_codes.push({ ...ex, questions: ex_quuestions });
           const questions = parse_questions(
-            ex_quuestions as [Question],
+            ex_quuestions,
             ex.ordering,
             false,
             false,
-            exam.ketp_in_one_page
+            exam.kept_in_one_page
           );
           const q_template = questions_template.replace(
             `%{QUESTIONS}`,
@@ -268,11 +263,6 @@ const parse_answer_key = (master: FrontExam, codes: [FrontExam]): string => {
     .replace(`{KEY_BODY}`, body);
 };
 
-/**
- *   V & A&B&C&D&E \\\\ \\hline 
-1 & 3&7&2&3&3\\\\ \\hline 
- */
-
 const parse_answer_count = (codes: [FrontExam]): string => {
   const header = [`V`, ...alphabets].join("&");
   const answer_count_template = ANSWER_COUNT;
@@ -317,4 +307,46 @@ export const order_questions_by_groups = (exam: FrontExam): FrontExam => {
       return { ...q, order: i + 1 };
     }) as [Question];
   return { ...exam, questions: qs };
+};
+
+const process_questions_options = (
+  exam_questions: [Question],
+  master_exam: FrontExam
+): [Question] => {
+  return exam_questions.map((q) => {
+    const master_q = master_exam.questions.find((vv) => vv.order === q.order);
+    const [ops, correct_answer] = get_new_options_order(master_q, q);
+
+    return { ...q, choices: [q.choices[0], correct_answer, ops] };
+  }) as [Question];
+};
+
+const get_new_options_order = (
+  master_q: Question,
+  exam_q: Question
+): [number[], number] => {
+  if (master_q.choices[2]) {
+    return [master_q.choices[2], master_q.choices[1]];
+  }
+  const options = foptions[exam_q.order] || null;
+
+  if (!options) {
+    return [exam_q.choices[2], exam_q.choices[1]];
+  }
+
+  const options_to_sort = [0, 1, 2, 3, 4].filter((o) => !options.includes(o));
+  const sorted_options = options_to_sort.sort(() => 0.5 - Math.random());
+
+  const new_options = [0, 1, 2, 3, 4].map((o) => {
+    if (options.includes(o)) {
+      return o;
+    } else {
+      return sorted_options.shift();
+    }
+  });
+  const correct_option_index = new_options.findIndex(
+    (o) => o === master_q.choices[1]
+  );
+
+  return [new_options, correct_option_index];
 };

@@ -5,8 +5,8 @@
   import EditQuestion from "./EditQuestion.svelte";
   import NavigationButton from "../components/NavigationButton.svelte";
   let questions: [Question] | null = $store_exam.questions;
-  let ketp_in_one_page: number[] = $store_exam.ketp_in_one_page
-    ? $store_exam.ketp_in_one_page
+  let ketp_in_one_page: number[] = $store_exam.kept_in_one_page
+    ? $store_exam.kept_in_one_page
     : [];
 
   const sortQuestions = (ev) => {
@@ -19,7 +19,7 @@
       questions: questions.map((q, i) => ({ ...q, order: i + 1 })) as [
         Question
       ],
-      ketp_in_one_page,
+      kept_in_one_page: ketp_in_one_page,
     }));
     wizard_state.set(WizardState.GROUP_QUESTIONS);
   };

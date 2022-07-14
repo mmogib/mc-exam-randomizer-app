@@ -3,7 +3,7 @@ export interface FrontExam {
   preamble?: string;
   questions?: [Question];
   ordering: [number];
-  ketp_in_one_page?: number[];
+  kept_in_one_page?: number[];
 }
 
 export interface Question {
@@ -11,6 +11,10 @@ export interface Question {
   order: number;
   group: number;
   choices: Choices;
+}
+
+export interface FrozenOptions {
+  [key: number]: number[];
 }
 
 export type Choices = [[Choice], CorrectChoice, [ChoiceOrdering]];
@@ -51,6 +55,7 @@ export enum WizardState {
 export interface ExamSettings {
   setting: Setting;
   exam: FrontExam;
+  options_order: FrozenOptions;
 }
 
 export enum OrderDirection {

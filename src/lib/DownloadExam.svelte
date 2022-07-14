@@ -3,7 +3,13 @@
 
   import { writeTextFile } from "@tauri-apps/api/fs";
 
-  import { store_exam, wizard_state, setting, exam_string } from "../store";
+  import {
+    store_exam,
+    wizard_state,
+    setting,
+    exam_string,
+    store_frozen_options,
+  } from "../store";
   import { type FrontExam, WizardState } from "../types";
   import { parse_master_only } from "../functions";
   import NavigationButton from "../components/NavigationButton.svelte";
@@ -25,7 +31,11 @@
       try {
         await writeTextFile(
           saved_setting_file,
-          JSON.stringify({ setting: $setting, exam: content })
+          JSON.stringify({
+            setting: $setting,
+            exam: content,
+            options_order: $store_frozen_options,
+          })
         );
       } catch (error) {
         await diagMesg(error, { title: "MC Shuffler Error", type: "error" });
