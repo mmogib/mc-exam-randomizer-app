@@ -221,7 +221,7 @@ Answer Counts \\\\
 \\end{Large}
 \\vspace {1cm}
 
-  \\begin{tabular}{|c||c|c|c|c|c| 
+  \\begin{tabular}{|c||{ANSWER_COUNT_TABLE_HEADER}| 
 }
   \\hline
   {ANSWER_COUNT_HEADER}\\\\ \\hline

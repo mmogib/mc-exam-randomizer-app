@@ -25,7 +25,7 @@
   };
 
   const fixOrder = () => {
-    const orderOpts = isFixed ? null : [0, 1, 2, 3, 4];
+    const orderOpts = isFixed ? null : q.choices[0].map((_, i) => i);
     isFixed = !isFixed;
     const options = [q.choices[0], q.choices[1], orderOpts];
     q = { ...q, choices: options as Choices };

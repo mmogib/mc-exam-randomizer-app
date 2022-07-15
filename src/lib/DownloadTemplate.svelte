@@ -10,6 +10,7 @@
     store_frozen_options,
   } from "../store";
 
+  let number_of_questions = 6;
   const openSavedSetting = async () => {
     try {
       const saved_file_path = await open({
@@ -50,7 +51,7 @@
         ],
       });
       if (save_path) {
-        await writeTextFile(save_path, tex_template);
+        await writeTextFile(save_path, tex_template(number_of_questions));
       } else {
         return;
       }
@@ -65,7 +66,7 @@
         ],
       });
       if (save_path) {
-        await writeTextFile(save_path, txt_template);
+        await writeTextFile(save_path, txt_template(number_of_questions));
       } else {
         return;
       }
@@ -80,7 +81,7 @@
         ],
       });
       if (save_path) {
-        await writeTextFile(save_path, csv_template);
+        await writeTextFile(save_path, csv_template(number_of_questions));
       } else {
         return;
       }
@@ -106,23 +107,59 @@
 </div>
 <div class="col-span-2 flex flex-col justify-center ">
   <div class="col-span-2 flex flex-col justify-center ">
-    <button
-      on:click={downloadTemplate("TEX")}
-      class=" text-center underline underline-light-600 mx-10 my-5"
-      >Download Latex Template
-    </button>
-    <button
-      on:click={downloadTemplate("CSV")}
-      class=" text-center underline underline-light-600 mx-10 mb-5"
-    >
-      Download CSV Template (Comma-Separated)
-    </button>
-    <button
-      on:click={downloadTemplate("TXT")}
-      class=" text-center underline underline-light-600 mx-10 mb-5"
-    >
-      Download TXT Template (Tab-Separated)
-    </button>
+    <div class="grid grid-cols-2 mt-16 gap-5 ">
+      <div class=" h-32  flex flex-col items-start">
+        <button
+          on:click={downloadTemplate("TEX")}
+          class=" text-center underline underline-light-600"
+          >Download Latex Template
+        </button>
+        <p class="text-center font-bold">
+          {number_of_questions} questions
+        </p>
+      </div>
+      <div class=" h-32 flex flex-col items-end">
+        <button
+          on:click={downloadTemplate("CSV")}
+          class=" text-center underline underline-light-600"
+        >
+          Download CSV Template (Comma-Separated)
+        </button>
+        <p class="text-center font-bold">
+          {number_of_questions} questions
+        </p>
+      </div>
+      <div class=" h-32 flex flex-col items-start">
+        <button
+          on:click={downloadTemplate("TXT")}
+          class=" text-center underline underline-light-600"
+        >
+          Download TXT Template (Tab-Separated)
+        </button>
+        <p class="text-center font-bold">
+          {number_of_questions} questions
+        </p>
+      </div>
+
+      <div class="border border-gray-300 h-32 rounded-xl p-5">
+        <label
+          for="minmax-range"
+          class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+          >How many questions you need in the template?
+        </label>
+        <input
+          id="minmax-range"
+          type="range"
+          min="6"
+          max="100"
+          step="1"
+          bind:value={number_of_questions}
+          class="w-full h-2 bg-purple-200 rounded-lg appearance-none 
+         
+          cursor-pointer dark:bg-purple-700"
+        />
+      </div>
+    </div>
   </div>
 </div>
 <div />

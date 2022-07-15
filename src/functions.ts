@@ -232,7 +232,34 @@ const parse_questions = (
     })
     .join("");
 };
-const alphabets = ["A", "B", "C", "D", "E"];
+const alphabets = [
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+  "H",
+  "I",
+  "J",
+  "K",
+  "L",
+  "M",
+  "N",
+  "O",
+  "P",
+  "Q",
+  "R",
+  "S",
+  "T",
+  "U",
+  "V",
+  "W",
+  "X",
+  "Y",
+  "Z",
+];
 
 const parse_answer_key = (master: FrontExam, codes: [FrontExam]): string => {
   const num_questions = master.questions.length;
@@ -264,9 +291,16 @@ const parse_answer_key = (master: FrontExam, codes: [FrontExam]): string => {
 };
 
 const parse_answer_count = (codes: [FrontExam]): string => {
-  const header = [`V`, ...alphabets].join("&");
+  const dum_options = codes[0].questions.sort(
+    (a, b) => b.choices[0].length - a.choices[0].length
+  )[0].choices[0];
+  const table_header = dum_options.map((_) => "c").join("|");
+  const header = [
+    `V`,
+    ...alphabets.filter((_, i) => i < dum_options.length),
+  ].join("&");
   const answer_count_template = ANSWER_COUNT;
-  const temp_counts = Array(alphabets.length).fill(0);
+  const temp_counts = Array(dum_options.length).fill(0);
   const body = codes
     .map((code, i) => {
       return [
@@ -281,6 +315,7 @@ const parse_answer_count = (codes: [FrontExam]): string => {
     .join("\\\\ \\hline");
 
   return answer_count_template
+    .replace(`{ANSWER_COUNT_TABLE_HEADER}`, table_header)
     .replace(`{ANSWER_COUNT_HEADER}`, header)
     .replace(`{ANSWER_COUNT_BODY}`, body);
 };
@@ -334,10 +369,13 @@ const get_new_options_order = (
     return [exam_q.choices[2], exam_q.choices[1]];
   }
 
-  const options_to_sort = [0, 1, 2, 3, 4].filter((o) => !options.includes(o));
+  const dum_array = Array(master_q.choices[0].length)
+    .fill(0)
+    .map((_, i) => i);
+  const options_to_sort = dum_array.filter((o) => !options.includes(o));
   const sorted_options = options_to_sort.sort(() => 0.5 - Math.random());
 
-  const new_options = [0, 1, 2, 3, 4].map((o) => {
+  const new_options = dum_array.map((o) => {
     if (options.includes(o)) {
       return o;
     } else {
