@@ -12,7 +12,7 @@
   export let keepInOnePage: boolean = true;
   const dispatch = createEventDispatcher();
 
-  $: isFixed = q.choices[2] ? true : false;
+  $: isFixed = q.choices && q.choices[2] ? true : false;
   const includeInOnePageList = () => {
     dispatch("keepInOnePage", q);
   };

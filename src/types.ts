@@ -10,7 +10,7 @@ export interface Question {
   text: string;
   order: number;
   group: number;
-  choices: Choices;
+  choices?: Choices;
 }
 
 export interface FrozenOptions {

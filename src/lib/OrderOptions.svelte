@@ -7,8 +7,8 @@
   const dispatch = createEventDispatcher();
   export let choices: Choices;
   export let q_order: number;
-  let options: [Choice] = choices[0];
-  let correct: CorrectChoice = choices[1];
+  let options: [Choice] | [] = choices ? choices[0] : [];
+  let correct: CorrectChoice | null = choices ? choices[1] : null;
   let frozen_options: number[];
 
   interface OptionWithId {

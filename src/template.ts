@@ -155,9 +155,8 @@ export const odd_question = `
 \\bodyoptionseparator
 \\setcounter{equation}{0}
 
-\\begin{enumerate}
 #{QUESTION_OPTION}
-\\end{enumerate}
+
 
 \\questionseparator
 
@@ -167,9 +166,9 @@ export const even_question = `
 \\bodyoptionseparator
 \\setcounter{equation}{0}
 
-\\begin{enumerate}
+
 #{QUESTION_OPTION}
-\\end{enumerate}
+
 \\newpage
 
 `;

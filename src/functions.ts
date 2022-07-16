@@ -17,7 +17,7 @@ import {
   odd_question,
   questions_template,
 } from "./template";
-import type { FrontExam, Question, Setting } from "./types";
+import type { Choice, Choices, FrontExam, Question, Setting } from "./types";
 
 export const parse_master_only = async (
   exam: FrontExam,
@@ -94,6 +94,7 @@ export const parse_exam = async (
             name: code_name,
           })) as FrontExam;
           const ex_quuestions = process_questions_options(ex.questions, exam);
+
           exam_codes.push({ ...ex, questions: ex_quuestions });
           const questions = parse_questions(
             ex_quuestions,
@@ -102,6 +103,7 @@ export const parse_exam = async (
             false,
             exam.kept_in_one_page
           );
+
           const q_template = questions_template.replace(
             `%{QUESTIONS}`,
             questions
@@ -164,37 +166,45 @@ const parse_questions = (
   let counter = 0;
   return qs
     .map((q, i) => {
-      const correctIndex = q.choices[1];
-      let orderedOptions = q.choices[2]
-        ? [...q.choices[2]]
-        : [...q.choices[0].map((_, i) => i)];
-      orderedOptions = isForTemplete
-        ? [
-            correctIndex,
-            ...orderedOptions.filter((vvv) => vvv !== correctIndex),
-          ]
-        : orderedOptions;
-      const opts = !master
-        ? q.choices[2]
-            .map((indx) =>
-              isForTemplete
-                ? `\\item  \n%{#o}\n${q.choices[0][indx].text}\n%{/o}\n`
-                : `\\item  ${q.choices[0][indx].text}\n`
-            )
-            .join("")
-        : orderedOptions
-            .map(
-              (i) =>
-                `\\item ${isForTemplete ? "\n%{#o}\n" : ""}${
-                  q.choices[0][i].text
-                }${
-                  correctIndex === i && !isForTemplete
-                    ? "\\;\\;\\hrulefill {\\small (correct)}"
-                    : ""
-                }\n${isForTemplete ? "%{/o}\n" : ""}`
-            )
-            .join("");
+      let opts = "";
+      if (q.choices) {
+        const oooptions = q.choices[0].filter((o) => o.text !== "");
 
+        if (oooptions.length > 0) {
+          opts = `\n\\begin{enumerate}`;
+          const correctIndex = q.choices[1];
+          let orderedOptions = q.choices[2]
+            ? [...q.choices[2]]
+            : [...q.choices[0].map((_, i) => i)];
+          orderedOptions = isForTemplete
+            ? [
+                correctIndex,
+                ...orderedOptions.filter((vvv) => vvv !== correctIndex),
+              ]
+            : orderedOptions;
+          opts += !master
+            ? q.choices[2]
+                .map((indx) =>
+                  isForTemplete
+                    ? `\\item  \n%{#o}\n${q.choices[0][indx].text}\n%{/o}\n`
+                    : `\\item  ${q.choices[0][indx].text}\n`
+                )
+                .join("")
+            : orderedOptions
+                .map(
+                  (i) =>
+                    `\\item ${isForTemplete ? "\n%{#o}\n" : ""}${
+                      q.choices[0][i].text
+                    }${
+                      correctIndex === i && !isForTemplete
+                        ? "\\;\\;\\hrulefill {\\small (correct)}"
+                        : ""
+                    }\n${isForTemplete ? "%{/o}\n" : ""}`
+                )
+                .join("");
+          opts += `\\end{enumerate}`;
+        }
+      }
       let q_str = "";
       if (qs_in_pne_page.includes(q.order)) {
         q_str = `\\newpage\n ${even_q}`
@@ -262,7 +272,11 @@ const alphabets = [
 ];
 
 const parse_answer_key = (master: FrontExam, codes: [FrontExam]): string => {
-  const num_questions = master.questions.length;
+  const master_questions = master.questions.filter(
+    (q) =>
+      q.choices !== null && q.choices[0].filter((o) => o.text !== "").length > 0
+  );
+  const num_questions = master_questions.length;
   const answer_template = KEY_ANSWER;
   const tabs = codes.map((_) => "c").join("|");
   const header = [`Q`, `MASTER`, ...codes.map((c) => c.name)].join("&");
@@ -270,20 +284,30 @@ const parse_answer_key = (master: FrontExam, codes: [FrontExam]): string => {
     .fill(0)
     .map((_, q_num) => {
       return [
-        q_num + 1,
-        alphabets[master.questions[q_num].choices[1]],
-        ...codes.map((code) => {
-          const q_in_master = master.questions.find((vv) => {
-            return vv.order === code.questions[q_num].order;
-          });
-          if (q_in_master.choices[2]) {
-            return alphabets[q_in_master.choices[1]];
-          }
-          return alphabets[code.questions[q_num].choices[1]]; //code.questions[q_num].choices[1]
-        }),
+        master_questions[q_num].order,
+        alphabets[master_questions[q_num].choices[1]],
+        ...codes
+          .map((c) => ({
+            ...c,
+            questions: c.questions.filter(
+              (q) =>
+                q.choices !== null &&
+                q.choices[0].filter((o) => o.text !== "").length > 0
+            ),
+          }))
+          .map((code) => {
+            const q_in_master = master_questions.find((vv) => {
+              return vv.order === code.questions[q_num].order;
+            });
+            if (q_in_master.choices[2]) {
+              return alphabets[q_in_master.choices[1]];
+            }
+            return alphabets[code.questions[q_num].choices[1]]; //code.questions[q_num].choices[1]
+          }),
       ].join("&");
     })
     .join(`\\\\ \\hline`);
+
   return answer_template
     .replace(`{AKEY_TABS}`, tabs)
     .replace(`{HEADER}`, header)
@@ -291,7 +315,10 @@ const parse_answer_key = (master: FrontExam, codes: [FrontExam]): string => {
 };
 
 const parse_answer_count = (codes: [FrontExam]): string => {
-  const dum_options = codes[0].questions.sort(
+  const filtered_dump_options = codes[0].questions.filter(
+    (q) => q.choices !== null
+  );
+  const dum_options = filtered_dump_options.sort(
     (a, b) => b.choices[0].length - a.choices[0].length
   )[0].choices[0];
   const table_header = dum_options.map((_) => "c").join("|");
@@ -307,6 +334,7 @@ const parse_answer_count = (codes: [FrontExam]): string => {
         i + 1,
         ...temp_counts.map((_, ii) => {
           return code.questions
+            .filter((q) => q.choices !== null)
             .filter((q) => q.choices[1] === ii)
             .reduce((c, _) => c + 1, 0);
         }),
@@ -350,9 +378,13 @@ const process_questions_options = (
 ): [Question] => {
   return exam_questions.map((q) => {
     const master_q = master_exam.questions.find((vv) => vv.order === q.order);
-    const [ops, correct_answer] = get_new_options_order(master_q, q);
+    if (!master_q.choices) {
+      return { ...q, choices: null };
+    } else {
+      const [ops, correct_answer] = get_new_options_order(master_q, q);
 
-    return { ...q, choices: [q.choices[0], correct_answer, ops] };
+      return { ...q, choices: [q.choices[0], correct_answer, ops] };
+    }
   }) as [Question];
 };
 
