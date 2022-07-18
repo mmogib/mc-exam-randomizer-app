@@ -1,7 +1,13 @@
 <script lang="ts">
   import { message as diagMesg } from "@tauri-apps/api/dialog";
-  import { parse_exam } from "../functions";
-  import { exam_string, setting, store_exam, wizard_state } from "../store";
+  import { parse_exam, parse_master_only } from "../functions";
+  import {
+    exam_string,
+    setting,
+    store_exam,
+    template_exam_string,
+    wizard_state,
+  } from "../store";
   import { type Question, WizardState, type ValidationError } from "../types";
   let questions: [Question] = $store_exam.questions;
   let groups: string = $setting.groups;
@@ -11,7 +17,9 @@
       setting.update((v) => ({ ...v, groups }));
       store_exam.update((v) => ({ ...v, questions }));
       const examStr = await parse_exam($store_exam, $setting);
+      const templateExamString = await parse_master_only($store_exam, $setting);
       exam_string.set(examStr);
+      template_exam_string.set(templateExamString);
       wizard_state.set(WizardState.DOWNLOAD_EXAM);
     } else {
       diagMesg(validation.message, {

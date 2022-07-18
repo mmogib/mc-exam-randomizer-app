@@ -11,6 +11,7 @@
   import { WizardState } from "../types";
   import OrderQuestions from "./OrderQuestions.svelte";
   import GroupQuestions from "./GroupQuestions.svelte";
+  import StartOverButton from "../components/StartOverButton.svelte";
 
   let w_state: WizardState = WizardState.NEW;
   let steps = [
@@ -106,6 +107,16 @@
         {#if w_state === WizardState.DOWNLOAD_EXAM}
           <div class="col-span-2" transition:slide>
             <DownloadExam />
+          </div>
+        {/if}
+        {#if w_state !== WizardState.DOWNLOAD_TEMPLATE}
+          <div class="col-span-2 flex w-full mt-4 justify-end">
+            <StartOverButton
+              text="Start Over"
+              action={() => {
+                wizard_state.set(WizardState.DOWNLOAD_TEMPLATE);
+              }}
+            />
           </div>
         {/if}
       </div>

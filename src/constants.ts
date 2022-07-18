@@ -6,9 +6,9 @@ export const tex_template = (no_qs: number): string => {
 %% You can also redefine the following commans
 %% \\bodyoptionseparator, \\questionseparator, \\newcodecover
 %% by typing
-%% \\renewcommand{\\bodyoptionseparator}{\\vspace {0.8cm}}
-%% \\renewcommand{\\questionseparator}{\\vspace {3.5cm}}
-%% \\renewcommand{\\newcodecover}[1]{ }
+%\\renewcommand{\\bodyoptionseparator}{\\vspace {0.8cm}}
+%\\renewcommand{\\questionseparator}{\\vspace {3.5cm}}
+%\\renewcommand{\\newcodecover}[1]{ }
 
 %{/preamble}
 
@@ -90,9 +90,7 @@ export const csv_template = (no_qs: number): string => {
         i + 1
       },Item 1","question ${i + 1},Item 2","question ${
         i + 1
-      },Item 3","question ${i + 1},Item 4","question ${
-        i + 1
-      },Item 5","question ${i + 1},Item 6"`;
+      },Item 3","question ${i + 1},Item 4","question ${i + 1},Item 5"`;
     })
     .join("\n");
 };

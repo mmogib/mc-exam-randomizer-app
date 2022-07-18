@@ -73,7 +73,10 @@
           class="sr-only peer"
         />
         <div
-          class="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
+          class="w-9 h-5 bg-gray-200 peer-focus:outline-none 
+          peer-focus:ring-4 peer-focus:ring-blue-300
+           dark:peer-focus:ring-blue-800 rounded-full peer
+            dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
         />
         <span class="ml-3 text-xs font-thin text-gray-900 dark:text-gray-300"
           >{frozen_options && frozen_options.includes(index)
@@ -98,27 +101,3 @@
     </label>
   </div></SortableList
 >
-<!-- 
-{#each options as o, i (i)}
-  <div class="flex items-center justify-between ">
-    <div>
-      <pre>
-            {o.text}
-          </pre>
-    </div>
-    <label for="correct_{q_order}" class="flex items-center cursor-pointer">
-      <div>
-        {#if correct === i}
-          <span class="text-purple-800 mx-4"> correct </span>
-        {/if}
-      </div>
-      <input
-        type="radio"
-        name="correct_{q_order}"
-        id="correct_{q_order}"
-        checked={correct === i}
-        on:change={markOptionAsCorrect(i)}
-      />
-    </label>
-  </div>
-{/each} -->

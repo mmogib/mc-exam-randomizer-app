@@ -16,8 +16,10 @@ import {
   MASTER_COVER_PAGE,
   odd_question,
   questions_template,
+  TEMPLATE_COMMANDS_DEFINITIONS,
+  TEMPLATE_COVER_PAGE,
 } from "./template";
-import type { Choice, Choices, FrontExam, Question, Setting } from "./types";
+import type { FrontExam, Question, Setting } from "./types";
 
 export const parse_master_only = async (
   exam: FrontExam,
@@ -32,13 +34,12 @@ export const parse_master_only = async (
   );
   const q_temp_master = questions_template.replace(`%{QUESTIONS}`, qs_master);
   const master_code = code_template
-    .replace(`%{CODE_COVER_PAGE}`, MASTER_COVER_PAGE)
+    .replace(`%{CODE_COVER_PAGE}`, TEMPLATE_COVER_PAGE)
     .replace(`%{QUESTIONS_TEMPLATE}`, q_temp_master);
   const exam_doc = exam_template
     .replace(`%{DOC_PREAMBLE}`, DOC_PREAMBLE)
-    .replace(`%{COMMANDS_DEFINITIONS}`, "")
 
-    .replace("%{USER_PREAMBLE}", exam.preamble || "")
+    .replace("%{USER_PREAMBLE}", "")
     .replace("%{COVER_PAGE}", "")
     .replace("%{VERSIONS}", master_code)
     .replace(`%{KEY_ANSWER}`, ``)
@@ -60,7 +61,8 @@ export const parse_master_only = async (
     .replaceAll("{NUM_OF_VERSIONS}", stored_setting.numberofvestions + "")
     .replaceAll("{NUM_OF_QUESTIONS}", exam.questions.length + "")
     .replaceAll("{TIME_ALLOWED}", stored_setting.timeallowed)
-    .replaceAll("{NUM_PAGES}", Math.ceil(exam.questions.length / 2) + "");
+    .replaceAll("{NUM_PAGES}", number_of_pages(exam) + "")
+    .replace(`%{COMMANDS_DEFINITIONS}`, TEMPLATE_COMMANDS_DEFINITIONS);
 
   return exam_doc;
 };
@@ -144,11 +146,22 @@ ${codes}
     .replaceAll("{NUM_OF_VERSIONS}", stored_setting.numberofvestions + "")
     .replaceAll("{NUM_OF_QUESTIONS}", exam.questions.length + "")
     .replaceAll("{TIME_ALLOWED}", stored_setting.timeallowed)
-    .replaceAll("{NUM_PAGES}", Math.ceil(exam.questions.length / 2) + "");
+    .replaceAll("{NUM_PAGES}", number_of_pages(exam) + "");
 
   return exam_doc;
 };
 
+const number_of_pages = (exam: FrontExam): number => {
+  const num_of_questions = exam.questions.length;
+  const num_of_questions_kept_in_ones = exam.kept_in_one_page
+    ? exam.kept_in_one_page.length
+    : 0;
+  const num_of_questions_kept_in_twos =
+    num_of_questions - num_of_questions_kept_in_ones;
+  return (
+    Math.ceil(num_of_questions_kept_in_twos / 2) + num_of_questions_kept_in_ones
+  );
+};
 const parse_questions = (
   questions: [Question],
   ordering: [number] | null = null,

@@ -9,13 +9,14 @@
     setting,
     exam_string,
     store_frozen_options,
+    template_exam_string,
   } from "../store";
   import { type FrontExam, WizardState } from "../types";
-  import { parse_master_only } from "../functions";
   import NavigationButton from "../components/NavigationButton.svelte";
 
   let content: FrontExam = $store_exam;
   let exam: string = $exam_string;
+  let template_exam: string = $template_exam_string;
 
   const saveExamSetting = async () => {
     const saved_setting_file = await save({
@@ -60,8 +61,7 @@
     });
     if (save_path) {
       try {
-        const master = await parse_master_only(content, $setting);
-        await writeTextFile(save_path, master);
+        await writeTextFile(save_path, template_exam);
       } catch (error) {
         await diagMesg(error, { title: "MC Shuffler Error", type: "error" });
       } finally {
@@ -96,7 +96,7 @@
   };
 </script>
 
-<div class="flex flex-col h-72   mx-auto mb-6 col-span-2 text-center">
+<div class="flex flex-col h-full  mx-auto mb-6 col-span-2 text-center">
   <div class="my-4 text-xl">
     <div
       class="flex items-center p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
@@ -125,27 +125,67 @@
         wizard_state.set(WizardState.GROUP_QUESTIONS);
       }}
     />
-    <NavigationButton
-      text="Start Over"
-      action={() => {
-        wizard_state.set(WizardState.DOWNLOAD_TEMPLATE);
-      }}
-    />
   </div>
   <div class=" flex flex-1 justify-evenly text-center items-start mt-8">
-    <button on:click={downloadExam} type="button" class="btn w-1/4">
-      Download</button
+    <div
+      class="flex flex-col w-1/3 items-center mx-auto text-center  m-2 h-full"
     >
-    <button on:click={downloadAsTemplate} type="button" class="btn w-1/4">
-      Download As Template</button
+      <div class="m-4 border border-purple-900  rounded-3xl p-8 w-3/4 h-full">
+        <div class="text-xl font-bold mb-4 text-green-800">
+          The Exam in (LATEX)
+        </div>
+        <button on:click={downloadExam} type="button" class="btn w-full mb-4">
+          Download
+        </button>
+        <form
+          action="https://www.overleaf.com/docs"
+          method="post"
+          target="_blank"
+          class="flex flex-col items-center w-full mx-auto text-center"
+        >
+          <textarea hidden={true} rows="8" cols="60" name="snip"
+            >{exam}</textarea
+          >
+          <input class="btn w-full" type="submit" value="Open in Overleaf" />
+        </form>
+      </div>
+    </div>
+    <div
+      class="flex flex-col w-1/3 items-center mx-auto text-center m-2 h-full"
     >
-    <button on:click={saveExamSetting} type="button" class="btn w-1/4">
-      Save Setting</button
-    >
-
-    <form action="https://www.overleaf.com/docs" method="post" target="_blank">
-      <textarea hidden={true} rows="8" cols="60" name="snip">{exam}</textarea>
-      <input class="btn " type="submit" value="Open in Overleaf" />
-    </form>
+      <div class="m-4 border border-purple-900 p-8 w-3/4 rounded-3xl h-full">
+        <div class="text-xl font-bold mb-4 text-blue-400">
+          The Exam Template in (LATEX)
+        </div>
+        <button
+          on:click={downloadAsTemplate}
+          type="button"
+          class="btn w-full mb-4"
+        >
+          Download</button
+        >
+        <form
+          action="https://www.overleaf.com/docs"
+          method="post"
+          target="_blank"
+          class="flex flex-col items-center w-full mx-auto text-center"
+        >
+          <textarea hidden={true} rows="8" cols="60" name="snip"
+            >{template_exam}</textarea
+          >
+          <input class="btn w-full" type="submit" value="Open in Overleaf" />
+        </form>
+      </div>
+    </div>
+    <div class="flex flex-col w-1/3 items-center mx-auto text-center h-full ">
+      <div class="m-4 border border-purple-900 p-8 w-3/4 rounded-3xl h-full">
+        <div class="text-xl font-bold mb-4">
+          The Exam Settings and Configurations
+        </div>
+        <button on:click={saveExamSetting} type="button" class="btn w-3/4">
+          Save on File</button
+        >
+      </div>
+    </div>
   </div>
 </div>

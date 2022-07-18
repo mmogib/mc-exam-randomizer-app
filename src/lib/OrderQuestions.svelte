@@ -1,6 +1,7 @@
 <script lang="ts">
+  import { message as diagMesg } from "@tauri-apps/api/dialog";
   import SortableList from "svelte-sortable-list";
-  import { type Question, WizardState } from "../types";
+  import { type Question, WizardState, type ValidationError } from "../types";
   import { store_exam, wizard_state } from "../store";
   import EditQuestion from "./EditQuestion.svelte";
   import NavigationButton from "../components/NavigationButton.svelte";
@@ -13,15 +14,46 @@
     questions = ev.detail;
     ketp_in_one_page = [];
   };
+  const validateQuestions = (): ValidationError => {
+    const invalid_qs = questions
+      .filter((q) => {
+        if (
+          q.choices === null ||
+          q.choices[1] === undefined ||
+          q.choices[1] === null
+        ) {
+          return true;
+        }
+      })
+      .map((q) => q.order);
+    if (invalid_qs.length > 0) {
+      return {
+        message: `Please check the questions ${invalid_qs.join(", ")}`,
+        valid: "invalid",
+      };
+    }
+    return {
+      valid: "valid",
+      message: "",
+    };
+  };
   const goNext = async () => {
-    store_exam.update((v) => ({
-      ...v,
-      questions: questions.map((q, i) => ({ ...q, order: i + 1 })) as [
-        Question
-      ],
-      kept_in_one_page: ketp_in_one_page,
-    }));
-    wizard_state.set(WizardState.GROUP_QUESTIONS);
+    const validation = validateQuestions();
+    if (validation.valid === "valid") {
+      store_exam.update((v) => ({
+        ...v,
+        questions: questions.map((q, i) => ({ ...q, order: i + 1 })) as [
+          Question
+        ],
+        kept_in_one_page: ketp_in_one_page,
+      }));
+      wizard_state.set(WizardState.GROUP_QUESTIONS);
+    } else {
+      diagMesg(validation.message, {
+        title: "Validation Error",
+        type: "error",
+      });
+    }
   };
   const updateQuestion = (e) => {
     const q = e.detail as Question;

@@ -76,10 +76,11 @@
           after:bg-white 
           after:border-gray-300 
           after:border after:rounded-full after:h-5 after:w-5 after:transition-all 
-          dark:border-gray-600 peer-checked:bg-purple-600"
+          dark:border-gray-600 peer-checked:bg-purple-600
+          dark:hover:bg-white-700
+          "
           />
-          <span
-            class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-800"
+          <span class="ml-3 text-sm font-medium text-gray-900 dark:text-white"
             >{keepInOnePage
               ? `This will be in one page, click to remove`
               : "Click to keep in one page"}</span
@@ -111,7 +112,7 @@
           after:border after:rounded-full after:h-5 after:w-5 after:transition-all 
           dark:border-gray-600 peer-checked:bg-purple-600"
         />
-        <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-800"
+        <span class="ml-3 text-sm font-medium text-gray-900 dark:text-white"
           >{isFixed ? `Unfix options order` : "Fix options order"}</span
         >
       </label>

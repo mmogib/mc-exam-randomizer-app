@@ -35,6 +35,7 @@ export const setting = writable<Setting>({
 export const questions_file_path = writable<QuestionsFilePath>("nothing");
 
 export const exam_string = writable<string>("");
+export const template_exam_string = writable<string>("");
 
 export const wizard_state = writable<WizardState>(
   WizardState.DOWNLOAD_TEMPLATE

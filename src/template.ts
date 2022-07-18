@@ -16,58 +16,96 @@ export const exam_template = `%{DOC_PREAMBLE}
 \\end{document}
 `;
 
-export const COMMANDS_DEFINITIONS = `
+const COVER_PAGE_COMMAND_TEXT = (comment = false): string => `
+%
+${comment ? "%" : ""}\\newpage
 
+${comment ? "%" : ""}\\thispagestyle{empty}
+${comment ? "%" : ""}\\begin{center}
+${comment ? "%" : ""}    \\begin{large}
+${comment ? "%" : ""}        {UNIVERSITY_NAME} \\\\ 
+${comment ? "%" : ""}        {DEPT_NAME}  \\\\ 
+${comment ? "%" : ""}        \\vspace*{4.5cm}
+${
+  comment ? "%" : ""
+}        {\\bf \\fbox{ #1 } }  \\hfill {\\bf \\fbox{ #1 }} \\\\
+${comment ? "%" : ""}        {\\bf {COURSE_CODE} }  \\\\
+${comment ? "%" : ""}        {\\bf {EXAM_NAME} }  \\\\
+${comment ? "%" : ""}        {\\bf {TERM} }  \\\\
+${comment ? "%" : ""}        {\\bf {EXAM_DATE} }  \\\\ 
+${comment ? "%" : ""}        {\\bf Net Time Allowed: {TIME_ALLOWED} }  \\\\
+${comment ? "%" : ""}        \\vspace*{0.2cm}
+
+${comment ? "%" : ""}    \\end{large}
+${comment ? "%" : ""}\\end{center}
+
+${comment ? "%" : ""}\\large{Name:  }\\hrulefill
+
+${comment ? "%" : ""}\\vspace{3mm}
+
+${
+  comment ? "%" : ""
+}\\large{ID: } \\hrulefill \\large{  Sec: } \\hrulefill \\large{
+
+${comment ? "%" : ""}\\vspace{1cm}
+
+${
+  comment ? "%" : ""
+}\\large{\\bf{Check that this exam has {\\underline{ {NUM_OF_QUESTIONS} }} questions.}}
+
+${comment ? "%" : ""}\\vspace{1cm}
+
+${comment ? "%" : ""}\\underline{\\large{\\bf Important Instructions:}}
+${comment ? "%" : ""}\\begin{enumerate}
+${comment ? "%" : ""}    \\begin{normalsize}
+${
+  comment ? "%" : ""
+}        \\item  All types of calculators, pagers or mobile phones are NOT allowed during the examination.
+${comment ? "%" : ""}        \\item  Use HB 2.5 pencils only.
+${
+  comment ? "%" : ""
+}        \\item  Use a good eraser. DO NOT use the erasers attached to the pencil.
+${
+  comment ? "%" : ""
+}        \\item  Write your name, ID number and Section number on the examination paper and in the upper left corner of the answer sheet.
+${
+  comment ? "%" : ""
+}        \\item  When bubbling your ID number and Section number, be sure that the bubbles match with the numbers that you write.
+${
+  comment ? "%" : ""
+}        \\item  The Test Code Number is already bubbled in your answer sheet. Make sure that it is the same as that printed on your question paper.
+${
+  comment ? "%" : ""
+}        \\item  When bubbling, make sure that the bubbled space is fully covered.
+${
+  comment ? "%" : ""
+}        \\item  When erasing a bubble, make sure that you do not leave any trace of penciling.
+${comment ? "%" : ""}    \\end{normalsize}
+${comment ? "%" : ""}\\end{enumerate}
+${comment ? "%" : ""}}
+
+${comment ? "%" : ""}\\newpage
+`;
+
+export const TEMPLATE_COMMANDS_DEFINITIONS = `
 \\newcommand{\\newcodecover}[1]{%
-    %
-\\newpage
-
-
-\\thispagestyle{empty}
-\\begin{center}
-    \\begin{large}
-        {UNIVERSITY_NAME} \\\\ 
-        {DEPT_NAME}  \\\\ 
-        \\vspace*{4.5cm}
-        {\\bf \\fbox{ #1 } }  \\hfill {\\bf \\fbox{ #1 }} \\\\
-        {\\bf {COURSE_CODE} }  \\\\
-        {\\bf {EXAM_NAME} }  \\\\
-        {\\bf {TERM} }  \\\\
-        {\\bf {EXAM_DATE} }  \\\\ 
-        {\\bf Net Time Allowed: {TIME_ALLOWED} }  \\\\
-        \\vspace*{0.2cm}
-
-    \\end{large}
-\\end{center}
-
-\\large{Name:  }\\hrulefill
-
-\\vspace{3mm}
-
-\\large{ID: } \\hrulefill \\large{  Sec: } \\hrulefill \\large{
-
-\\vspace{1cm}
-
-\\large{\\bf{Check that this exam has {\\underline{ {NUM_OF_QUESTIONS} }} questions.}}
-
-\\vspace{1cm}
-
-\\underline{\\large{\\bf Important Instructions:}}
-\\begin{enumerate}
-    \\begin{normalsize}
-        \\item  All types of calculators, pagers or mobile phones are NOT allowed during the examination.
-        \\item  Use HB 2.5 pencils only.
-        \\item  Use a good eraser. DO NOT use the erasers attached to the pencil.
-        \\item  Write your name, ID number and Section number on the examination paper and in the upper left corner of the answer sheet.
-        \\item  When bubbling your ID number and Section number, be sure that the bubbles match with the numbers that you write.
-        \\item  The Test Code Number is already bubbled in your answer sheet. Make sure that it is the same as that printed on your question paper.
-        \\item  When bubbling, make sure that the bubbled space is fully covered.
-        \\item  When erasing a bubble, make sure that you do not leave any trace of penciling.
-    \\end{normalsize}
-\\end{enumerate}
 }
+%{#preamble}
+%%  put your preamble here
+%% You can also redefine the following commans
+%% \\bodyoptionseparator, \\questionseparator, \\newcodecover
+%% by typing
+% \\renewcommand{\\bodyoptionseparator}{\\vspace {0.8cm}}
+% \\renewcommand{\\questionseparator}{\\vspace {3.5cm}}
+% \\renewcommand{\\newcodecover}[1]{ %
+${COVER_PAGE_COMMAND_TEXT(true)}
+%}
 
-\\newpage
+%{/preamble}
+`;
+export const COMMANDS_DEFINITIONS = `
+\\newcommand{\\newcodecover}[1]{%
+${COVER_PAGE_COMMAND_TEXT(false)}
 }
 `;
 export const DOC_PREAMBLE = `\\documentclass[leqno,fleqn,12pt,a4paper]{article}
@@ -126,6 +164,31 @@ export const COVER_PAGE = `
 \\end{center}
 
 \\newpage`;
+
+export const TEMPLATE_COVER_PAGE = `
+\\thispagestyle{empty}
+\\begin{center}
+    \\begin{large}
+        {UNIVERSITY_NAME} \\\\
+        {DEPT_NAME}  \\\\
+        {\\bf {COURSE_CODE} } \\\\ 
+        {\\bf {EXAM_NAME}  } \\\\
+        {\\bf  {TERM} }  \\\\
+        {\\bf {EXAM_DATE} }  \\\\ 
+        {\\bf Net Time Allowed: {TIME_ALLOWED} }  \\\\
+        \\vspace*{6cm}
+        {\\bf {\\Huge{USE THIS AS A TEMPLATE}}}  \\\\
+        \\vspace*{2cm}
+        {\\bf Write your questions, once you are satisfied upload this file.}  \\\\
+    \\end{large}
+\\end{center}
+
+\\newpage
+
+
+\\renewcommand{\\thepage}{\\noindent {TERM}, {COURSE_CODE}, {EXAM_NAME} \\hfill Page {\\bf \\arabic{page} of {NUM_PAGES} } \\hfill {\\bf \\fbox{ MASTER }}}
+\\setcounter{page}{1}
+`;
 
 export const MASTER_COVER_PAGE = `
 \\thispagestyle{empty}
