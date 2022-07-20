@@ -7,7 +7,6 @@ import {
   ANSWER_COUNT,
   CODE_COVER_PAGE,
   code_template,
-  COMMANDS_DEFINITIONS,
   COVER_PAGE,
   DOC_PREAMBLE,
   even_question,
@@ -37,7 +36,7 @@ export const parse_master_only = async (
     .replace(`%{CODE_COVER_PAGE}`, TEMPLATE_COVER_PAGE)
     .replace(`%{QUESTIONS_TEMPLATE}`, q_temp_master);
   const exam_doc = exam_template
-    .replace(`%{DOC_PREAMBLE}`, DOC_PREAMBLE)
+    .replace(`%{DOC_PREAMBLE}`, DOC_PREAMBLE(exam.questions?.length || 0, true))
 
     .replace("%{USER_PREAMBLE}", "")
     .replace("%{COVER_PAGE}", "")
@@ -62,8 +61,10 @@ export const parse_master_only = async (
     .replaceAll("{NUM_OF_QUESTIONS}", exam.questions.length + "")
     .replaceAll("{TIME_ALLOWED}", stored_setting.timeallowed)
     .replaceAll("{NUM_PAGES}", number_of_pages(exam) + "")
-    .replace(`%{COMMANDS_DEFINITIONS}`, TEMPLATE_COMMANDS_DEFINITIONS);
-
+    .replace(
+      `%{COMMANDS_DEFINITIONS}`,
+      TEMPLATE_COMMANDS_DEFINITIONS(exam.preamble)
+    );
   return exam_doc;
 };
 
@@ -120,14 +121,24 @@ export const parse_exam = async (
   const versions = `${master_code}
 ${codes}
 `;
-
+  const num_of_answer_keys_pages = Math.ceil(exam_codes.length / 7);
+  const parsed_answer_keys = Array(num_of_answer_keys_pages)
+    .fill(0)
+    .map((_, i) => i)
+    .map((i) =>
+      parse_answer_key(exam, exam_codes.slice(i * 7, i * 7 + 7) as [FrontExam])
+    )
+    .join("\\newpage\n");
   const exam_doc = exam_template
-    .replace(`%{DOC_PREAMBLE}`, DOC_PREAMBLE)
-    .replace(`%{COMMANDS_DEFINITIONS}`, COMMANDS_DEFINITIONS)
+    .replace(
+      `%{DOC_PREAMBLE}`,
+      DOC_PREAMBLE(exam.questions?.length || 0, false)
+    )
+    .replace(`%{COMMANDS_DEFINITIONS}`, TEMPLATE_COMMANDS_DEFINITIONS(""))
     .replace("%{USER_PREAMBLE}", exam.preamble || "")
     .replace("%{COVER_PAGE}", COVER_PAGE)
     .replace("%{VERSIONS}", versions)
-    .replace(`%{KEY_ANSWER}`, parse_answer_key(exam, exam_codes as [FrontExam]))
+    .replace(`%{KEY_ANSWER}`, parsed_answer_keys)
     .replace(`%{ANSWER_COUNT}`, parse_answer_count(exam_codes as [FrontExam]))
     .replaceAll("{UNIVERSITY_NAME}", stored_setting.university)
     .replaceAll("{DEPT_NAME}", stored_setting.department)
@@ -321,7 +332,7 @@ const parse_answer_key = (master: FrontExam, codes: [FrontExam]): string => {
     })
     .join(`\\\\ \\hline`);
 
-  return answer_template
+  return answer_template(num_questions)
     .replace(`{AKEY_TABS}`, tabs)
     .replace(`{HEADER}`, header)
     .replace(`{KEY_BODY}`, body);

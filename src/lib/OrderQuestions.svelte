@@ -18,9 +18,8 @@
     const invalid_qs = questions
       .filter((q) => {
         if (
-          q.choices === null ||
-          q.choices[1] === undefined ||
-          q.choices[1] === null
+          q.choices !== null &&
+          (q.choices[1] === undefined || q.choices[1] === null)
         ) {
           return true;
         }
@@ -28,7 +27,9 @@
       .map((q) => q.order);
     if (invalid_qs.length > 0) {
       return {
-        message: `Please check the questions ${invalid_qs.join(", ")}`,
+        message: `Please check the questions ${invalid_qs.join(
+          ", "
+        )} and click on the correct answer for each question.`,
         valid: "invalid",
       };
     }

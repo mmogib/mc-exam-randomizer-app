@@ -1,22 +1,4 @@
-export const exam_template = `%{DOC_PREAMBLE}
-%{COMMANDS_DEFINITIONS}
-%{USER_PREAMBLE}
-\\begin{document}
-
-%{COVER_PAGE}
-
-
-%{VERSIONS}
-
-
-%{KEY_ANSWER}
-
-%{ANSWER_COUNT}
-
-\\end{document}
-`;
-
-const COVER_PAGE_COMMAND_TEXT = (comment = false): string => `
+const COVER_PAGE_COMMAND_TEXT = (comment: boolean): string => `
 %
 ${comment ? "%" : ""}\\newpage
 
@@ -87,46 +69,287 @@ ${comment ? "%" : ""}}
 ${comment ? "%" : ""}\\newpage
 `;
 
-export const TEMPLATE_COMMANDS_DEFINITIONS = `
-\\newcommand{\\newcodecover}[1]{%
-}
-%{#preamble}
-%%  put your preamble here
-%% You can also redefine the following commans
-%% \\bodyoptionseparator, \\questionseparator, \\newcodecover
-%% by typing
-% \\renewcommand{\\bodyoptionseparator}{\\vspace {0.8cm}}
-% \\renewcommand{\\questionseparator}{\\vspace {3.5cm}}
-% \\renewcommand{\\newcodecover}[1]{ %
-${COVER_PAGE_COMMAND_TEXT(true)}
-%}
+const PREDEFINED_COMMANDS = (
+  isForTemplete: boolean
+): string => `\\newcommand{\\bodyoptionseparator}{\\vspace {0.8cm}}
+\\newcommand{\\questionseparator}{\\vspace*{\\fill}}
+\\newcommand{\\eogseparator}{\\vspace*{\\fill} \\newpage}
+\\newcommand{\\newcodecover}[1]{
+${isForTemplete ? "" : COVER_PAGE_COMMAND_TEXT(false)}
+}`;
 
-%{/preamble}
-`;
-export const COMMANDS_DEFINITIONS = `
-\\newcommand{\\newcodecover}[1]{%
-${COVER_PAGE_COMMAND_TEXT(false)}
-}
-`;
-export const DOC_PREAMBLE = `\\documentclass[leqno,fleqn,12pt,a4paper]{article}
-\\usepackage{amsfonts}
+const TEX_TEMPLATE_FRONT_MATTER = (
+  hasPlots = false
+) => `\\documentclass{article}
 \\usepackage{graphicx}
-\\usepackage[final]{qrcode}
 \\usepackage[overlay]{textpos}
 \\setlength{\\TPHorizModule}{1mm}
 \\setlength{\\TPVertModule}{1mm}
-\\topmargin=-1.9cm
-\\textheight=26.5cm
-\\footskip=.8cm
-\\oddsidemargin=-.1cm
-\\textwidth=16.95cm
-\\arraycolsep=.4cm
-\\labelsep=.75cm
+${PREDEFINED_COMMANDS(true)}
+  
+%% put your preamble between the two tags {#preamble} and {/preamble}
+%% You can also redefine the following commans
+%% \\bodyoptionseparator, \\questionseparator, \\eogseparator, \\newcodecover
+%% by typing
+%\\renewcommand{\\bodyoptionseparator}{\\vspace {0.8cm}}
+%\\renewcommand{\\questionseparator}{\\vspace*{\\fill}}
+%\\renewcommand{\\eogseparator}{\\vspace*{\\fill} \\newpage}
+%\\renewcommand{\\newcodecover}[1]{ 
+${COVER_PAGE_COMMAND_TEXT(true)}
+%}
+%{#preamble}
+${
+  hasPlots
+    ? `\\usepackage{pgfplots}
+\\pgfplotsset{compat=newest}
+\\usetikzlibrary{patterns,arrows.meta}
+\\usepgfplotslibrary{fillbetween}
+`
+    : ``
+}
+%{/preamble}
+
+\\begin{document}
+`;
+
+const tex_template_options = (no_options: number, q_no: number): string => {
+  return `
+  \\begin{enumerate}
+${Array(5)
+  .fill(0)
+  .map((_, j) => {
+    return `
+    \\item
+    %{#o}
+    question ${q_no + 1}, Item ${j + 1}
+    %{/o}`;
+  })
+  .join("\n")}
+
+  \\end{enumerate}
+  `;
+};
+
+export const tex_template_with_image = (no_qs: number): string => {
+  const str_start = `${TEX_TEMPLATE_FRONT_MATTER()}
+    
+\\begin{enumerate}
+\\item
+%{#q}
+    %% play with parameters of the minipage and textblock environments to control the positioning of your text and figures
+    \\begin{minipage}[t][8cm][t]{0.5\\textwidth}
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi facilisis nulla semper justo convallis feugiat. Mauris ac orci ut nibh iaculis feugiat. Pellentesque nec molestie felis. Fusce condimentum risus quis nulla mollis, nec posuere augue rutrum. Sed semper orci a urna fermentum bibendum. Fusce tempor nunc in magna elementum convallis. Donec hendrerit consectetur orci a rutrum. Nullam nec nisi mattis, scelerisque dolor in, porta lectus. Cras non lectus turpis. Ut neque metus, accumsan at odio commodo, finibus faucibus felis. Proin ultricies erat sed nulla imperdiet, a molestie diam tincidunt. Donec tempus dui orci, sed eleifend purus dignissim sit amet. Fusce nibh arcu, sodales ac dignissim sed, finibus sit amet sapien.
+    \\end{minipage}
+    \\begin{minipage}[t][5cm][t]{0.5\\textwidth}
+    \\begin{textblock}{0}(10,0)
+    %% replace the image(example-image) with your own
+    \\includegraphics[width=70mm,height=80mm]{example-image}
+    \\end{textblock}
+    \\end{minipage}
+%{/q}
+  ${tex_template_options(5, 0)}
+    `;
+  const str_qs = Array(no_qs - 1)
+    .fill(0)
+    .map((_, i) => {
+      return `\\item
+%{#q}
+This is the body of question ${i + 2}
+%{/q}
+    ${tex_template_options(5, i + 1)}`;
+    })
+    .join("\n");
+  const str_end = `\\end{enumerate} % end of questions items
+\\end{document}
+    `;
+  return `${str_start}\n${str_qs}\n${str_end}`;
+};
+
+export const tex_template_with_plots = (no_qs: number): string => {
+  const str_start = `${TEX_TEMPLATE_FRONT_MATTER(true)}
+    
+\\begin{enumerate}
+\\item
+%{#q}
+    %% play with parameters of the minipage and textblock environments to control the positioning of your text and figures
+    \\begin{minipage}[t][8cm][t]{0.5\\textwidth}
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi facilisis nulla semper justo convallis feugiat. Mauris ac orci ut nibh iaculis feugiat. Pellentesque nec molestie felis. Fusce condimentum risus quis nulla mollis, nec posuere augue rutrum. Sed semper orci a urna fermentum bibendum. Fusce tempor nunc in magna elementum convallis. Donec hendrerit consectetur orci a rutrum. Nullam nec nisi mattis, scelerisque dolor in, porta lectus. Cras non lectus turpis. Ut neque metus, accumsan at odio commodo, finibus faucibus felis. Proin ultricies erat sed nulla imperdiet, a molestie diam tincidunt. Donec tempus dui orci, sed eleifend purus dignissim sit amet. Fusce nibh arcu, sodales ac dignissim sed, finibus sit amet sapien.
+    \\end{minipage}
+    \\begin{minipage}[t][5cm][t]{0.5\\textwidth}
+    \\begin{textblock}{0}(10,0)
+    %% to modify the plot, you can constult the documentation of pgfplots
+    \\begin{tikzpicture}
+    \\begin{axis}[
+            axis x line=middle,
+            axis y line=middle,
+            axis on top,
+            minor xtick={-2,-1,1,2},
+            minor ytick={1,2},
+            ytick={2},
+            samples=1000,
+            xlabel={$x$},
+            ylabel={$y$},
+            xmin=-3,xmax=3,
+            ymin=-1,ymax=3,
+            clip=false,
+            ]
+
+    \\node[node font=\\small, anchor=center, below left, inner sep=1pt] at (0,0){$O$};
+    \\addplot[name path=F,domain={-3:2}]{sqrt(2-x)};
+    \\node [node font=\\small, pin={[pin distance=6mm, pin edge={red!55!green, shorten <=-4pt,-Stealth}]-120:{}}] at (1.2,1.7) {$y=\\sqrt{2-x}$};
+
+    \\addplot[name path=G, domain={-3:1}]{-x};
+
+    \\path [name path=ox] (0,0) -- (2,0);
+
+    \\addplot[fill=black, fill opacity=0.2] fill between [of=F and G, soft clip={domain=-2:0}];
+
+    \\addplot[fill=black, fill opacity=0.2] fill between [of=F and ox, soft clip={domain=0:2}];
+
+    \\end{axis}
+    \\end{tikzpicture}
+    \\end{textblock}
+    \\end{minipage}
+%{/q}
+  ${tex_template_options(5, 0)}
+    `;
+  const str_qs = Array(no_qs - 1)
+    .fill(0)
+    .map((_, i) => {
+      return `\\item
+%{#q}
+This is the body of question ${i + 2}
+%{/q}
+    ${tex_template_options(5, i + 1)}`;
+    })
+    .join("\n");
+  const str_end = `\\end{enumerate} % end of questions items
+\\end{document}
+    `;
+  return `${str_start}\n${str_qs}\n${str_end}`;
+};
+
+export const tex_template = (no_qs: number): string => {
+  const str_start = `${TEX_TEMPLATE_FRONT_MATTER()}
+    
+\\begin{enumerate}
+    `;
+  const str_qs = Array(no_qs)
+    .fill(0)
+    .map((_, i) => {
+      return `\\item
+%{#q}
+This is the body of question ${i + 1}
+%{/q}
+    ${tex_template_options(5, i)}`;
+    })
+    .join("\n");
+  const str_end = `\\end{enumerate} % end of questions items
+\\end{document}
+    `;
+  return `${str_start}\n${str_qs}\n${str_end}`;
+};
+
+export const txt_template = (no_qs: number): string => {
+  return Array(no_qs)
+    .fill(0)
+    .map((_, i) => {
+      const group = Array(5)
+        .fill(0)
+        .map((_, j) => j + 1)
+        .sort(() => Math.random() - 0.5)[1];
+      return `${group}	This is the body of question ${i + 1}	question ${
+        i + 1
+      },Item 1	question ${i + 1},Item 2	question ${i + 1},Item 3	question ${
+        i + 1
+      },Item 4	question ${i + 1},Item 5`;
+    })
+    .join("\n");
+};
+// export const txt_template = `1	Question 1 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5
+// 2	Question 2 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5
+// 2	Question 3 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5
+// 4	Question 4 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5
+// 3	Question 5 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5
+// 3	Question 6 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5
+// 4	Question 7 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5
+// 3	Question 8 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5`;
+
+export const csv_template = (no_qs: number): string => {
+  return Array(no_qs)
+    .fill(0)
+    .map((_, i) => {
+      const group = Array(5)
+        .fill(0)
+        .map((_, j) => j + 1)
+        .sort(() => Math.random() - 0.5)[1];
+      return `${group},"This is the body of question ${i + 1}","question ${
+        i + 1
+      },Item 1","question ${i + 1},Item 2","question ${
+        i + 1
+      },Item 3","question ${i + 1},Item 4","question ${i + 1},Item 5"`;
+    })
+    .join("\n");
+};
+
+// export const csv_template = `1,"Question 1 $\\int_0^1 x = \\frac{x^2}{2}+C$ text goes here",Answer 1,Answer 2,Answer 3,Answer 4,Answer 5
+// 2,"Question, 2 text goes here",Answer 1,Answer 2,Answer 3,Answer 4,Answer 5
+// 3,"Question, 3 text goes here",Answer 1,Answer 2,Answer 3,Answer 4,Answer 5
+// 3,"Question, 4 text goes here",Answer 1,Answer 2,Answer 3,Answer 4,Answer 5
+// 4,"Question, 5 text goes here",Answer 1,Answer 2,Answer 3,Answer 4,Answer 5
+// 2,"Question, 6 text goes here",Answer 1,Answer 2,Answer 3,Answer 4,Answer 5
+// 3,"Question, 7 text goes here",Answer 1,Answer 2,Answer 3,Answer 4,Answer 5
+// 4,"Question, 8 text goes here",Answer 1,Answer 2,Answer 3,Answer 4,Answer 5`;
+
+export const exam_template = `%{DOC_PREAMBLE}
+%{COMMANDS_DEFINITIONS}
+%{USER_PREAMBLE}
+\\begin{document}
+
+%{COVER_PAGE}
+
+
+%{VERSIONS}
+
+
+%{KEY_ANSWER}
+
+%{ANSWER_COUNT}
+
+\\end{document}
+`;
+
+export const TEMPLATE_COMMANDS_DEFINITIONS = (old_preamble = ""): string => `
+%% put your preamble between the two tags {#preamble} and {/preamble}
+%% You can also redefine the following commans
+%% \\bodyoptionseparator, \\questionseparator, \\eogseparator, \\newcodecover
+%% by typing
+%\\renewcommand{\\bodyoptionseparator}{\\vspace {0.8cm}}
+%\\renewcommand{\\questionseparator}{\\vspace*{\\fill}}
+%\\renewcommand{\\eogseparator}{\\vspace*{\\fill} \\newpage}
+%\\renewcommand{\\newcodecover}[1]{ 
+${COVER_PAGE_COMMAND_TEXT(true)}
+%}
+%{#preamble}${old_preamble === "" ? "" : "\n" + old_preamble + "\n"}
+%{/preamble}
+`;
+
+export const DOC_PREAMBLE = (
+  no_qs: number,
+  isForTemplete: boolean
+): string => `\\documentclass[leqno,fleqn,12pt]{article}
+\\usepackage[paperheight=33cm,paperwidth=21.5cm,top=2cm,bottom=1cm,left=1cm,right=1cm]{geometry}
+\\usepackage{amsfonts}
+\\usepackage{graphicx}
+\\usepackage[overlay]{textpos}
+\\setlength{\\TPHorizModule}{1mm}
+\\setlength{\\TPVertModule}{1mm}
+\\usepackage[final]{qrcode}
+${no_qs > 49 ? "\\usepackage{longtable}" : ""}
 \\renewcommand{\\theequation}{\\alph{equation}}
 \\thicklines
 \\pagestyle{myheadings}
-\\newcommand{\\bodyoptionseparator}{\\vspace {0.8cm}}
-\\newcommand{\\questionseparator}{\\vspace {3.5cm}}
+${PREDEFINED_COMMANDS(isForTemplete)}
 `;
 
 export const COVER_PAGE = `
@@ -224,6 +447,7 @@ export const odd_question = `
 \\questionseparator
 
 `;
+
 export const even_question = `
 \\item #{QUESTION_TEXT}
 \\bodyoptionseparator
@@ -232,7 +456,7 @@ export const even_question = `
 
 #{QUESTION_OPTION}
 
-\\newpage
+\\eogseparator
 
 `;
 
@@ -247,7 +471,7 @@ export const CODE_COVER_PAGE = `
 \\renewcommand{\\thepage}{\\noindent {TERM}, {COURSE_CODE}, {EXAM_NAME} \\hfill Page {\\bf \\arabic{page} of {NUM_PAGES} } \\hfill {\\bf \\fbox{ {CODE_NAME} }}}
 \\setcounter{page}{1}`;
 
-export const KEY_ANSWER = `
+export const KEY_ANSWER = (no_qs: number): string => `
 
 \\newpage
 
@@ -258,12 +482,14 @@ export const KEY_ANSWER = `
 
 \\begin{center}
 
-  \\begin{tabular}{|c||c | {AKEY_TABS}|}
+  ${
+    no_qs > 49 ? "\\begin{longtable}" : "\\begin{tabular}"
+  }{|c||c | {AKEY_TABS}|}
   \\hline
   {HEADER} \\\\ \\hline 
   {KEY_BODY}
   \\\\ \\hline 
-  \\end{tabular}
+  ${no_qs > 49 ? "\\end{longtable}" : "\\end{tabular}"}
     
 \\end{center}
 \\end{normalsize}
@@ -304,3 +530,24 @@ export const questions_template = `
 %{QUESTIONS}
 \\end{enumerate}
 \\end{large}`;
+
+/**
+ * Garage 
+ * DOC_PREAMBLE
+ * %\\documentclass[leqno,fleqn,12pt,a4paper]{article}
+%\\usepackage{amsfonts}
+%\\usepackage{graphicx}
+%\\usepackage[final]{qrcode}
+${no_qs > 49 ? "\\usepackage{longtable}" : ""}
+%\\usepackage[overlay]{textpos}
+%\\setlength{\\TPHorizModule}{1mm}
+%\\setlength{\\TPVertModule}{1mm}
+%\\topmargin=-1.9cm
+%\\textheight=26.5cm
+%\\footskip=.8cm
+%\\oddsidemargin=-.1cm
+%\\textwidth=16.95cm
+%\\arraycolsep=.4cm
+%\\labelsep=.75cm
+ * 
+ */

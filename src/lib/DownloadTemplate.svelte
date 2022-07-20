@@ -2,7 +2,13 @@
   import { save, open, message as diagMesg } from "@tauri-apps/api/dialog";
   import { writeTextFile, readTextFile } from "@tauri-apps/api/fs";
   import { WizardState, type ExamSettings, type TemplateExt } from "../types";
-  import { tex_template, csv_template, txt_template } from "../constants";
+  import {
+    tex_template,
+    csv_template,
+    txt_template,
+    tex_template_with_image,
+    tex_template_with_plots,
+  } from "../template";
   import {
     wizard_state,
     setting,
@@ -10,6 +16,7 @@
     store_frozen_options,
   } from "../store";
 
+  let res_dir = "";
   let number_of_questions = 6;
   const openSavedSetting = async () => {
     try {
@@ -39,57 +46,82 @@
       await diagMesg(error, { title: "Error Opening", type: "error" });
     }
   };
-  const downloadTemplate = (extenstion: TemplateExt) => async () => {
-    if (extenstion === "TEX") {
-      const save_path = await save({
-        title: "Save Template",
-        filters: [
-          {
-            name: "Latex",
-            extensions: ["tex"],
-          },
-        ],
-      });
-      if (save_path) {
-        await writeTextFile(save_path, tex_template(number_of_questions));
-      } else {
-        return;
-      }
-    } else if (extenstion === "TXT") {
-      const save_path = await save({
-        title: "Save Template",
-        filters: [
-          {
-            name: "TEXT",
-            extensions: ["txt"],
-          },
-        ],
-      });
-      if (save_path) {
-        await writeTextFile(save_path, txt_template(number_of_questions));
-      } else {
-        return;
-      }
-    } else {
-      const save_path = await save({
-        title: "Save Template",
-        filters: [
-          {
-            name: "CSV",
-            extensions: ["csv"],
-          },
-        ],
-      });
-      if (save_path) {
-        await writeTextFile(save_path, csv_template(number_of_questions));
-      } else {
-        return;
-      }
-    }
-    wizard_state.set(WizardState.NEW);
+  interface DownTemplateOptions {
+    images: number;
+    plots: number;
+  }
+  const downloadTemplate =
+    (
+      extenstion: TemplateExt,
+      options: DownTemplateOptions = { images: 0, plots: 0 }
+    ) =>
+    async () => {
+      if (extenstion === "TEX") {
+        const save_path = await save({
+          title: "Save Template",
 
-    return;
-  };
+          filters: [
+            {
+              name: "Latex",
+              extensions: ["tex"],
+            },
+          ],
+        });
+        if (save_path) {
+          if (options.images === 0 && options.plots === 0) {
+            await writeTextFile(save_path, tex_template(number_of_questions));
+          } else {
+            if (options.images > 0) {
+              await writeTextFile(
+                save_path,
+                tex_template_with_image(number_of_questions)
+              );
+            }
+            if (options.plots > 0) {
+              await writeTextFile(
+                save_path,
+                tex_template_with_plots(number_of_questions)
+              );
+            }
+          }
+        } else {
+          return;
+        }
+      } else if (extenstion === "TXT") {
+        const save_path = await save({
+          title: "Save Template",
+          filters: [
+            {
+              name: "TEXT",
+              extensions: ["txt"],
+            },
+          ],
+        });
+        if (save_path) {
+          await writeTextFile(save_path, txt_template(number_of_questions));
+        } else {
+          return;
+        }
+      } else {
+        const save_path = await save({
+          title: "Save Template",
+          filters: [
+            {
+              name: "CSV",
+              extensions: ["csv"],
+            },
+          ],
+        });
+        if (save_path) {
+          await writeTextFile(save_path, csv_template(number_of_questions));
+        } else {
+          return;
+        }
+      }
+      wizard_state.set(WizardState.NEW);
+
+      return;
+    };
 </script>
 
 <div class="col-span-1 flex flex-row text-center justify-between">
@@ -113,6 +145,27 @@
           on:click={downloadTemplate("TEX")}
           class=" text-center underline underline-light-600"
           >Download Latex Template
+        </button>
+        <p class="text-center font-bold">
+          {number_of_questions} questions
+        </p>
+      </div>
+      <div class=" h-32  flex flex-col items-start">
+        <button
+          on:click={downloadTemplate("TEX", { images: 1, plots: 0 })}
+          class=" text-center underline underline-light-600"
+          >Download Latex Template with Images
+        </button>
+        <p class="text-center font-bold">
+          {number_of_questions} questions
+        </p>
+      </div>
+
+      <div class=" h-32  flex flex-col items-start">
+        <button
+          on:click={downloadTemplate("TEX", { images: 0, plots: 1 })}
+          class=" text-center underline underline-light-600"
+          >Download Latex Template with Plots
         </button>
         <p class="text-center font-bold">
           {number_of_questions} questions
@@ -150,7 +203,7 @@
         <input
           id="minmax-range"
           type="range"
-          min="6"
+          min="4"
           max="100"
           step="1"
           bind:value={number_of_questions}
