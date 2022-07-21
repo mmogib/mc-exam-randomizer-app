@@ -17,7 +17,7 @@
   } from "../store";
 
   let res_dir = "";
-  let number_of_questions = 6;
+  let number_of_questions = 4;
   const openSavedSetting = async () => {
     try {
       const saved_file_path = await open({
@@ -137,82 +137,94 @@
 
   <button on:click={openSavedSetting} class="btn w-1/3">Open Old Exam</button>
 </div>
-<div class="col-span-2 flex flex-col justify-center ">
-  <div class="col-span-2 flex flex-col justify-center ">
-    <div class="grid grid-cols-2 mt-16 gap-5 ">
-      <div class=" h-32  flex flex-col items-start">
+<div class="col-span-2 flex flex-col">
+  <div class="grid grid-cols-2 mt-16 gap-5 ">
+    <div
+      class="w-3/4 col-span-2 mx-auto border border-gray-300 h-32 rounded-xl p-5"
+    >
+      <label
+        for="minmax-range"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+        >How many questions you need in the template?
+      </label>
+      <input
+        id="minmax-range"
+        type="range"
+        min="4"
+        max="100"
+        step="1"
+        bind:value={number_of_questions}
+        class="w-full h-2 bg-purple-200 rounded-lg appearance-none 
+         
+          cursor-pointer dark:bg-purple-700"
+      />
+    </div>
+    <div class="w-3/4 col-span-2 flex flex-wrap justify-between mx-auto">
+      <div
+        class="w-1/3 h-32  flex flex-col justify-between p-2 m-4 border border-gray-200 rounded-xl "
+      >
         <button
           on:click={downloadTemplate("TEX")}
-          class=" text-center underline underline-light-600"
+          class="text-xl text-center underline underline-light-600"
           >Download Latex Template
         </button>
         <p class="text-center font-bold">
-          {number_of_questions} questions
+          ({number_of_questions} questions)
         </p>
       </div>
-      <div class=" h-32  flex flex-col items-start">
+      <div
+        class="w-1/3 h-32  flex flex-col justify-between p-2 m-4 border border-gray-200 rounded-xl"
+      >
         <button
           on:click={downloadTemplate("TEX", { images: 1, plots: 0 })}
-          class=" text-center underline underline-light-600"
+          class="text-xl text-center underline underline-light-600"
           >Download Latex Template with Images
         </button>
         <p class="text-center font-bold">
-          {number_of_questions} questions
+          ({number_of_questions} questions)
         </p>
       </div>
 
-      <div class=" h-32  flex flex-col items-start">
+      <div
+        class="w-1/3 h-32  flex flex-col justify-between p-2 m-4 border border-gray-200 rounded-xl"
+      >
         <button
           on:click={downloadTemplate("TEX", { images: 0, plots: 1 })}
-          class=" text-center underline underline-light-600"
+          class=" text-xl text-center underline underline-light-600"
           >Download Latex Template with Plots
         </button>
         <p class="text-center font-bold">
-          {number_of_questions} questions
+          ({number_of_questions} questions)
         </p>
       </div>
-      <div class=" h-32 flex flex-col items-end">
+      <div
+        class="w-1/3 h-32 flex flex-col justify-between p-2 m-4 border border-gray-200 rounded-xl"
+      >
         <button
           on:click={downloadTemplate("CSV")}
-          class=" text-center underline underline-light-600"
+          class=" text-xl text-center underline underline-light-600"
         >
-          Download CSV Template (Comma-Separated)
+          Download CSV Template <p>(Comma-Separated)</p>
         </button>
         <p class="text-center font-bold">
-          {number_of_questions} questions
+          ({number_of_questions} questions)
         </p>
       </div>
-      <div class=" h-32 flex flex-col items-start">
+      <div
+        class="w-1/3 h-32  flex flex-col justify-between p-2 m-4 border border-gray-200 rounded-xl"
+      >
         <button
           on:click={downloadTemplate("TXT")}
-          class=" text-center underline underline-light-600"
+          class=" text-xl text-center underline underline-light-600"
         >
-          Download TXT Template (Tab-Separated)
+          Download TXT Template <p>(Tab-Separated)</p>
         </button>
         <p class="text-center font-bold">
-          {number_of_questions} questions
+          ({number_of_questions} questions)
         </p>
-      </div>
-
-      <div class="border border-gray-300 h-32 rounded-xl p-5">
-        <label
-          for="minmax-range"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-          >How many questions you need in the template?
-        </label>
-        <input
-          id="minmax-range"
-          type="range"
-          min="4"
-          max="100"
-          step="1"
-          bind:value={number_of_questions}
-          class="w-full h-2 bg-purple-200 rounded-lg appearance-none 
-         
-          cursor-pointer dark:bg-purple-700"
-        />
       </div>
     </div>
   </div>
 </div>
+
 <div />

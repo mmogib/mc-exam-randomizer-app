@@ -63,7 +63,10 @@ export const parse_master_only = async (
     .replaceAll("{NUM_PAGES}", number_of_pages(exam) + "")
     .replace(
       `%{COMMANDS_DEFINITIONS}`,
-      TEMPLATE_COMMANDS_DEFINITIONS(exam.preamble)
+      TEMPLATE_COMMANDS_DEFINITIONS({
+        old_preamble: exam.preamble,
+        isTemplate: true,
+      })
     );
   return exam_doc;
 };
@@ -134,7 +137,10 @@ ${codes}
       `%{DOC_PREAMBLE}`,
       DOC_PREAMBLE(exam.questions?.length || 0, false)
     )
-    .replace(`%{COMMANDS_DEFINITIONS}`, TEMPLATE_COMMANDS_DEFINITIONS(""))
+    .replace(
+      `%{COMMANDS_DEFINITIONS}`,
+      TEMPLATE_COMMANDS_DEFINITIONS({ old_preamble: "", isTemplate: false })
+    )
     .replace("%{USER_PREAMBLE}", exam.preamble || "")
     .replace("%{COVER_PAGE}", COVER_PAGE)
     .replace("%{VERSIONS}", versions)

@@ -1,10 +1,9 @@
 const COVER_PAGE_COMMAND_TEXT = (comment: boolean): string => `
-%
+%% exam code cover page
 ${comment ? "%" : ""}\\newpage
-
 ${comment ? "%" : ""}\\thispagestyle{empty}
+${comment ? "%" : ""}\\begin{large}
 ${comment ? "%" : ""}\\begin{center}
-${comment ? "%" : ""}    \\begin{large}
 ${comment ? "%" : ""}        {UNIVERSITY_NAME} \\\\ 
 ${comment ? "%" : ""}        {DEPT_NAME}  \\\\ 
 ${comment ? "%" : ""}        \\vspace*{4.5cm}
@@ -17,27 +16,51 @@ ${comment ? "%" : ""}        {\\bf {TERM} }  \\\\
 ${comment ? "%" : ""}        {\\bf {EXAM_DATE} }  \\\\ 
 ${comment ? "%" : ""}        {\\bf Net Time Allowed: {TIME_ALLOWED} }  \\\\
 ${comment ? "%" : ""}        \\vspace*{0.2cm}
-
-${comment ? "%" : ""}    \\end{large}
 ${comment ? "%" : ""}\\end{center}
-
-${comment ? "%" : ""}\\large{Name:  }\\hrulefill
-
-${comment ? "%" : ""}\\vspace{3mm}
-
 ${
   comment ? "%" : ""
-}\\large{ID: } \\hrulefill \\large{  Sec: } \\hrulefill \\large{
-
-${comment ? "%" : ""}\\vspace{1cm}
-
+}\\begin{tcbraster}[raster columns=1, raster column skip=0pt, raster equal height, colback=white, before skip=0pt]
 ${
   comment ? "%" : ""
-}\\large{\\bf{Check that this exam has {\\underline{ {NUM_OF_QUESTIONS} }} questions.}}
-
-${comment ? "%" : ""}\\vspace{1cm}
-
-${comment ? "%" : ""}\\underline{\\large{\\bf Important Instructions:}}
+}\\begin{tcolorbox}[coltitle=black, enhanced jigsaw, boxrule=1pt ,segmentation style={solid,black,line width=1pt},sidebyside,lefthand width=1cm]
+${comment ? "%" : ""}    \\hspace*{-4pt}\\begin{large}\\textbf{Name}\\end{large}
+${comment ? "%" : ""}\\end{tcolorbox}
+${
+  comment ? "%" : ""
+}\\begin{tcbraster}[raster columns=2, raster column skip=2pt, raster equal height, colback=white, before skip=0pt]
+${
+  comment ? "%" : ""
+}\\begin{tcolorbox}[coltitle=black, enhanced jigsaw, boxrule=1pt ,segmentation style={solid,black,line width=1pt},sidebyside,lefthand width=1cm]
+${comment ? "%" : ""}    \\hspace*{-4pt}\\begin{large}\\textbf{ID}\\end{large}
+${comment ? "%" : ""}\\end{tcolorbox}
+${
+  comment ? "%" : ""
+}\\begin{tcolorbox}[coltitle=black, enhanced jigsaw, boxrule=1pt ,segmentation style={solid,black,line width=1pt},sidebyside,lefthand width=1cm]
+    \\begin{large}\\textbf{Sec}\\end{large}
+\\end{tcolorbox}
+${comment ? "%" : ""}\\end{tcbraster}
+${
+  comment ? "%" : ""
+}% \\begin{tcbraster}[raster columns=2, raster column skip=2pt, raster equal height, colback=white, before skip=0pt]
+${
+  comment ? "%" : ""
+}% \\begin{tcolorbox}[coltitle=black, enhanced jigsaw, boxrule=1pt ,segmentation style={solid,black,line width=1pt},sidebyside,lefthand width=2cm]
+${comment ? "%" : ""}%     \\hspace*{-4pt}\\textbf{Instructor}
+${comment ? "%" : ""}% \\end{tcolorbox}
+${
+  comment ? "%" : ""
+}% \\begin{tcolorbox}[coltitle=black, enhanced jigsaw, boxrule=1pt ,segmentation style={solid,black,line width=1pt},sidebyside,lefthand width=1cm]
+${comment ? "%" : ""}%     \\textbf{Serial}
+${comment ? "%" : ""}% \\end{tcolorbox}
+${comment ? "%" : ""}% \\end{tcbraster}
+${comment ? "%" : ""}\\end{tcbraster}
+${
+  comment ? "%" : ""
+}\\begin{center}\\bf{Check that this exam has {\\underline{ {NUM_OF_QUESTIONS} }} questions.} \\end{center}
+${comment ? "%" : ""}\n${comment ? "%" : ""}\\vspace*{\\fill} \n
+${comment ? "%" : ""}\\underline{\\bf Important Instructions:} \n ${
+  comment ? "%" : ""
+}
 ${comment ? "%" : ""}\\begin{enumerate}
 ${comment ? "%" : ""}    \\begin{normalsize}
 ${
@@ -64,39 +87,39 @@ ${
 }        \\item  When erasing a bubble, make sure that you do not leave any trace of penciling.
 ${comment ? "%" : ""}    \\end{normalsize}
 ${comment ? "%" : ""}\\end{enumerate}
-${comment ? "%" : ""}}
-
-${comment ? "%" : ""}\\newpage
+${comment ? "%" : ""}\\end{large}
+${comment ? "%" : ""}\n ${comment ? "%" : ""}\\vspace*{\\fill}\n${
+  comment ? "%" : ""
+}\\newpage
 `;
 
 const PREDEFINED_COMMANDS = (
   isForTemplete: boolean
-): string => `\\newcommand{\\bodyoptionseparator}{\\vspace {0.8cm}}
-\\newcommand{\\questionseparator}{\\vspace*{\\fill}}
-\\newcommand{\\eogseparator}{\\vspace*{\\fill} \\newpage}
-\\newcommand{\\newcodecover}[1]{
-${isForTemplete ? "" : COVER_PAGE_COMMAND_TEXT(false)}
-}`;
+): string => `%% Predefined commands
+\\newcommand{\\bodyoptionseparator}{\n\\vspace {0.8cm}\n}
+\\newcommand{\\questionseparator}{\n\\vspace*{\\fill}\n}
+\\newcommand{\\eogseparator}{\n\\vspace*{\\fill}\n \\newpage\n}
+\\newcommand{\\newcodecover}[1]{${
+  isForTemplete ? "" : "\n" + COVER_PAGE_COMMAND_TEXT(false) + "\n"
+}}`;
 
+const SHARED_FROM_MATTER = `%% put your preamble between the two tags {#preamble} and {/preamble} below
+%% You can also redefine the following commans
+%% \\bodyoptionseparator, \\questionseparator, \\eogseparator, \\newcodecover
+%% by typing
+%\\renewcommand{\\bodyoptionseparator}{\n%\\vspace {0.8cm}\n%}
+%\\renewcommand{\\questionseparator}{\n%\\vspace*{\\fill}\n%}
+%\\renewcommand{\\eogseparator}{\n%\\vspace*{\\fill}\n %\\newpage}\n`;
 const TEX_TEMPLATE_FRONT_MATTER = (
   hasPlots = false
 ) => `\\documentclass{article}
 \\usepackage{graphicx}
-\\usepackage[overlay]{textpos}
-\\setlength{\\TPHorizModule}{1mm}
-\\setlength{\\TPVertModule}{1mm}
+${SHARED_FROM_MATTER}
 ${PREDEFINED_COMMANDS(true)}
-  
-%% put your preamble between the two tags {#preamble} and {/preamble}
-%% You can also redefine the following commans
-%% \\bodyoptionseparator, \\questionseparator, \\eogseparator, \\newcodecover
-%% by typing
-%\\renewcommand{\\bodyoptionseparator}{\\vspace {0.8cm}}
-%\\renewcommand{\\questionseparator}{\\vspace*{\\fill}}
-%\\renewcommand{\\eogseparator}{\\vspace*{\\fill} \\newpage}
-%\\renewcommand{\\newcodecover}[1]{ 
+%\\renewcommand{\\newcodecover}[1]{%
 ${COVER_PAGE_COMMAND_TEXT(true)}
 %}
+%% You can add your own packages and commands below
 %{#preamble}
 ${
   hasPlots
@@ -108,7 +131,7 @@ ${
     : ``
 }
 %{/preamble}
-
+%% document body
 \\begin{document}
 `;
 
@@ -136,15 +159,14 @@ export const tex_template_with_image = (no_qs: number): string => {
 \\begin{enumerate}
 \\item
 %{#q}
-    %% play with parameters of the minipage and textblock environments to control the positioning of your text and figures
-    \\begin{minipage}[t][8cm][t]{0.5\\textwidth}
+    %% play with parameters of the minipage, vspace*, hspace* environments to control the positioning of your text and figures
+    \\begin{minipage}[t][10cm][t]{0.5\\textwidth}
     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi facilisis nulla semper justo convallis feugiat. Mauris ac orci ut nibh iaculis feugiat. Pellentesque nec molestie felis. Fusce condimentum risus quis nulla mollis, nec posuere augue rutrum. Sed semper orci a urna fermentum bibendum. Fusce tempor nunc in magna elementum convallis. Donec hendrerit consectetur orci a rutrum. Nullam nec nisi mattis, scelerisque dolor in, porta lectus. Cras non lectus turpis. Ut neque metus, accumsan at odio commodo, finibus faucibus felis. Proin ultricies erat sed nulla imperdiet, a molestie diam tincidunt. Donec tempus dui orci, sed eleifend purus dignissim sit amet. Fusce nibh arcu, sodales ac dignissim sed, finibus sit amet sapien.
     \\end{minipage}
     \\begin{minipage}[t][5cm][t]{0.5\\textwidth}
-    \\begin{textblock}{0}(10,0)
     %% replace the image(example-image) with your own
+    \\vspace*{0.5cm}\\hspace*{1cm}%
     \\includegraphics[width=70mm,height=80mm]{example-image}
-    \\end{textblock}
     \\end{minipage}
 %{/q}
   ${tex_template_options(5, 0)}
@@ -172,12 +194,12 @@ export const tex_template_with_plots = (no_qs: number): string => {
 \\item
 %{#q}
     %% play with parameters of the minipage and textblock environments to control the positioning of your text and figures
-    \\begin{minipage}[t][8cm][t]{0.5\\textwidth}
+    \\begin{minipage}[t][10cm][t]{0.5\\textwidth}
     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi facilisis nulla semper justo convallis feugiat. Mauris ac orci ut nibh iaculis feugiat. Pellentesque nec molestie felis. Fusce condimentum risus quis nulla mollis, nec posuere augue rutrum. Sed semper orci a urna fermentum bibendum. Fusce tempor nunc in magna elementum convallis. Donec hendrerit consectetur orci a rutrum. Nullam nec nisi mattis, scelerisque dolor in, porta lectus. Cras non lectus turpis. Ut neque metus, accumsan at odio commodo, finibus faucibus felis. Proin ultricies erat sed nulla imperdiet, a molestie diam tincidunt. Donec tempus dui orci, sed eleifend purus dignissim sit amet. Fusce nibh arcu, sodales ac dignissim sed, finibus sit amet sapien.
     \\end{minipage}
     \\begin{minipage}[t][5cm][t]{0.5\\textwidth}
-    \\begin{textblock}{0}(10,0)
-    %% to modify the plot, you can constult the documentation of pgfplots
+    %% to modify the plot, you can constult the documentation of pgfplots or use geogebra to create a plot and export as tikz
+    \\vspace*{0.5cm}\\hspace*{1cm}%
     \\begin{tikzpicture}
     \\begin{axis}[
             axis x line=middle,
@@ -194,21 +216,15 @@ export const tex_template_with_plots = (no_qs: number): string => {
             clip=false,
             ]
 
-    \\node[node font=\\small, anchor=center, below left, inner sep=1pt] at (0,0){$O$};
-    \\addplot[name path=F,domain={-3:2}]{sqrt(2-x)};
-    \\node [node font=\\small, pin={[pin distance=6mm, pin edge={red!55!green, shorten <=-4pt,-Stealth}]-120:{}}] at (1.2,1.7) {$y=\\sqrt{2-x}$};
-
-    \\addplot[name path=G, domain={-3:1}]{-x};
-
-    \\path [name path=ox] (0,0) -- (2,0);
-
-    \\addplot[fill=black, fill opacity=0.2] fill between [of=F and G, soft clip={domain=-2:0}];
-
-    \\addplot[fill=black, fill opacity=0.2] fill between [of=F and ox, soft clip={domain=0:2}];
-
+            \\node[node font=\\small, anchor=center, below left, inner sep=1pt] at (0,0){$O$};
+            \\addplot[name path=F,domain={-3:2}]{sqrt(2-x)};
+            \\node [node font=\\small, pin={[pin distance=6mm, pin edge={red!55!green, shorten <=-4pt,-Stealth}]-120:{}}] at (1.2,1.7) {$y=\\sqrt{2-x}$};
+            \\addplot[name path=G, domain={-3:1}]{-x};
+            \\path [name path=ox] (0,0) -- (2,0);
+            \\addplot[fill=black, fill opacity=0.2] fill between [of=F and G, soft clip={domain=-2:0}];
+            \\addplot[fill=black, fill opacity=0.2] fill between [of=F and ox, soft clip={domain=0:2}];
     \\end{axis}
     \\end{tikzpicture}
-    \\end{textblock}
     \\end{minipage}
 %{/q}
   ${tex_template_options(5, 0)}
@@ -266,14 +282,6 @@ export const txt_template = (no_qs: number): string => {
     })
     .join("\n");
 };
-// export const txt_template = `1	Question 1 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5
-// 2	Question 2 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5
-// 2	Question 3 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5
-// 4	Question 4 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5
-// 3	Question 5 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5
-// 3	Question 6 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5
-// 4	Question 7 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5
-// 3	Question 8 text goes here	Answer 1	Answer 2	Answer 3	Answer 4	Answer 5`;
 
 export const csv_template = (no_qs: number): string => {
   return Array(no_qs)
@@ -291,45 +299,28 @@ export const csv_template = (no_qs: number): string => {
     })
     .join("\n");
 };
-
-// export const csv_template = `1,"Question 1 $\\int_0^1 x = \\frac{x^2}{2}+C$ text goes here",Answer 1,Answer 2,Answer 3,Answer 4,Answer 5
-// 2,"Question, 2 text goes here",Answer 1,Answer 2,Answer 3,Answer 4,Answer 5
-// 3,"Question, 3 text goes here",Answer 1,Answer 2,Answer 3,Answer 4,Answer 5
-// 3,"Question, 4 text goes here",Answer 1,Answer 2,Answer 3,Answer 4,Answer 5
-// 4,"Question, 5 text goes here",Answer 1,Answer 2,Answer 3,Answer 4,Answer 5
-// 2,"Question, 6 text goes here",Answer 1,Answer 2,Answer 3,Answer 4,Answer 5
-// 3,"Question, 7 text goes here",Answer 1,Answer 2,Answer 3,Answer 4,Answer 5
-// 4,"Question, 8 text goes here",Answer 1,Answer 2,Answer 3,Answer 4,Answer 5`;
-
 export const exam_template = `%{DOC_PREAMBLE}
 %{COMMANDS_DEFINITIONS}
 %{USER_PREAMBLE}
 \\begin{document}
-
 %{COVER_PAGE}
-
-
 %{VERSIONS}
-
-
 %{KEY_ANSWER}
-
 %{ANSWER_COUNT}
-
 \\end{document}
 `;
 
-export const TEMPLATE_COMMANDS_DEFINITIONS = (old_preamble = ""): string => `
-%% put your preamble between the two tags {#preamble} and {/preamble}
-%% You can also redefine the following commans
-%% \\bodyoptionseparator, \\questionseparator, \\eogseparator, \\newcodecover
-%% by typing
-%\\renewcommand{\\bodyoptionseparator}{\\vspace {0.8cm}}
-%\\renewcommand{\\questionseparator}{\\vspace*{\\fill}}
-%\\renewcommand{\\eogseparator}{\\vspace*{\\fill} \\newpage}
-%\\renewcommand{\\newcodecover}[1]{ 
-${COVER_PAGE_COMMAND_TEXT(true)}
-%}
+export const TEMPLATE_COMMANDS_DEFINITIONS = ({
+  old_preamble,
+  isTemplate,
+}: {
+  old_preamble: string;
+  isTemplate: boolean;
+}): string => `
+${SHARED_FROM_MATTER}
+%\\renewcommand{\\newcodecover}[1]{${
+  isTemplate ? "\n" + COVER_PAGE_COMMAND_TEXT(true) + "\n%}" : "}"
+}
 %{#preamble}${old_preamble === "" ? "" : "\n" + old_preamble + "\n"}
 %{/preamble}
 `;
@@ -341,10 +332,8 @@ export const DOC_PREAMBLE = (
 \\usepackage[paperheight=33cm,paperwidth=21.5cm,top=2cm,bottom=1cm,left=1cm,right=1cm]{geometry}
 \\usepackage{amsfonts}
 \\usepackage{graphicx}
-\\usepackage[overlay]{textpos}
-\\setlength{\\TPHorizModule}{1mm}
-\\setlength{\\TPVertModule}{1mm}
 \\usepackage[final]{qrcode}
+\\usepackage[most]{tcolorbox}
 ${no_qs > 49 ? "\\usepackage{longtable}" : ""}
 \\renewcommand{\\theequation}{\\alph{equation}}
 \\thicklines
@@ -353,9 +342,10 @@ ${PREDEFINED_COMMANDS(isForTemplete)}
 `;
 
 export const COVER_PAGE = `
+%% MASTER COVER PAGE
 \\thispagestyle{empty}
-\\begin{center}
-    \\begin{large}
+\\begin{large}
+    \\begin{center}
         {UNIVERSITY_NAME}\\\\ 
         {DEPT_NAME} \\\\ 
         \\vspace*{2cm}
@@ -371,8 +361,7 @@ export const COVER_PAGE = `
         {\\bf Number of questions: {NUM_OF_QUESTIONS} }  \\\\
         % {\\bf Number of Answers: {NUM_OF_ANSWERS}  }  \\\\
         \\vspace*{0.2cm}
-    \\end{large}
-
+    
     \\vfill
 
     \\begin{minipage}[b][3ex][b]{0.6\\textwidth}
@@ -385,13 +374,14 @@ export const COVER_PAGE = `
     \\end{minipage}
     
 \\end{center}
-
+\\end{large}
 \\newpage`;
 
 export const TEMPLATE_COVER_PAGE = `
+%% This is the cover page for the template
 \\thispagestyle{empty}
-\\begin{center}
-    \\begin{large}
+\\begin{large}
+  \\begin{center}
         {UNIVERSITY_NAME} \\\\
         {DEPT_NAME}  \\\\
         {\\bf {COURSE_CODE} } \\\\ 
@@ -403,20 +393,17 @@ export const TEMPLATE_COVER_PAGE = `
         {\\bf {\\Huge{USE THIS AS A TEMPLATE}}}  \\\\
         \\vspace*{2cm}
         {\\bf Write your questions, once you are satisfied upload this file.}  \\\\
-    \\end{large}
-\\end{center}
-
+        \\end{center}
+  \\end{large}
 \\newpage
-
-
 \\renewcommand{\\thepage}{\\noindent {TERM}, {COURSE_CODE}, {EXAM_NAME} \\hfill Page {\\bf \\arabic{page} of {NUM_PAGES} } \\hfill {\\bf \\fbox{ MASTER }}}
 \\setcounter{page}{1}
 `;
 
 export const MASTER_COVER_PAGE = `
 \\thispagestyle{empty}
-\\begin{center}
-    \\begin{large}
+\\begin{large}
+    \\begin{center}
         {UNIVERSITY_NAME} \\\\
         {DEPT_NAME}  \\\\
         {\\bf {COURSE_CODE} } \\\\ 
@@ -426,12 +413,9 @@ export const MASTER_COVER_PAGE = `
         {\\bf Net Time Allowed: {TIME_ALLOWED} }  \\\\
         \\vspace*{6cm}
         {\\bf {\\Huge{MASTER VERSION}}}  \\\\
-    \\end{large}
-\\end{center}
-
+      \\end{center}
+\\end{large}
 \\newpage
-
-
 \\renewcommand{\\thepage}{\\noindent {TERM}, {COURSE_CODE}, {EXAM_NAME} \\hfill Page {\\bf \\arabic{page} of {NUM_PAGES} } \\hfill {\\bf \\fbox{ MASTER }}}
 \\setcounter{page}{1}
 `;
@@ -440,24 +424,16 @@ export const odd_question = `
 \\item #{QUESTION_TEXT}
 \\bodyoptionseparator
 \\setcounter{equation}{0}
-
 #{QUESTION_OPTION}
-
-
 \\questionseparator
-
 `;
 
 export const even_question = `
 \\item #{QUESTION_TEXT}
 \\bodyoptionseparator
 \\setcounter{equation}{0}
-
-
 #{QUESTION_OPTION}
-
 \\eogseparator
-
 `;
 
 export const code_template = `%{CODE_COVER_PAGE}
@@ -465,16 +441,12 @@ export const code_template = `%{CODE_COVER_PAGE}
 `;
 
 export const CODE_COVER_PAGE = `
-
 \\newcodecover{{CODE_NAME}}
-
 \\renewcommand{\\thepage}{\\noindent {TERM}, {COURSE_CODE}, {EXAM_NAME} \\hfill Page {\\bf \\arabic{page} of {NUM_PAGES} } \\hfill {\\bf \\fbox{ {CODE_NAME} }}}
 \\setcounter{page}{1}`;
 
-export const KEY_ANSWER = (no_qs: number): string => `
-
+export const KEY_ANSWER = (no_qs: number): string => `%% KEY ANSWER Page
 \\newpage
-
 \\renewcommand{\\thepage}{\\noindent {COURSE_CODE}, {TERM}, {EXAM_NAME} \\hfill {\\bf \\fbox{Answer KEY}}}
 \\begin{normalsize}
 \\setcounter{page}{1}
@@ -495,10 +467,8 @@ export const KEY_ANSWER = (no_qs: number): string => `
 \\end{normalsize}
 `;
 
-export const ANSWER_COUNT = `
+export const ANSWER_COUNT = `%% This is the answer count page
 \\newpage
-
-
 \\renewcommand{\\thepage}{\\noindent {COURSE_CODE}, {TERM}, {EXAM_NAME} \\hfill {\\bf \\fbox{Answer Counts}}}
 \\begin{normalsize}
 \\begin{center}
@@ -517,14 +487,12 @@ Answer Counts \\\\
   \\\\ \\hline 
 
   \\end{tabular}
-    
+
 \\end{center}
 \\end{normalsize}
-
-
 \\newpage`;
 
-export const questions_template = `
+export const questions_template = ` %% questions start here
 \\begin{large}
 \\begin{enumerate}
 %{QUESTIONS}
