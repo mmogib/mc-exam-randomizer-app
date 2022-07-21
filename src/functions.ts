@@ -64,7 +64,7 @@ export const parse_master_only = async (
     .replace(
       `%{COMMANDS_DEFINITIONS}`,
       TEMPLATE_COMMANDS_DEFINITIONS({
-        old_preamble: exam.preamble,
+        old_preamble: exam.preamble ? exam.preamble : "",
         isTemplate: true,
       })
     );
@@ -141,7 +141,7 @@ ${codes}
       `%{COMMANDS_DEFINITIONS}`,
       TEMPLATE_COMMANDS_DEFINITIONS({ old_preamble: "", isTemplate: false })
     )
-    .replace("%{USER_PREAMBLE}", exam.preamble || "")
+    .replace("%{USER_PREAMBLE}", exam.preamble ? exam.preamble : "")
     .replace("%{COVER_PAGE}", COVER_PAGE)
     .replace("%{VERSIONS}", versions)
     .replace(`%{KEY_ANSWER}`, parsed_answer_keys)

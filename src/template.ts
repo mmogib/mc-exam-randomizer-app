@@ -36,8 +36,8 @@ ${comment ? "%" : ""}\\end{tcolorbox}
 ${
   comment ? "%" : ""
 }\\begin{tcolorbox}[coltitle=black, enhanced jigsaw, boxrule=1pt ,segmentation style={solid,black,line width=1pt},sidebyside,lefthand width=1cm]
-    \\begin{large}\\textbf{Sec}\\end{large}
-\\end{tcolorbox}
+${comment ? "%" : ""}    \\begin{large}\\textbf{Sec}\\end{large}
+${comment ? "%" : ""}\\end{tcolorbox}
 ${comment ? "%" : ""}\\end{tcbraster}
 ${
   comment ? "%" : ""

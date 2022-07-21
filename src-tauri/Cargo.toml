@@ -1,6 +1,6 @@
 [package]
 name = "app"
-version = "0.5.0"
+version = "0.5.1"
 description = "An App to randomize MC Exam questions and produce a latex file"
 authors = ["Mohammed Alshahrani"]
 license = ""

@@ -5,13 +5,15 @@
 
   import type { Choices, Question } from "../types";
   import OrderOptions from "./OrderOptions.svelte";
-
-  export let q: Question;
-
-  let isFixed: boolean = false;
-  export let keepInOnePage: boolean = true;
   const dispatch = createEventDispatcher();
 
+  export let q: Question;
+  export let keepInOnePage: boolean = true;
+
+  let hideit: string = "";
+  let isFixed: boolean = false;
+
+  $: hideit = `hide_${q.order}`;
   $: isFixed = q.choices && q.choices[2] ? true : false;
   const includeInOnePageList = () => {
     dispatch("keepInOnePage", q);
@@ -119,7 +121,13 @@
     </div>
   </div>
   <pre contenteditable="true" bind:textContent={q.text} class="my-4" />
-  <div>
+  <button
+    class="bg-blue-500 w-1/5  rounded-lg p-2 text-white "
+    on:click={() => {
+      hideit === "" ? (hideit = `hide_${q.order}`) : (hideit = "");
+    }}>{hideit === "" ? "Hide" : "Show"} Options</button
+  >
+  <div class={hideit === `hide_${q.order}` ? "hidden" : ""}>
     <OrderOptions
       choices={q.choices}
       q_order={q.order}
