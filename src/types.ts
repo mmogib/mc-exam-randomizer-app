@@ -33,7 +33,7 @@ export interface Setting {
   term: string;
   coursecode: string;
   examname: string;
-  examdate: Date;
+  examdate: string;
   timeallowed: string;
   numberofvestions: number;
   groups: string;

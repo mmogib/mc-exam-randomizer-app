@@ -1,7 +1,7 @@
 <script lang="ts">
   import { open, message as diagMesg } from "@tauri-apps/api/dialog";
 
-  import { type FrontExam, WizardState } from "../types";
+  import { type FrontExam, WizardState, type Setting } from "../types";
 
   import {
     questions_file_path,
@@ -29,14 +29,17 @@
       ],
     })) as string;
     if (source_filename) {
+      let tex_settings: Setting | null = null;
       try {
         const ext = await extname(source_filename);
 
         let content: FrontExam | null = null;
         if (ext === "tex") {
-          content = (await invoke("read_tex", {
+          const tex_back = await invoke("read_tex", {
             filename: source_filename,
-          })) as FrontExam;
+          });
+          content = tex_back[0] as FrontExam;
+          tex_settings = tex_back[1] as Setting;
         } else if (ext === "txt") {
           content = (await invoke("read_txt", {
             filename: source_filename,
@@ -54,10 +57,14 @@
           return;
         }
         content = order_questions_by_groups(content);
-        questions_file_path.set(source_filename);
-        const groups = get_question_groups(content);
-        setting.update((v) => ({ ...v, groups }));
         store_exam.set(content);
+        questions_file_path.set(source_filename);
+        if (tex_settings) {
+          setting.set(tex_settings);
+        } else {
+          const groups = get_question_groups(content);
+          setting.update((v) => ({ ...v, groups }));
+        }
         store_frozen_options.set({});
         const exam = await parse_exam(content, $setting);
 

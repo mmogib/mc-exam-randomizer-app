@@ -3,7 +3,6 @@
   import { message as diagMesg } from "@tauri-apps/api/dialog";
   import { type Setting, WizardState, type ValidationError } from "../types";
   import NavigationButton from "../components/NavigationButton.svelte";
-  import { tick } from "svelte";
 
   let exam_setting: Setting = $setting;
 
@@ -78,7 +77,7 @@
       exam_setting.university === "" ||
       exam_setting.coursecode === "" ||
       exam_setting.department === "" ||
-      !exam_setting.examdate ||
+      exam_setting.examdate === "" ||
       exam_setting.examname === "" ||
       !Number.isInteger(exam_setting.numberofvestions) ||
       exam_setting.numberofvestions <= 0 ||
@@ -229,7 +228,7 @@
   >
   <input
     on:blur={isValid(FormField.examdate)}
-    type="date"
+    type="string"
     id="exam-date"
     bind:value={exam_setting.examdate}
     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"

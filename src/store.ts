@@ -26,7 +26,7 @@ export const setting = writable<Setting>({
   term: "",
   coursecode: "",
   examname: "",
-  examdate: new Date(Date.now()),
+  examdate: "",
   timeallowed: "",
   numberofvestions: 4,
   groups: "1",

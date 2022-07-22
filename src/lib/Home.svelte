@@ -65,7 +65,7 @@
   <div class="text-center text-lg m-2 font-semibold">
     {$setting.coursecode}
     {$setting.examname ? `(${$setting.examname})` : ""}
-    {$setting.examdate ? `(${new Date($setting.examdate).toDateString()})` : ""}
+    {$setting.examdate ? `(${$setting.examdate})` : ""}
   </div>
 
   <div>

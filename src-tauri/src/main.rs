@@ -3,7 +3,7 @@
     windows_subsystem = "windows"
 )]
 
-use mc_exam_randomizer::shuffler::{shuffle_exam, Exam};
+use mc_exam_randomizer::shuffler::{shuffle_exam, Exam, ExamSetting};
 use tauri_plugin_store::PluginBuilder;
 
 fn main() {
@@ -27,7 +27,7 @@ fn main() {
 }
 
 #[tauri::command]
-fn read_tex(filename: &str) -> Result<Exam, String> {
+fn read_tex(filename: &str) -> Result<(Exam, Option<ExamSetting>), String> {
     match Exam::from_tex(filename, "master") {
         Ok(ex) => Ok(ex),
         Err(_err) => Err(format!("Error parsing your file {}", filename)),
@@ -51,7 +51,7 @@ fn read_txt(filename: &str) -> Result<Exam, String> {
 #[tauri::command]
 fn get_random_version_tex(filename: &str, name: &str) -> Result<Exam, String> {
     match Exam::from_tex(filename, "master") {
-        Ok(ex) => Ok(shuffle_exam(&ex, Some(name))),
+        Ok(ex) => Ok(shuffle_exam(&ex.0, Some(name))),
         Err(err) => Err(err.to_string()),
     }
 }

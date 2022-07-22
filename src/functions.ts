@@ -1,7 +1,5 @@
 import { invoke } from "@tauri-apps/api";
-import { store_frozen_options } from "./store";
-let foptions;
-store_frozen_options.subscribe((options) => (foptions = options));
+import { store_frozen_options, setting } from "./store";
 
 import {
   ANSWER_COUNT,
@@ -19,6 +17,19 @@ import {
   TEMPLATE_COVER_PAGE,
 } from "./template";
 import type { FrontExam, Question, Setting } from "./types";
+
+let foptions;
+
+store_frozen_options.subscribe((options) => (foptions = options));
+const get_setting = (): string => {
+  let settings: Setting;
+  setting.subscribe((s) => (settings = s));
+  const keys = Object.keys(settings);
+  return `%{#setting}\n${keys
+    .filter((k) => k !== "exam")
+    .map((k) => `%\t\t${k}=${settings[k]}`)
+    .join("\n")}\n%{/setting}`;
+};
 
 export const parse_master_only = async (
   exam: FrontExam,
@@ -48,15 +59,7 @@ export const parse_master_only = async (
     .replaceAll("{COURSE_CODE}", stored_setting.coursecode)
     .replaceAll("{EXAM_NAME}", stored_setting.examname)
     .replaceAll("{TERM}", stored_setting.term)
-    .replaceAll(
-      "{EXAM_DATE}",
-      new Date(stored_setting.examdate).toLocaleDateString("en-us", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
-    )
+    .replaceAll("{EXAM_DATE}", stored_setting.examdate)
     .replaceAll("{NUM_OF_VERSIONS}", stored_setting.numberofvestions + "")
     .replaceAll("{NUM_OF_QUESTIONS}", exam.questions.length + "")
     .replaceAll("{TIME_ALLOWED}", stored_setting.timeallowed)
@@ -68,7 +71,8 @@ export const parse_master_only = async (
         isTemplate: true,
       })
     );
-  return exam_doc;
+  return `${get_setting()}
+  ${exam_doc}`;
 };
 
 export const parse_exam = async (
@@ -151,15 +155,7 @@ ${codes}
     .replaceAll("{COURSE_CODE}", stored_setting.coursecode)
     .replaceAll("{EXAM_NAME}", stored_setting.examname)
     .replaceAll("{TERM}", stored_setting.term)
-    .replaceAll(
-      "{EXAM_DATE}",
-      new Date(stored_setting.examdate).toLocaleDateString("en-us", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
-    )
+    .replaceAll("{EXAM_DATE}", stored_setting.examdate)
     .replaceAll("{NUM_OF_VERSIONS}", stored_setting.numberofvestions + "")
     .replaceAll("{NUM_OF_QUESTIONS}", exam.questions.length + "")
     .replaceAll("{TIME_ALLOWED}", stored_setting.timeallowed)
