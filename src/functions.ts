@@ -9,6 +9,7 @@ import {
   DOC_PREAMBLE,
   even_question,
   exam_template,
+  get_setting_string,
   KEY_ANSWER,
   MASTER_COVER_PAGE,
   odd_question,
@@ -16,20 +17,16 @@ import {
   TEMPLATE_COMMANDS_DEFINITIONS,
   TEMPLATE_COVER_PAGE,
 } from "./template";
-import type { FrontExam, Question, Setting } from "./types";
+import {
+  PaperSize,
+  type FrontExam,
+  type Question,
+  type Setting,
+} from "./types";
 
 let foptions;
 
 store_frozen_options.subscribe((options) => (foptions = options));
-const get_setting = (): string => {
-  let settings: Setting;
-  setting.subscribe((s) => (settings = s));
-  const keys = Object.keys(settings);
-  return `%{#setting}\n${keys
-    .filter((k) => k !== "exam")
-    .map((k) => `%\t\t${k}=${settings[k]}`)
-    .join("\n")}\n%{/setting}`;
-};
 
 export const parse_master_only = async (
   exam: FrontExam,
@@ -47,7 +44,14 @@ export const parse_master_only = async (
     .replace(`%{CODE_COVER_PAGE}`, TEMPLATE_COVER_PAGE)
     .replace(`%{QUESTIONS_TEMPLATE}`, q_temp_master);
   const exam_doc = exam_template
-    .replace(`%{DOC_PREAMBLE}`, DOC_PREAMBLE(exam.questions?.length || 0, true))
+    .replace(
+      `%{DOC_PREAMBLE}`,
+      DOC_PREAMBLE(
+        exam.questions?.length || 0,
+        true,
+        stored_setting?.paper_size || PaperSize.A4
+      )
+    )
 
     .replace("%{USER_PREAMBLE}", "")
     .replace("%{COVER_PAGE}", "")
@@ -71,7 +75,7 @@ export const parse_master_only = async (
         isTemplate: true,
       })
     );
-  return `${get_setting()}
+  return `${get_setting_string()}
   ${exam_doc}`;
 };
 
@@ -139,7 +143,11 @@ ${codes}
   const exam_doc = exam_template
     .replace(
       `%{DOC_PREAMBLE}`,
-      DOC_PREAMBLE(exam.questions?.length || 0, false)
+      DOC_PREAMBLE(
+        exam.questions?.length || 0,
+        false,
+        stored_setting?.paper_size || PaperSize.A4
+      )
     )
     .replace(
       `%{COMMANDS_DEFINITIONS}`,

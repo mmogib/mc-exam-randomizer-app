@@ -1,13 +1,27 @@
 import { writable } from "svelte/store";
-import type {
-  FrontExam,
-  FrozenOptions,
-  QuestionsFilePath,
-  Setting,
+import {
+  PaperSize,
+  type FrontExam,
+  type FrozenOptions,
+  type QuestionsFilePath,
+  type Setting,
 } from "./types";
 import { WizardState } from "./types";
 import { Store } from "tauri-plugin-store-api";
 const store = new Store(".settings.dat");
+
+const initial_setting: Setting = {
+  university: "King Fahd University of Petroleum and Minerals",
+  department: "Department of Mathematics",
+  term: "",
+  coursecode: "",
+  examname: "",
+  examdate: "",
+  timeallowed: "",
+  numberofvestions: 4,
+  groups: "1",
+  paper_size: PaperSize.A4,
+};
 
 export const saveSetting = async (s: Setting) => {
   await store.set("setting", s);
@@ -20,17 +34,7 @@ export const getSettings = async () => {
 };
 //
 
-export const setting = writable<Setting>({
-  university: "King Fahd University of Petroleum and Minerals",
-  department: "Department of Mathematics",
-  term: "",
-  coursecode: "",
-  examname: "",
-  examdate: "",
-  timeallowed: "",
-  numberofvestions: 4,
-  groups: "1",
-});
+export const setting = writable<Setting>(initial_setting);
 
 export const questions_file_path = writable<QuestionsFilePath>("nothing");
 

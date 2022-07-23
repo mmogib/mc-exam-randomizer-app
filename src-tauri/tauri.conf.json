@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "MC Exam Randomizer",
-    "version": "0.5.1"
+    "version": "0.6.0"
   },
   "tauri": {
     "allowlist": {
@@ -67,6 +67,7 @@
     },
     "windows": [
       {
+        "label": "main",
         "fullscreen": false,
         "resizable": true,
         "title": "MC Exams Randomizer",

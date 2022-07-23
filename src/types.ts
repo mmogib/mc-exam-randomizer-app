@@ -1,20 +1,6 @@
-export interface FrontExam {
-  name: string;
-  preamble?: string;
-  questions?: [Question];
-  ordering: [number];
-  kept_in_one_page?: number[];
-}
-
-export interface Question {
-  text: string;
-  order: number;
-  group: number;
-  choices?: Choices;
-}
-
-export interface FrozenOptions {
-  [key: number]: number[];
+export enum PaperSize {
+  A4 = "A4",
+  F4 = "F4",
 }
 
 export type Choices = [[Choice], CorrectChoice, [ChoiceOrdering]];
@@ -27,6 +13,24 @@ export type CorrectChoice = number;
 
 export type ChoiceOrdering = number;
 
+export interface Question {
+  text: string;
+  order: number;
+  group: number;
+  choices?: Choices;
+}
+
+export interface FrontExam {
+  name: string;
+  preamble?: string;
+  questions?: [Question];
+  ordering: [number];
+  kept_in_one_page?: number[];
+}
+
+export interface FrozenOptions {
+  [key: number]: number[];
+}
 export interface Setting {
   university: string;
   department: string;
@@ -37,6 +41,7 @@ export interface Setting {
   timeallowed: string;
   numberofvestions: number;
   groups: string;
+  paper_size?: PaperSize;
 }
 
 export type QuestionsFilePath = string;

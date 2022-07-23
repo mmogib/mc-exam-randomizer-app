@@ -142,11 +142,48 @@
     <div
       class="w-3/4 col-span-2 mx-auto border border-gray-300 h-32 rounded-xl p-5"
     >
-      <label
-        for="minmax-range"
-        class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-        >How many questions you need in the template?
-      </label>
+      <div class="flex justify-between">
+        <label
+          for="minmax-range"
+          class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+          >How many questions you need in the template? ({number_of_questions})?
+        </label>
+        <button
+          disabled={number_of_questions === 100}
+          on:click={() => {
+            number_of_questions =
+              number_of_questions < 100
+                ? number_of_questions + 1
+                : number_of_questions;
+          }}
+          type="button"
+          class="text-purple-700 border border-purple-700 hover:bg-purple-700 hover:text-white 
+          focus:ring-4 focus:outline-none focus:ring-purple-300 
+          font-medium 
+          rounded-full 
+          text-sm p-2.5 
+          text-center 
+          inline-flex 
+          items-center dark:border-purple-500 
+          dark:text-purple-500 dark:hover:text-white 
+          dark:focus:ring-purple-800"
+        >
+          <svg
+            class="w-3 h-3"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 15l7-7 7 7"
+            /></svg
+          >
+          <span class="sr-only">Increase the number of questions</span>
+        </button>
+      </div>
       <input
         id="minmax-range"
         type="range"
@@ -158,6 +195,43 @@
          
           cursor-pointer dark:bg-purple-700"
       />
+      <div class="flex justify-end">
+        <button
+          disabled={number_of_questions === 4}
+          on:click={() => {
+            number_of_questions =
+              number_of_questions < 4
+                ? number_of_questions
+                : number_of_questions - 1;
+          }}
+          type="button"
+          class="text-purple-700 border border-purple-700 hover:bg-purple-700 hover:text-white 
+          focus:ring-4 focus:outline-none focus:ring-purple-300 
+          font-medium 
+          rounded-full 
+          text-sm p-2.5 
+          text-center 
+          inline-flex 
+          items-center dark:border-purple-500 
+          dark:text-purple-500 dark:hover:text-white 
+          dark:focus:ring-purple-800"
+        >
+          <svg
+            class="w-3 h-3"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            /></svg
+          >
+          <span class="sr-only">Increase the number of questions</span>
+        </button>
+      </div>
     </div>
     <div class="w-3/4 col-span-2 flex flex-wrap justify-between mx-auto">
       <div

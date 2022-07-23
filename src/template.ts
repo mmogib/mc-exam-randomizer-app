@@ -1,3 +1,20 @@
+import { setting } from "./store";
+import { PaperSize, type Setting } from "./types";
+
+const get_store_setting = (): Setting => {
+  let settings: Setting;
+  setting.subscribe((s) => (settings = s));
+  return settings;
+};
+export const get_setting_string = (): string => {
+  const settings: Setting = get_store_setting();
+  const keys = Object.keys(settings);
+  return `%{#setting}\n${keys
+    .filter((k) => k !== "exam" && k !== "paper_size")
+    .map((k) => `%\t\t${k}=${settings[k]}`)
+    .join("\n")}\n%{/setting}`;
+};
+
 const COVER_PAGE_COMMAND_TEXT = (comment: boolean): string => `
 %% exam code cover page
 ${comment ? "%" : ""}\\newpage
@@ -57,7 +74,7 @@ ${comment ? "%" : ""}\\end{tcbraster}
 ${
   comment ? "%" : ""
 }\\begin{center}\\bf{Check that this exam has {\\underline{ {NUM_OF_QUESTIONS} }} questions.} \\end{center}
-${comment ? "%" : ""}\n${comment ? "%" : ""}\\vspace*{\\fill} \n
+${comment ? "%" : ""}\n${comment ? "%" : ""}\\vspace{2cm} \n
 ${comment ? "%" : ""}\\underline{\\bf Important Instructions:} \n ${
   comment ? "%" : ""
 }
@@ -65,7 +82,7 @@ ${comment ? "%" : ""}\\begin{enumerate}
 ${comment ? "%" : ""}    \\begin{normalsize}
 ${
   comment ? "%" : ""
-}        \\item  All types of calculators, pagers or mobile phones are NOT allowed during the examination.
+}        \\item  All types of calculators, smart watches or mobile phones are NOT allowed during the examination.
 ${comment ? "%" : ""}        \\item  Use HB 2.5 pencils only.
 ${
   comment ? "%" : ""
@@ -110,9 +127,8 @@ const SHARED_FROM_MATTER = `%% put your preamble between the two tags {#preamble
 %\\renewcommand{\\bodyoptionseparator}{\n%\\vspace {0.8cm}\n%}
 %\\renewcommand{\\questionseparator}{\n%\\vspace*{\\fill}\n%}
 %\\renewcommand{\\eogseparator}{\n%\\vspace*{\\fill}\n %\\newpage}\n`;
-const TEX_TEMPLATE_FRONT_MATTER = (
-  hasPlots = false
-) => `\\documentclass{article}
+const TEX_TEMPLATE_FRONT_MATTER = (hasPlots = false) => `${get_setting_string()}
+\\documentclass{article}
 \\usepackage{graphicx}
 ${SHARED_FROM_MATTER}
 ${PREDEFINED_COMMANDS(true)}
@@ -138,7 +154,7 @@ ${
 const tex_template_options = (no_options: number, q_no: number): string => {
   return `
   \\begin{enumerate}
-${Array(5)
+${Array(no_options)
   .fill(0)
   .map((_, j) => {
     return `
@@ -327,10 +343,21 @@ ${SHARED_FROM_MATTER}
 
 export const DOC_PREAMBLE = (
   no_qs: number,
-  isForTemplete: boolean
+  isForTemplete: boolean,
+  paperSize: PaperSize = PaperSize.A4
 ): string => `\\documentclass[leqno,fleqn,12pt]{article}
-\\usepackage[paperheight=33cm,paperwidth=21.5cm,top=2cm,bottom=1cm,left=1cm,right=1cm]{geometry}
+% exam paper size and margins
+\\usepackage[${
+  paperSize === PaperSize.A4 ? "a4paper" : "paperheight=33cm,paperwidth=21.5cm"
+},top=2cm,bottom=1cm,left=1cm,right=1cm]{geometry}
+
+% math packages
+\\usepackage{mathtools}
+\\usepackage{amsmath}
+\\usepackage{amssymb}
 \\usepackage{amsfonts}
+
+% graphics packages
 \\usepackage{graphicx}
 \\usepackage[final]{qrcode}
 \\usepackage[most]{tcolorbox}
@@ -498,24 +525,3 @@ export const questions_template = ` %% questions start here
 %{QUESTIONS}
 \\end{enumerate}
 \\end{large}`;
-
-/**
- * Garage 
- * DOC_PREAMBLE
- * %\\documentclass[leqno,fleqn,12pt,a4paper]{article}
-%\\usepackage{amsfonts}
-%\\usepackage{graphicx}
-%\\usepackage[final]{qrcode}
-${no_qs > 49 ? "\\usepackage{longtable}" : ""}
-%\\usepackage[overlay]{textpos}
-%\\setlength{\\TPHorizModule}{1mm}
-%\\setlength{\\TPVertModule}{1mm}
-%\\topmargin=-1.9cm
-%\\textheight=26.5cm
-%\\footskip=.8cm
-%\\oddsidemargin=-.1cm
-%\\textwidth=16.95cm
-%\\arraycolsep=.4cm
-%\\labelsep=.75cm
- * 
- */

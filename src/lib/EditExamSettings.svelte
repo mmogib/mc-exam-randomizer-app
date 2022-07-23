@@ -1,10 +1,16 @@
 <script lang="ts">
   import { saveSetting, setting, wizard_state } from "../store";
   import { message as diagMesg } from "@tauri-apps/api/dialog";
-  import { type Setting, WizardState, type ValidationError } from "../types";
+  import {
+    type Setting,
+    WizardState,
+    type ValidationError,
+    PaperSize,
+  } from "../types";
   import NavigationButton from "../components/NavigationButton.svelte";
 
   let exam_setting: Setting = $setting;
+  // let paper_size: PaperSize = $setting.paper_size;
 
   enum FormField {
     university = "university",
@@ -15,6 +21,7 @@
     examdate = "examdate",
     timeallowed = "timeallowed",
     numberofvestions = "numberofvestions",
+    papersize = "papersize",
   }
 
   interface SettingFormError {
@@ -97,11 +104,22 @@
       title: "Validation Error",
       type: "error",
     });
+
+  const saveItAll = async () => {
+    // await saveSetting(exam_setting);
+    // setting.set(exam_setting);
+    const updated_setting = {
+      ...exam_setting,
+      paper_size:
+        exam_setting.paper_size === "A4" ? PaperSize.A4 : PaperSize.F4,
+    };
+    await saveSetting(updated_setting);
+    setting.set(updated_setting);
+  };
   const saveMySetting = async () => {
     const { message, valid } = validateSetting();
     if (valid === "valid") {
-      await saveSetting(exam_setting);
-      setting.set(exam_setting);
+      await saveItAll();
     } else {
       await errMsg(message);
     }
@@ -110,8 +128,7 @@
   const goNext = async () => {
     const { message, valid } = validateSetting();
     if (valid === "valid") {
-      await saveSetting(exam_setting);
-      setting.set(exam_setting);
+      await saveItAll();
       wizard_state.set(WizardState.ORDER_OPTIONS);
     } else {
       await errMsg(message);
@@ -121,8 +138,7 @@
   const goPrevious = async () => {
     const { message, valid } = validateSetting();
     if (valid === "valid") {
-      await saveSetting(exam_setting);
-      setting.set(exam_setting);
+      await saveItAll();
       wizard_state.set(WizardState.NEW);
     } else {
       await errMsg(message);
@@ -267,5 +283,23 @@
   />
   <p class=" text-red-600 dark:text-red-300">
     {form_errors.find((v) => v.field === FormField.numberofvestions).message}
+  </p>
+</div>
+
+<div class="mb-6">
+  <label for="versions" class="block mb-2 text-lg font-medium "
+    >Paper size</label
+  >
+  <select
+    id="papersize"
+    name="papersize"
+    bind:value={exam_setting.paper_size}
+    class="form-select px-4 py-3 w-full"
+  >
+    <option value="A4">A4</option>
+    <option value="F4">F4 (exam center paper)</option>
+  </select>
+  <p class=" text-red-600 dark:text-red-300">
+    {form_errors.find((v) => v.field === FormField.papersize)?.message || ""}
   </p>
 </div>

@@ -60,7 +60,7 @@
         store_exam.set(content);
         questions_file_path.set(source_filename);
         if (tex_settings) {
-          setting.set(tex_settings);
+          setting.set({ ...tex_settings, paper_size: $setting.paper_size });
         } else {
           const groups = get_question_groups(content);
           setting.update((v) => ({ ...v, groups }));
