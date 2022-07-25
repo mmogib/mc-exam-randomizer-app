@@ -15,6 +15,7 @@
   import { invoke } from "@tauri-apps/api";
   import {
     get_question_groups,
+    get_question_groups_from_str,
     order_questions_by_groups,
     parse_exam,
   } from "../functions";
@@ -60,7 +61,12 @@
         store_exam.set(content);
         questions_file_path.set(source_filename);
         if (tex_settings) {
-          setting.set({ ...tex_settings, paper_size: $setting.paper_size });
+          const groups = get_question_groups_from_str($setting.groups);
+          setting.set({
+            ...tex_settings,
+            paper_size: $setting.paper_size,
+            groups,
+          });
         } else {
           const groups = get_question_groups(content);
           setting.update((v) => ({ ...v, groups }));

@@ -120,7 +120,13 @@
       </label>
     </div>
   </div>
-  <pre contenteditable="true" bind:textContent={q.text} class="my-4" />
+  <pre class="my-4 whitespace-pre-wrap">
+  <code
+      contenteditable="true"
+      bind:textContent={q.text}
+      class="block whitespace-pre-wrap text-lg"
+    />
+  </pre>
   <button
     class="bg-blue-500 w-1/5  rounded-lg p-2 text-white "
     on:click={() => {

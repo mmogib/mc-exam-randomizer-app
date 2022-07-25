@@ -396,6 +396,15 @@ export const get_question_groups = (exam: FrontExam): string => {
     .join(",");
 };
 
+export const get_question_groups_from_str = (str: string): string => {
+  return str
+    .split(",")
+    .map((g) => g.trim())
+    .map((g) => parseInt(g))
+    .filter((q) => !Number.isNaN(q))
+    .join(",");
+};
+
 export const order_questions_by_groups = (exam: FrontExam): FrontExam => {
   const qs = exam.questions
     .sort((a, b) => b.order - a.order)

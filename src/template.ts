@@ -16,7 +16,6 @@ export const get_setting_string = (): string => {
 };
 
 const COVER_PAGE_COMMAND_TEXT = (comment: boolean): string => `
-%% exam code cover page
 ${comment ? "%" : ""}\\newpage
 ${comment ? "%" : ""}\\thispagestyle{empty}
 ${comment ? "%" : ""}\\begin{large}
@@ -127,15 +126,24 @@ const SHARED_FROM_MATTER = `%% put your preamble between the two tags {#preamble
 %\\renewcommand{\\bodyoptionseparator}{\n%\\vspace {0.8cm}\n%}
 %\\renewcommand{\\questionseparator}{\n%\\vspace*{\\fill}\n%}
 %\\renewcommand{\\eogseparator}{\n%\\vspace*{\\fill}\n %\\newpage}\n`;
+
 const TEX_TEMPLATE_FRONT_MATTER = (hasPlots = false) => `${get_setting_string()}
 \\documentclass{article}
 \\usepackage{graphicx}
 ${SHARED_FROM_MATTER}
 ${PREDEFINED_COMMANDS(true)}
+%%
+%% 
+%% COPY AND PASTE YOUR CUSTOM COVER PAGE BELOW  THE TAGS {#preamble} and {/preamble} BETWEEN 
+%% --------------------------------- YOUR CUSTOM COVER PAGE    ---------------------------------
 %\\renewcommand{\\newcodecover}[1]{%
 ${COVER_PAGE_COMMAND_TEXT(true)}
 %}
-%% You can add your own packages and commands below
+%% --------------------------------- END OF CUSTOM COVER PAGE  ---------------------------------
+%%
+%% 
+%%
+%% --------------------------------- YOUR OWN PACKAGES AND COMMANDS  ----------------------------
 %{#preamble}
 ${
   hasPlots
@@ -147,6 +155,8 @@ ${
     : ``
 }
 %{/preamble}
+%% --------------------------------- END OF YOUR PACKAGES AND COMMANDS ---------------------------
+%%
 %% document body
 \\begin{document}
 `;
@@ -334,11 +344,21 @@ export const TEMPLATE_COMMANDS_DEFINITIONS = ({
   isTemplate: boolean;
 }): string => `
 ${SHARED_FROM_MATTER}
+%%
+%% 
+%% COPY AND PASTE YOUR CUSTOM COVER PAGE BELOW  THE TAGS {#preamble} and {/preamble} BETWEEN 
+%% --------------------------------- YOUR CUSTOM COVER PAGE  ---------------------------------
 %\\renewcommand{\\newcodecover}[1]{${
   isTemplate ? "\n" + COVER_PAGE_COMMAND_TEXT(true) + "\n%}" : "}"
 }
-%{#preamble}${old_preamble === "" ? "" : "\n" + old_preamble + "\n"}
+%% --------------------------------- END OF CUSTOM COVER PAGE  ---------------------------------
+%%
+%%
+%%
+%% --------------------------------- YOUR OWN PACKAGES AND COMMANDS  ----------------------------
+%{#preamble}${old_preamble === "" ? "\n" : "\n" + old_preamble + "\n"}
 %{/preamble}
+%% --------------------------------- END OF YOUR PACKAGES AND COMMANDS ---------------------------
 `;
 
 export const DOC_PREAMBLE = (
