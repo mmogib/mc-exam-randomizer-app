@@ -467,7 +467,8 @@ export const MASTER_COVER_PAGE = `
 \\setcounter{page}{1}
 `;
 
-export const odd_question = `
+export const odd_question = (qnum: number | null = null): string => `
+${Number.isInteger(qnum) ? "% question " + qnum : ""}
 \\item #{QUESTION_TEXT}
 \\bodyoptionseparator
 \\setcounter{equation}{0}
@@ -475,7 +476,8 @@ export const odd_question = `
 \\questionseparator
 `;
 
-export const even_question = `
+export const even_question = (qnum: number | null = null): string => `
+${Number.isInteger(qnum) ? "% question " + qnum : ""}
 \\item #{QUESTION_TEXT}
 \\bodyoptionseparator
 \\setcounter{equation}{0}

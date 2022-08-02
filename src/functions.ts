@@ -241,7 +241,8 @@ const parse_questions = (
       }
       let q_str = "";
       if (qs_in_pne_page.includes(q.order)) {
-        q_str = `\\newpage\n ${even_q}`
+        const temp_q_str = isForTemplete ? even_q(counter + 1) : even_q(null);
+        q_str = `\\newpage\n ${temp_q_str}`
           .replace(
             `#{QUESTION_TEXT}`,
             `${isForTemplete ? "\n%{#q}\n" : ""}${q.text}${
@@ -252,7 +253,8 @@ const parse_questions = (
         counter = 0;
       } else {
         if ((counter + 1) % 2 === 1) {
-          q_str += odd_q
+          const temp_q_str = isForTemplete ? odd_q(counter + 1) : odd_q(null);
+          q_str += temp_q_str
             .replace(
               `#{QUESTION_TEXT}`,
               `${isForTemplete ? "\n%{#q}\n" : ""}${q.text}${
@@ -261,7 +263,8 @@ const parse_questions = (
             )
             .replace("#{QUESTION_OPTION}", opts);
         } else {
-          q_str += even_q
+          const temp_q_str = isForTemplete ? even_q(counter + 1) : even_q(null);
+          q_str += temp_q_str
             .replace(
               `#{QUESTION_TEXT}`,
               `${isForTemplete ? "\n%{#q}\n" : ""}${q.text}${
