@@ -19,6 +19,7 @@ import {
 } from "./template";
 import {
   PaperSize,
+  type Choices,
   type FrontExam,
   type Question,
   type Setting,
@@ -183,6 +184,19 @@ const number_of_pages = (exam: FrontExam): number => {
     Math.ceil(num_of_questions_kept_in_twos / 2) + num_of_questions_kept_in_ones
   );
 };
+
+const order_questions = (
+  questions: [Question],
+  ordering: [number] | null
+): [Question] => {
+  return (
+    ordering
+      ? ordering
+          .map((indx) => questions[indx])
+          .sort((a, b) => (a.group > b.group ? 1 : -1))
+      : questions
+  ) as [Question];
+};
 const parse_questions = (
   questions: [Question],
   ordering: [number] | null = null,
@@ -192,11 +206,7 @@ const parse_questions = (
 ): string => {
   const odd_q = odd_question;
   const even_q = even_question;
-  const qs = ordering
-    ? ordering
-        .map((indx) => questions[indx])
-        .sort((a, b) => (a.group > b.group ? 1 : -1))
-    : questions;
+  const qs = order_questions(questions, ordering);
   let counter = 0;
   return qs
     .map((q, i) => {
@@ -308,11 +318,15 @@ const alphabets = [
   "Z",
 ];
 
+const check_options = (opt: Choices | null): boolean =>
+  opt !== null && opt[0].filter((o) => o.text !== "").length > 0;
+
 const parse_answer_key = (master: FrontExam, codes: [FrontExam]): string => {
-  const master_questions = master.questions.filter(
-    (q) =>
-      q.choices !== null && q.choices[0].filter((o) => o.text !== "").length > 0
-  );
+  // const master_questions = master.questions.filter(
+  //   (q) =>
+  //     q.choices !== null && q.choices[0].filter((o) => o.text !== "").length > 0
+  // );
+  const master_questions = master.questions;
   const num_questions = master_questions.length;
   const answer_template = KEY_ANSWER;
   const tabs = codes.map((_) => "c").join("|");
@@ -322,24 +336,37 @@ const parse_answer_key = (master: FrontExam, codes: [FrontExam]): string => {
     .map((_, q_num) => {
       return [
         master_questions[q_num].order,
-        alphabets[master_questions[q_num].choices[1]],
+        check_options(master_questions[q_num].choices)
+          ? alphabets[master_questions[q_num].choices[1]]
+          : "",
         ...codes
-          .map((c) => ({
+          // .map((c: FrontExam) => ({
+          //   ...c,
+          //   questions: c.questions.filter(
+          //     (q) =>
+          //       q.choices !== null &&
+          //       q.choices[0].filter((o) => o.text !== "").length > 0
+          //   ) as [Question],
+          // }))
+          .map((c: FrontExam) => ({
             ...c,
-            questions: c.questions.filter(
-              (q) =>
-                q.choices !== null &&
-                q.choices[0].filter((o) => o.text !== "").length > 0
-            ),
+            questions: order_questions(c.questions, c.ordering),
           }))
-          .map((code) => {
+          .map((code: FrontExam) => {
             const q_in_master = master_questions.find((vv) => {
               return vv.order === code.questions[q_num].order;
             });
-            if (q_in_master.choices[2]) {
-              return alphabets[q_in_master.choices[1]];
+            const code_q = code.questions[q_num];
+            let r_str = "";
+            if (check_options(code_q.choices)) {
+              if (q_in_master.choices[2]) {
+                r_str += alphabets[q_in_master.choices[1]];
+              } else {
+                r_str += alphabets[code_q.choices[1]];
+              }
             }
-            return alphabets[code.questions[q_num].choices[1]]; //code.questions[q_num].choices[1]
+            r_str += `\\; {\\tiny $_{${q_in_master.order}}$}`;
+            return r_str;
           }),
       ].join("&");
     })
