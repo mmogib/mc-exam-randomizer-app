@@ -10,6 +10,7 @@
     setting,
     exam_string,
     store_frozen_options,
+    saveSetting,
   } from "../store";
   import { extname } from "@tauri-apps/api/path";
   import { invoke } from "@tauri-apps/api";
@@ -61,8 +62,8 @@
         store_exam.set(content);
         questions_file_path.set(source_filename);
         if (tex_settings) {
-          const groups = get_question_groups_from_str($setting.groups);
-          setting.set({
+          const groups = get_question_groups_from_str(tex_settings.groups);
+          saveSetting({
             ...tex_settings,
             paper_size: $setting.paper_size,
             groups,
@@ -70,6 +71,7 @@
         } else {
           const groups = get_question_groups(content);
           setting.update((v) => ({ ...v, groups }));
+          saveSetting($setting);
         }
         store_frozen_options.set({});
         const exam = await parse_exam(content, $setting);
