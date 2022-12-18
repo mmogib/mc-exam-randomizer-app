@@ -70,6 +70,16 @@
 
   <div>
     <div class="flex  flex-col justify-between">
+      {#if w_state !== WizardState.DOWNLOAD_TEMPLATE}
+        <div class="col-span-2 flex w-full mt-4 justify-center">
+          <StartOverButton
+            text="Start Over"
+            action={() => {
+              wizard_state.set(WizardState.DOWNLOAD_TEMPLATE);
+            }}
+          />
+        </div>
+      {/if}
       <div>
         <Steps {steps} {current} on:click={goToStep} clickable={false} />
       </div>
@@ -107,16 +117,6 @@
         {#if w_state === WizardState.DOWNLOAD_EXAM}
           <div class="col-span-2" transition:slide>
             <DownloadExam />
-          </div>
-        {/if}
-        {#if w_state !== WizardState.DOWNLOAD_TEMPLATE}
-          <div class="col-span-2 flex w-full mt-4 justify-end">
-            <StartOverButton
-              text="Start Over"
-              action={() => {
-                wizard_state.set(WizardState.DOWNLOAD_TEMPLATE);
-              }}
-            />
           </div>
         {/if}
       </div>

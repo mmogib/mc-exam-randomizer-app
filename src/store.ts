@@ -1,6 +1,7 @@
 import { writable } from "svelte/store";
 import {
   PaperSize,
+  type ExamCodes,
   type FrontExam,
   type FrozenOptions,
   type QuestionsFilePath,
@@ -45,12 +46,16 @@ export const wizard_state = writable<WizardState>(
   WizardState.DOWNLOAD_TEMPLATE
 );
 
-export const store_exam = writable<FrontExam>({
+const initial_exam: FrontExam = {
   name: "",
   ordering: null,
   questions: null,
   preamble: null,
   kept_in_one_page: [],
-});
+};
+
+export const store_exam = writable<FrontExam>(initial_exam);
 
 export const store_frozen_options = writable<FrozenOptions>({});
+
+export const store_exam_codes = writable<ExamCodes>([initial_exam]);

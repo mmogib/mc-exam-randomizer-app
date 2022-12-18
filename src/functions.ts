@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api";
-import { store_frozen_options, setting } from "./store";
+import { store_frozen_options, setting, store_exam_codes } from "./store";
 
 import {
   ANSWER_COUNT,
@@ -20,6 +20,7 @@ import {
 import {
   PaperSize,
   type Choices,
+  type ExamCodes,
   type FrontExam,
   type Question,
   type Setting,
@@ -96,7 +97,7 @@ export const parse_exam = async (
   const master_code = code_template
     .replace(`%{CODE_COVER_PAGE}`, MASTER_COVER_PAGE)
     .replace(`%{QUESTIONS_TEMPLATE}`, q_temp_master);
-  let exam_codes = [];
+  let exam_codes = [] as unknown as ExamCodes;
   const codes = (
     await Promise.all(
       Array(stored_setting.numberofvestions)
@@ -133,6 +134,8 @@ export const parse_exam = async (
   const versions = `${master_code}
 ${codes}
 `;
+  store_exam_codes.set(exam_codes);
+
   const num_of_answer_keys_pages = Math.ceil(exam_codes.length / 7);
   const parsed_answer_keys = Array(num_of_answer_keys_pages)
     .fill(0)
@@ -193,7 +196,7 @@ const order_questions = (
     ordering
       ? ordering
           .map((indx) => questions[indx])
-          .sort((a, b) => (a.group > b.group ? 1 : -1))
+          .sort((a, b) => (a.group >= b.group ? 1 : -1))
       : questions
   ) as [Question];
 };

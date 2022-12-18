@@ -10,9 +10,11 @@
     exam_string,
     store_frozen_options,
     template_exam_string,
+    store_exam_codes,
   } from "../store";
-  import { type FrontExam, WizardState } from "../types";
+  import { type FrontExam, WizardState, type ExamCodes } from "../types";
   import NavigationButton from "../components/NavigationButton.svelte";
+  import { basename, dirname, resolve } from "@tauri-apps/api/path";
 
   let content: FrontExam = $store_exam;
   let exam: string = $exam_string;
@@ -82,17 +84,77 @@
         },
       ],
     });
-
-    try {
-      await writeTextFile(save_path, exam);
-    } catch (error) {
-      await diagMesg(error, { title: "MC Shuffler Error", type: "error" });
-    } finally {
-      await diagMesg("Great! Your exam has been saved.", {
-        title: "Success",
-        type: "info",
-      });
+    if (save_path) {
+      try {
+        await writeTextFile(save_path, exam);
+        await saveItemAnalysis(save_path);
+      } catch (error) {
+        await diagMesg(error, { title: "MC Shuffler Error", type: "error" });
+      } finally {
+        await diagMesg("Great! Your exam has been saved.", {
+          title: "Success",
+          type: "info",
+        });
+      }
     }
+  };
+
+  const prepare_item_analysis_data = (codes: ExamCodes): string => {
+    const number_of_codes = codes.length;
+    const csv_to_download: string = new Array(number_of_codes)
+      .fill(0)
+      .map((_, i) => {
+        const code = i + 1;
+        const qs_codes: string[] = codes[i]?.ordering.map((qj, j) => {
+          const q = qj + 1;
+          const options =
+            codes[i]?.questions[qj].choices === null
+              ? null
+              : codes[i]?.questions[qj].choices[2];
+          if (options === null) {
+            return "nothing";
+          }
+          const options_q: string[] = options.map((o, indx) => {
+            return `${code},${j + 1},${q},${indx + 1},${o + 1},${
+              codes[i]?.questions[qj].choices[1] === indx ? "*" : ""
+            }`;
+          });
+
+          return options_q.join("\n");
+        });
+
+        return `${qs_codes.filter((v) => v !== "nothing").join("\n")}`;
+      })
+      .join("\n");
+    const csv_with_header = `code,order in this code,order in master,option in this code,option in master,correct\n${csv_to_download}`;
+    return csv_with_header;
+  };
+  const saveItemAnalysis = async (save_path: string) => {
+    const codes = $store_exam_codes;
+    if (Array.isArray(codes)) {
+      const csv_text = prepare_item_analysis_data(codes);
+      const csv_file_name = await basename(save_path, "tex");
+      const csv_dir_name = await dirname(save_path);
+      const csv_save_path = await resolve(
+        csv_dir_name,
+        `${csv_file_name.slice(0, csv_file_name.length - 1)}_ItemAnalysis.csv`
+      );
+
+      await writeTextFile(csv_save_path, csv_text);
+    } else {
+      return Promise.resolve();
+    }
+  };
+
+  const overleafText = (): string => {
+    const codes = $store_exam_codes;
+    let csv_text = "";
+    if (Array.isArray(codes)) {
+      csv_text = prepare_item_analysis_data(codes);
+    }
+    return `${exam}
+Item Anaylsis
+${csv_text}`;
   };
 </script>
 
@@ -144,7 +206,7 @@
           class="flex flex-col items-center w-full mx-auto text-center"
         >
           <textarea hidden={true} rows="8" cols="60" name="snip"
-            >{exam}</textarea
+            >{overleafText()}</textarea
           >
           <input class="btn w-full" type="submit" value="Open in Overleaf" />
         </form>

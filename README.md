@@ -15,7 +15,8 @@
   - [x] Remove the group from the `edit exam setting`
   - [x] Make sure the order is ok in 'OrderQuestionsAndOptions'
   - [x] add a grouping step
-- [ ] Oredr of Options
+- [x] Oredr of Options
+- [ ] item Analysis
 
 # How to update!
 

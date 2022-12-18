@@ -28,6 +28,8 @@ export interface FrontExam {
   kept_in_one_page?: number[];
 }
 
+export type ExamCodes = [FrontExam];
+
 export interface FrozenOptions {
   [key: number]: number[];
 }
