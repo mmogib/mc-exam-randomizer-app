@@ -27,7 +27,11 @@
         if (yes) {
           await installUpdate();
           const cnfrm = await confirm(
-            "The update has been installed. Do you want to restart the app now?"
+            "The update has been installed. Do you want to restart the app now?",
+            {
+              title: "Updates Installed",
+              type: "info",
+            }
           );
           if (cnfrm) {
             await relaunch();
