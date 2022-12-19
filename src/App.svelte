@@ -3,20 +3,39 @@
   import Home from "./lib/Home.svelte";
   import { app } from "@tauri-apps/api";
   import { open as openShell } from "@tauri-apps/api/shell";
-  import { checkUpdate } from "@tauri-apps/api/updater";
+  import { checkUpdate, installUpdate } from "@tauri-apps/api/updater";
+  import { relaunch } from "@tauri-apps/api/process";
 
   import { onMount } from "svelte";
+  import { ask, confirm } from "@tauri-apps/api/dialog";
   const update_url =
     "https://github.com/mmogib/mc-exam-randomizer-app/releases/download/v{VERSION}/MC.Exam.Randomizer_{VERSION}_x64_en-US.msi";
   let app_version = "";
   let new_version: string | null = null;
   let new_version_url: string = "";
   onMount(async () => {
-    app_version = await app.getVersion();
-    const { shouldUpdate, manifest } = await checkUpdate();
-    if (shouldUpdate) {
-      new_version = manifest.version;
-      new_version_url = update_url.replaceAll("{VERSION}", manifest.version);
+    try {
+      app_version = await app.getVersion();
+      const { shouldUpdate, manifest } = await checkUpdate();
+      if (shouldUpdate) {
+        new_version = manifest.version;
+        new_version_url = update_url.replaceAll("{VERSION}", manifest.version);
+        const yes = await ask(
+          `A new version ${manifest.version} is available. Do you want to install it?`,
+          { title: "Update", type: "info" }
+        );
+        if (yes) {
+          await installUpdate();
+          const cnfrm = await confirm(
+            "The update has been installed. Do you want to restart the app now?"
+          );
+          if (cnfrm) {
+            await relaunch();
+          }
+        }
+      }
+    } catch (error) {
+      console.log("seems in dev mode");
     }
   });
 
