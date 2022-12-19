@@ -496,3 +496,34 @@ const get_new_options_order = (
 
   return [new_options, correct_option_index];
 };
+
+export const prepare_item_analysis_data = (codes: ExamCodes): string => {
+  const number_of_codes = codes.length;
+  const csv_to_download: string = new Array(number_of_codes)
+    .fill(0)
+    .map((_, i) => {
+      const code = i + 1;
+      const qs_codes: string[] = codes[i]?.ordering.map((qj, j) => {
+        const q = qj + 1;
+        const options =
+          codes[i]?.questions[qj].choices === null
+            ? null
+            : codes[i]?.questions[qj].choices[2];
+        if (options === null) {
+          return "nothing";
+        }
+        const options_q: string[] = options.map((o, indx) => {
+          return `${code},${j + 1},${q},${indx + 1},${o + 1},${
+            codes[i]?.questions[qj].choices[1] === indx ? "*" : ""
+          }`;
+        });
+
+        return options_q.join("\n");
+      });
+
+      return `${qs_codes.filter((v) => v !== "nothing").join("\n")}`;
+    })
+    .join("\n");
+  const csv_with_header = `code,order,order in master,option,option in master,correct\n${csv_to_download}`;
+  return csv_with_header;
+};

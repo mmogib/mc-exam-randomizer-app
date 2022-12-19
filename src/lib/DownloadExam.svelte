@@ -13,6 +13,8 @@
     store_exam_codes,
   } from "../store";
   import { type FrontExam, WizardState, type ExamCodes } from "../types";
+  import { prepare_item_analysis_data } from "../functions";
+
   import NavigationButton from "../components/NavigationButton.svelte";
   import { basename, dirname, resolve } from "@tauri-apps/api/path";
 
@@ -99,36 +101,6 @@
     }
   };
 
-  const prepare_item_analysis_data = (codes: ExamCodes): string => {
-    const number_of_codes = codes.length;
-    const csv_to_download: string = new Array(number_of_codes)
-      .fill(0)
-      .map((_, i) => {
-        const code = i + 1;
-        const qs_codes: string[] = codes[i]?.ordering.map((qj, j) => {
-          const q = qj + 1;
-          const options =
-            codes[i]?.questions[qj].choices === null
-              ? null
-              : codes[i]?.questions[qj].choices[2];
-          if (options === null) {
-            return "nothing";
-          }
-          const options_q: string[] = options.map((o, indx) => {
-            return `${code},${j + 1},${q},${indx + 1},${o + 1},${
-              codes[i]?.questions[qj].choices[1] === indx ? "*" : ""
-            }`;
-          });
-
-          return options_q.join("\n");
-        });
-
-        return `${qs_codes.filter((v) => v !== "nothing").join("\n")}`;
-      })
-      .join("\n");
-    const csv_with_header = `code,order in this code,order in master,option in this code,option in master,correct\n${csv_to_download}`;
-    return csv_with_header;
-  };
   const saveItemAnalysis = async (save_path: string) => {
     const codes = $store_exam_codes;
     if (Array.isArray(codes)) {
