@@ -44,6 +44,8 @@ export interface Setting {
   numberofvestions: number;
   groups: string;
   paper_size?: PaperSize;
+  code_name?: "CODE" | "VERSION";
+  code_numbering?: "ARABIC" | "ALPHA";
 }
 
 export type QuestionsFilePath = string;

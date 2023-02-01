@@ -22,6 +22,8 @@ const initial_setting: Setting = {
   numberofvestions: 4,
   groups: "1",
   paper_size: PaperSize.A4,
+  code_name: "CODE",
+  code_numbering: "ARABIC",
 };
 
 export const saveSetting = async (s: Setting) => {

@@ -22,6 +22,8 @@
     timeallowed = "timeallowed",
     numberofvestions = "numberofvestions",
     papersize = "papersize",
+    code_name = "code_name",
+    code_numbering = "code_numbering",
   }
 
   interface SettingFormError {
@@ -287,7 +289,44 @@
 </div>
 
 <div class="mb-6">
-  <label for="versions" class="block mb-2 text-lg font-medium "
+  <label for="code_name" class="block mb-2 text-lg font-medium "
+    >Code name</label
+  >
+  <select
+    id="code_name"
+    name="code_name"
+    bind:value={exam_setting.code_name}
+    class="form-select px-4 py-3 w-full"
+  >
+    <option value="CODE">CODE</option>
+    <option value="VERSION">VERSION</option>
+  </select>
+  <p class=" text-red-600 dark:text-red-300">
+    {form_errors.find((v) => v.field === FormField.code_name)?.message || ""}
+  </p>
+</div>
+
+<div class="mb-6">
+  <label for="code_numbering" class="block mb-2 text-lg font-medium "
+    >Code numebering</label
+  >
+  <select
+    id="code_numbering"
+    name="code_numbering"
+    bind:value={exam_setting.code_numbering}
+    class="form-select px-4 py-3 w-full"
+  >
+    <option value="ARABIC">ARABIC</option>
+    <option value="ALPHA">Capital Letters (A, B, C, ...)</option>
+  </select>
+  <p class=" text-red-600 dark:text-red-300">
+    {form_errors.find((v) => v.field === FormField.code_numbering)?.message ||
+      ""}
+  </p>
+</div>
+
+<div class="mb-6">
+  <label for="papersize" class="block mb-2 text-lg font-medium "
     >Paper size</label
   >
   <select

@@ -81,6 +81,16 @@ export const parse_master_only = async (
   ${exam_doc}`;
 };
 
+const get_code_name = (setting: Setting, i: number) => {
+  const alphas = "ABCDEFGHIJKLMNOPQRS";
+  const code_number =
+    setting.code_numbering === "ARABIC"
+      ? `${i + 101}`.slice(1, 3)
+      : alphas.at(i);
+  const code_name = `${setting.code_name}${code_number}`;
+  return code_name;
+};
+
 export const parse_exam = async (
   exam: FrontExam,
   stored_setting: Setting
@@ -103,8 +113,7 @@ export const parse_exam = async (
       Array(stored_setting.numberofvestions)
         .fill(0)
         .map(async (_, i) => {
-          const code_number = `${i + 101}`.slice(1, 3);
-          const code_name = `CODE${code_number}`;
+          const code_name = get_code_name(stored_setting, i);
           const ex = (await invoke(command, {
             exam: exam,
             name: code_name,
