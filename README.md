@@ -16,10 +16,15 @@
   - [x] Make sure the order is ok in 'OrderQuestionsAndOptions'
   - [x] add a grouping step
 - [x] Oredr of Options
-- [ ] item Analysis
+- [x] item Analysis
+- [ ] quiz headers
 
 # How to update!
 
+0. For dev run
+   ```bash
+   npm run tauri dev
+   ```
 1. Updtae `package.version` in tauri.conf.json
 2. Updtae `version` in Cargo.toml
 3. Updtae `version` in package.json

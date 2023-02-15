@@ -21,6 +21,7 @@ const initial_setting: Setting = {
   timeallowed: "",
   numberofvestions: 4,
   groups: "1",
+  examtype: "MAJOR",
   paper_size: PaperSize.A4,
   code_name: "CODE",
   code_numbering: "ARABIC",

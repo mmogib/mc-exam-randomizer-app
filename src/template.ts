@@ -447,7 +447,9 @@ export const TEMPLATE_COVER_PAGE = `
 \\setcounter{page}{1}
 `;
 
-export const MASTER_COVER_PAGE = `
+export const MASTER_COVER_PAGE = (exam_type = "MAJOR") =>
+  exam_type === "MAJOR"
+    ? `
 \\thispagestyle{empty}
 \\begin{large}
     \\begin{center}
@@ -462,6 +464,11 @@ export const MASTER_COVER_PAGE = `
         {\\bf {\\Huge{MASTER VERSION}}}  \\\\
       \\end{center}
 \\end{large}
+\\newpage
+\\renewcommand{\\thepage}{\\noindent {TERM}, {COURSE_CODE}, {EXAM_NAME} \\hfill Page {\\bf \\arabic{page} of {NUM_PAGES} } \\hfill {\\bf \\fbox{ MASTER }}}
+\\setcounter{page}{1}
+`
+    : `
 \\newpage
 \\renewcommand{\\thepage}{\\noindent {TERM}, {COURSE_CODE}, {EXAM_NAME} \\hfill Page {\\bf \\arabic{page} of {NUM_PAGES} } \\hfill {\\bf \\fbox{ MASTER }}}
 \\setcounter{page}{1}
@@ -489,9 +496,14 @@ export const code_template = `%{CODE_COVER_PAGE}
 %{QUESTIONS_TEMPLATE}
 `;
 
-export const CODE_COVER_PAGE = `
+export const CODE_COVER_PAGE = (exam_type = "MAJOR") =>
+  exam_type === "MAJOR"
+    ? `
 \\newcodecover{{CODE_NAME}}
 \\renewcommand{\\thepage}{\\noindent {TERM}, {COURSE_CODE}, {EXAM_NAME} \\hfill Page {\\bf \\arabic{page} of {NUM_PAGES} } \\hfill {\\bf \\fbox{ {CODE_NAME} }}}
+\\setcounter{page}{1}`
+    : `
+\\renewcommand{\\thepage}{{\\tiny \\noindent {TERM}, {COURSE_CODE}, {EXAM_NAME}}\\hfill {ID:\\hspace{5cm} $|$ Name:\\hspace{5cm}} \\hfill{\\tiny Page  \\bf \\arabic{page} of {NUM_PAGES} } \\hfill {\\bf \\fbox{ {CODE_NAME} }}}
 \\setcounter{page}{1}`;
 
 export const KEY_ANSWER = (no_qs: number): string => `%% KEY ANSWER Page

@@ -12,6 +12,10 @@
   let exam_setting: Setting = $setting;
   // let paper_size: PaperSize = $setting.paper_size;
 
+  function onChange(event) {
+    exam_setting.examtype = event.currentTarget.value;
+  }
+
   enum FormField {
     university = "university",
     department = "department",
@@ -19,6 +23,7 @@
     coursecode = "coursecode",
     examname = "examname",
     examdate = "examdate",
+    examtype = "examtype",
     timeallowed = "timeallowed",
     numberofvestions = "numberofvestions",
     papersize = "papersize",
@@ -157,6 +162,45 @@
   <NavigationButton text="Save" action={saveMySetting} />
   <NavigationButton text="Next" action={goNext} />
 </div>
+<div class="flex justify-center">
+  <div
+    class="flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700 px-5 w-1/4 mr-5"
+  >
+    <input
+      on:change={onChange}
+      checked={exam_setting.examtype === "MAJOR"}
+      id="exam_type_major"
+      type="radio"
+      value="MAJOR"
+      name="exam_type"
+      class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+    />
+    <label
+      for="exam_type_major"
+      class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+      >MAJOR/FINAL EXAM</label
+    >
+  </div>
+  <div
+    class="flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700 px-5 w-1/4"
+  >
+    <input
+      on:change={onChange}
+      checked={exam_setting.examtype !== "MAJOR"}
+      id="exam_type_quiz"
+      type="radio"
+      value="QUIZ"
+      name="exam_type"
+      class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+    />
+    <label
+      for="exam_type_quiz"
+      class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+      >QUIZ</label
+    >
+  </div>
+</div>
+
 <div class="my-6">
   <label
     for="university"

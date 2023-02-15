@@ -43,6 +43,7 @@ export interface Setting {
   timeallowed: string;
   numberofvestions: number;
   groups: string;
+  examtype: "QUIZ" | "MAJOR";
   paper_size?: PaperSize;
   code_name?: "CODE" | "VERSION";
   code_numbering?: "ARABIC" | "ALPHA";

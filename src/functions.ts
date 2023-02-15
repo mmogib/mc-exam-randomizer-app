@@ -105,7 +105,7 @@ export const parse_exam = async (
   const q_temp_master = questions_template.replace(`%{QUESTIONS}`, qs_master);
   const command = `get_random_version`;
   const master_code = code_template
-    .replace(`%{CODE_COVER_PAGE}`, MASTER_COVER_PAGE)
+    .replace(`%{CODE_COVER_PAGE}`, MASTER_COVER_PAGE(stored_setting.examtype))
     .replace(`%{QUESTIONS_TEMPLATE}`, q_temp_master);
   let exam_codes = [] as unknown as ExamCodes;
   const codes = (
