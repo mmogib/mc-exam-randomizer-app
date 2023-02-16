@@ -66,9 +66,9 @@
           saveSetting({
             ...tex_settings,
             paper_size: $setting.paper_size,
-            examtype: $setting.examtype,
-            code_name: $setting.code_name,
-            groups,
+            // examtype: $setting.examtype,
+            // code_name: $setting.code_name,
+            // groups,
           });
         } else {
           const groups = get_question_groups(content);
