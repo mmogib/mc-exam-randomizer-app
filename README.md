@@ -23,7 +23,7 @@
 
 0. For dev run
    ```bash
-   npm run tauri dev
+   npm run tauri **dev**
    ```
 1. Updtae `package.version` in tauri.conf.json
 2. Updtae `version` in Cargo.toml
