@@ -134,7 +134,10 @@ export const parse_exam = async (
             questions
           );
           return code_template
-            .replace(`%{CODE_COVER_PAGE}`, CODE_COVER_PAGE())
+            .replace(
+              `%{CODE_COVER_PAGE}`,
+              CODE_COVER_PAGE(stored_setting.examtype)
+            )
             .replace(`%{QUESTIONS_TEMPLATE}`, q_template)
             .replaceAll(`{CODE_NAME}`, ex.name);
         })
